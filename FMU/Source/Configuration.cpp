@@ -536,7 +536,7 @@ void Configuration::parseConfiguration(const std::string & filename) {
     const std::string value = node->value();
     setValFromNodeIfName(&info.save, value, name, "save");
     setValFromNodeIfName(&info.timeStepsPerHour, value, name, "timestepsperhour");
-    setValFromNodeIfName(&info.startDay, value, name, "beginmonth");
+    setValFromNodeIfName(&info.startDay, value, name, "beginday");
     setValFromNodeIfName(&info.endDay, value, name, "endday");
     setValFromNodeIfName(&info.endMonth, value, name, "endmonth");
     setValFromNodeIfName(&info.startMonth, value, name, "beginmonth");
