@@ -112,7 +112,9 @@ void Occupant_Action_HeatingSetPoints_Learning::step(const Building_Zone& zone,
 int Occupant_Action_HeatingSetPoints_Learning::getState() const {
   int month = SimulationTime::month - 1;
   int count = 0;
-  for (const auto v : stateMappings){
+// MODIF BORIS
+//  for (const auto v : stateMappings){
+for (const auto& v : stateMappings) {
     if(std::find(v.begin(), v.end(), month) != v.end()){
       break;
     }

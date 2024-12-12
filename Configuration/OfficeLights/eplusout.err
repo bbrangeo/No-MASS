@@ -1,0 +1,34 @@
+Program Version,EnergyPlus, Version 24.1.0-9d7789a3ac, YMD=2024.12.12 15:38,
+   ** Severe  ** Line: 102 Index: 14 - "ProgramControl" is not a valid Object Type.
+   ** Severe  ** Line: 611 Index: 29 - "WindowProperty:ShadingControl" is not a valid Object Type.
+   ** Severe  ** Line: 1028 Index: 34 - Object contains more field values than maximum number of IDD fields and is not extensible.
+   ** Severe  ** Line: 1028 Index: 34 - Error parsing "FenestrationSurface:Detailed". Error in following line.
+   ** Severe  ** ~~~          -2.8310691,-5.2076251359, 1.8906440255;  !- Vertex 4
+   ** Severe  ** Line: 1028 Index: 47 - "1.8906440255" is not a valid Object Type.
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][azimuth_angle_of_long_axis_of_building] - "-0.500000" - Expected number greater than or equal to 0.000000
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][building_type] - "OpeningHeight" - Failed to match against any enum values.
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][height_dependence_of_external_node_temperature] - "1" - Failed to match against any enum values.
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][height_selection_for_local_wind_pressure_calculation] - "Cp Data" - Failed to match against any enum values.
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][initialization_type] - "1000" - Failed to match against any enum values.
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][maximum_number_of_iterations] - Value type "string" for input "LowRise" not permitted by 'type' constraint.
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][ratio_of_building_width_along_short_axis_to_width_along_long_axis] - "0" - Expected number greater than 0.000000
+   ** Severe  ** <root>[AirflowNetwork:SimulationControl][VENT][relative_airflow_convergence_tolerance] - Value type "string" for input "ZeroNodePressures" not permitted by 'type' constraint.
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][number_of_vertices] - "0.321731" - Expected number greater than or equal to 3.000000
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][number_of_vertices] - Failed to validate against child schema #0.
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][number_of_vertices] - "0.321731" - Failed to match against any enum values.
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][number_of_vertices] - Failed to validate against child schema #1.
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][number_of_vertices] - Failed to validate against any schemas allowed by anyOf constraint.
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][sun_exposure] - "NoWind" - Failed to match against any enum values.
+   ** Severe  ** <root>[BuildingSurface:Detailed][Block1:Zone1_GroundFloor_0_0_0][vertices][3] - Missing required property 'vertex_z_coordinate'.
+   ** Severe  ** <root>[Daylighting:Controls][Block1:Zone1][control_data][0][fraction_of_lights_controlled_by_reference_point] - "22" - Expected number less than or equal to 1.000000
+   ** Severe  ** <root>[ZoneHVAC:EquipmentList][Block1:Zone1 Equipment][equipment][0][zone_equipment_object_type] - "Block1:Zone1 Ideal Loads Air" - Failed to match against any enum values.
+   ** Warning ** Version: in IDF="9.0" not the same as expected="24.1"
+   **  Fatal  ** Errors occurred on processing input file. Preceding condition(s) cause termination.
+   ...Summary of Errors that led to program termination:
+   ..... Reference severe error count=23
+   ..... Last severe error=<root>[ZoneHVAC:EquipmentList][Block1:Zone1 Equipment][equipment][0][zone_equipment_object_type] - "Block1:Zone1 Ideal Loads Air" - Failed to match against any enum values.
+   ************* Warning:  Node connection errors not checked - most system input has not been read (see previous warning).
+   ************* Fatal error -- final processing.  Program exited before simulations began.  See previous error messages.
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Terminated--Fatal Error Detected. 1 Warning; 23 Severe Errors; Elapsed Time=00hr 00min  0.04sec

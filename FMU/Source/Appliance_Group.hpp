@@ -24,8 +24,9 @@ class Appliance_Group {
     void setup(const std::vector<ConfigStructAppliance> & app,
                                     const int & buildingID,
                                     const std::string & buildingString) {
-      for (const ConfigStructAppliance s : app) {
-        appliances.push_back(T());
+      //for (const ConfigStructAppliance s : app) {
+      for (const ConfigStructAppliance& s : app) {
+	appliances.push_back(T());
         appliances.back().setBuildingID(buildingID);
         appliances.back().setIDString(buildingString + std::to_string(s.id));
         appliances.back().setup(s);
@@ -155,6 +156,7 @@ class Appliance_Group {
 
     void addGlobalContactsTo(Contract_Negotiation * building_negotiation) {
       for (const Contract & c : globalContracts) {
+
         building_negotiation->submit(c);
       }
       globalContracts.clear();

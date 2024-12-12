@@ -1,0 +1,166 @@
+<fmiModelDescription description="Model with interfaces for media with moist air that will be linked to the BCVTB which models the response of the room" fmiVersion="1.0" generationDateAndTime="2012-04-17T19:12:58Z" generationTool="Dymola Version 2012 FD01 (32-bit), 2011-11-22" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}" modelIdentifier="FMI" modelName="FMI" numberOfContinuousStates="0" numberOfEventIndicators="0" variableNamingConvention="structured" version="1.2">
+  <TypeDefinitions>
+    <Type name="Modelica.Blocks.Interfaces.RealInput">
+      <RealType />
+    </Type>
+    <Type name="Modelica.Blocks.Interfaces.RealOutput">
+      <RealType />
+    </Type>
+  </TypeDefinitions>
+  <DefaultExperiment startTime="0.0" stopTime="1.0" tolerance="1E-005" />
+  <ModelVariables>
+    <ScalarVariable causality="input" name="EnvironmentSiteExteriorHorizontalSkyIlluminance" valueReference="1">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="EnvironmentSiteRainStatus" valueReference="2">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="EnvironmentSiteOutdoorAirDrybulbTemperature" valueReference="3">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+
+    <ScalarVariable causality="input" name="Block1:KitchenZoneMeanAirTemperature" valueReference="6">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:LivingRoomZoneMeanAirTemperature" valueReference="7">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:BathroomZoneMeanAirTemperature" valueReference="8">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:MasterBedroomZoneMeanAirTemperature" valueReference="9">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:OfficeZoneMeanAirTemperature" valueReference="10">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:KitchenZoneAirRelativeHumidity" valueReference="11">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:LivingRoomZoneAirRelativeHumidity" valueReference="12">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:BathroomZoneAirRelativeHumidity" valueReference="13">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:MasterBedroomZoneAirRelativeHumidity" valueReference="14">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:OfficeZoneAirRelativeHumidity" valueReference="15">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:KitchenZoneMeanRadiantTemperature" valueReference="16">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:LivingRoomZoneMeanRadiantTemperature" valueReference="17">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:BathroomZoneMeanRadiantTemperature" valueReference="18">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:MasterBedroomZoneMeanRadiantTemperature" valueReference="19">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:OfficeZoneMeanRadiantTemperature" valueReference="20">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:KitchenDaylightingReferencePoint1Illuminance" valueReference="21">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block1:LivingRoomDaylightingReferencePoint1Illuminance" valueReference="22">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:BathroomDaylightingReferencePoint1Illuminance" valueReference="23">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:MasterBedroomDaylightingReferencePoint1Illuminance" valueReference="24">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="Block2:OfficeDaylightingReferencePoint1Illuminance" valueReference="25">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:KitchenNumberOfOccupants" valueReference="26">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:LivingRoomNumberOfOccupants" valueReference="27">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:BathroomNumberOfOccupants" valueReference="28">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:MasterBedroomNumberOfOccupants" valueReference="29">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:OfficeNumberOfOccupants" valueReference="30">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+
+    <ScalarVariable causality="output" name="Block1:KitchenWindowState0" valueReference="31">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:LivingRoomWindowState0" valueReference="32">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:BathroomWindowState0" valueReference="33">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:MasterBedroomWindowState0" valueReference="34">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:OfficeWindowState0" valueReference="35">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+
+    <ScalarVariable causality="output" name="Block1:KitchenLightState" valueReference="36">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:LivingRoomLightState" valueReference="37">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:BathroomLightState" valueReference="38">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:MasterBedroomLightState" valueReference="39">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:OfficeLightState" valueReference="40">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:KitchenAverageGains" valueReference="41">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:LivingRoomAverageGains" valueReference="42">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:BathroomAverageGains" valueReference="43">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:MasterBedroomAverageGains" valueReference="44">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:OfficeAverageGains" valueReference="45">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+
+
+    <ScalarVariable causality="output" name="Block2:BathroomBlindFraction" valueReference="46">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:MasterBedroomBlindFraction" valueReference="47">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block2:OfficeBlindFraction" valueReference="48">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:KitchenBlindFraction" valueReference="49">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:LivingRoomBlindFraction" valueReference="50">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="input" name="HVACPower" valueReference="51">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
+    </ScalarVariable>
+
+  </ModelVariables>
+</fmiModelDescription>

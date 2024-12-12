@@ -1,0 +1,933 @@
+!-Generator IDFEditor 1.53
+!-Option SortedOrder
+!-NOTE: All comments with '!-' are ignored by the IDFEditor and are generated automatically.
+!-      Use '!' comments if they need to be retained when using the IDFEditor.
+!-   ===========  ALL OBJECTS IN CLASS: VERSION ===========
+
+  Version,24.1;
+
+!-   ===========  ALL OBJECTS IN CLASS: SIMULATIONCONTROL ===========
+
+  SimulationControl,
+    No,                      !- Do Zone Sizing Calculation
+    No,                      !- Do System Sizing Calculation
+    No,                      !- Do Plant Sizing Calculation
+    No,                      !- Run Simulation for Sizing Periods
+    Yes,                     !- Run Simulation for Weather File Run Periods
+    No,                      !- Do HVAC Sizing Simulation for Sizing Periods
+    1;                       !- Maximum Number of HVAC Sizing Simulation Passes
+
+!-   ===========  ALL OBJECTS IN CLASS: BUILDING ===========
+
+  Building,
+    Exemple Simple,          !- Name
+    0,                       !- North Axis {deg}
+    Suburbs,                 !- Terrain
+    0.05,                    !- Loads Convergence Tolerance Value {W}
+    0.05,                    !- Temperature Convergence Tolerance Value {deltaC}
+    FullInteriorAndExterior, !- Solar Distribution
+    30,                      !- Maximum Number of Warmup Days
+    6;                       !- Minimum Number of Warmup Days
+
+!-   ===========  ALL OBJECTS IN CLASS: SURFACECONVECTIONALGORITHM:INSIDE ===========
+
+  SurfaceConvectionAlgorithm:Inside,TARP;
+
+!-   ===========  ALL OBJECTS IN CLASS: SURFACECONVECTIONALGORITHM:OUTSIDE ===========
+
+  SurfaceConvectionAlgorithm:Outside,DOE-2;
+
+!-   ===========  ALL OBJECTS IN CLASS: HEATBALANCEALGORITHM ===========
+
+  HeatBalanceAlgorithm,ConductionTransferFunction,1000;
+
+!-   ===========  ALL OBJECTS IN CLASS: TIMESTEP ===========
+
+  Timestep,6;
+
+!-   ===========  ALL OBJECTS IN CLASS: SITE:LOCATION ===========
+
+  Site:Location,
+    Clermont-Ferrand,        !- Name
+    45.7869,                 !- Latitude {deg}
+    3.14950,                 !- Longitude {deg}
+    1,                       !- Time Zone {hr}
+    326;                     !- Elevation {m}
+
+!-   ===========  ALL OBJECTS IN CLASS: RUNPERIOD ===========
+
+  RunPeriod,
+    Run Period 1,            !- Name
+    1,                       !- Begin Month
+    1,                       !- Begin Day of Month
+    ,                        !- Begin Year
+    12,                      !- End Month
+    31,                      !- End Day of Month
+    ,                        !- End Year
+    Monday,                  !- Day of Week for Start Day
+    Yes,                     !- Use Weather File Holidays and Special Days
+    Yes,                     !- Use Weather File Daylight Saving Period
+    No,                      !- Apply Weekend Holiday Rule
+    Yes,                     !- Use Weather File Rain Indicators
+    Yes,                     !- Use Weather File Snow Indicators
+    No,                      !- Treat Weather as Actual
+    Hour24;                  !- First Hour Interpolation Starting Values
+! 
+!-   ===========  ALL OBJECTS IN CLASS: RUNPERIODCONTROL:SPECIALDAYS ===========
+!-RunPeriodControl:SpecialDays,
+!-    VacancesEte,             !- Name
+!-    07/01,                   !- Start Date
+!-    14,                      !- Duration {days}
+!-    Holiday;                 !- Special Day Type
+!-RunPeriodControl:SpecialDays,
+!-    VacancesNoel,            !- Name
+!-    12/25,                   !- Start Date
+!-    7,                       !- Duration {days}
+!-    Holiday;                 !- Special Day Type
+!-   ===========  ALL OBJECTS IN CLASS: SITE:GROUNDTEMPERATURE:BUILDINGSURFACE ===========
+! 
+!   Site:GroundTemperature:BuildingSurface,16,15,15,16,17,18,19,19.5,19,18,17,16;
+
+!-   ===========  ALL OBJECTS IN CLASS: SCHEDULETYPELIMITS ===========
+
+  ScheduleTypeLimits,
+    Fraction,                !- Name
+    0,                       !- Lower Limit Value
+    1,                       !- Upper Limit Value
+    Continuous;              !- Numeric Type
+
+  ScheduleTypeLimits,
+    Any Number;              !- Name
+
+  ScheduleTypeLimits,
+    Temperature 5,           !- Name
+    ,                        !- Lower Limit Value
+    ,                        !- Upper Limit Value
+    Continuous,              !- Numeric Type
+    Temperature;             !- Unit Type
+
+!-   ===========  ALL OBJECTS IN CLASS: SCHEDULE:DAY:INTERVAL ===========
+
+  Schedule:Day:Interval,
+    Consigne_Semaine,        !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    No,                      !- Interpolate to Timestep
+    11:00,                   !- Time 1
+    21,                      !- Value Until Time 1
+    19:00,                   !- Time 2
+    16,                      !- Value Until Time 2
+    24:00,                   !- Time 3
+    21;                      !- Value Until Time 3
+
+  Schedule:Day:Interval,
+    Consigne_WE,             !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    No,                      !- Interpolate to Timestep
+    24:00,                   !- Time 1
+    21;                      !- Value Until Time 1
+
+  Schedule:Day:Interval,
+    Consigne_Mercredi,       !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    No,                      !- Interpolate to Timestep
+    11:00,                   !- Time 1
+    21,                      !- Value Until Time 1
+    15:00,                   !- Time 2
+    16,                      !- Value Until Time 2
+    24:00,                   !- Time 3
+    21;                      !- Value Until Time 3
+
+  Schedule:Day:Interval,
+    Consigne_Absence,        !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    No,                      !- Interpolate to Timestep
+    24:00,                   !- Time 1
+    7;                       !- Value Until Time 1
+
+!-   ===========  ALL OBJECTS IN CLASS: SCHEDULE:WEEK:DAILY ===========
+
+  Schedule:Week:Daily,
+    Consigne_Temp_Semaine1,  !- Name
+    Consigne_WE,             !- Sunday Schedule:Day Name
+    Consigne_Semaine,        !- Monday Schedule:Day Name
+    Consigne_Semaine,        !- Tuesday Schedule:Day Name
+    Consigne_Mercredi,       !- Wednesday Schedule:Day Name
+    Consigne_Semaine,        !- Thursday Schedule:Day Name
+    Consigne_Semaine,        !- Friday Schedule:Day Name
+    Consigne_WE,             !- Saturday Schedule:Day Name
+    Consigne_Absence,        !- Holiday Schedule:Day Name
+    Consigne_Absence,        !- SummerDesignDay Schedule:Day Name
+    Consigne_Absence,        !- WinterDesignDay Schedule:Day Name
+    Consigne_Absence,        !- CustomDay1 Schedule:Day Name
+    Consigne_Absence;        !- CustomDay2 Schedule:Day Name
+
+  Schedule:Week:Daily,
+    Consigne_Temp_Semaine2,  !- Name
+    Consigne_WE,             !- Sunday Schedule:Day Name
+    Consigne_Semaine,        !- Monday Schedule:Day Name
+    Consigne_Semaine,        !- Tuesday Schedule:Day Name
+    Consigne_Semaine,        !- Wednesday Schedule:Day Name
+    Consigne_Semaine,        !- Thursday Schedule:Day Name
+    Consigne_Semaine,        !- Friday Schedule:Day Name
+    Consigne_WE,             !- Saturday Schedule:Day Name
+    Consigne_Absence,        !- Holiday Schedule:Day Name
+    Consigne_Absence,        !- SummerDesignDay Schedule:Day Name
+    Consigne_Absence,        !- WinterDesignDay Schedule:Day Name
+    Consigne_Absence,        !- CustomDay1 Schedule:Day Name
+    Consigne_Absence;        !- CustomDay2 Schedule:Day Name
+
+  Schedule:Week:Daily,
+    Consigne_Temp_Semaine3,  !- Name
+    Consigne_WE,             !- Sunday Schedule:Day Name
+    Consigne_Semaine,        !- Monday Schedule:Day Name
+    Consigne_Semaine,        !- Tuesday Schedule:Day Name
+    Consigne_Absence,        !- Wednesday Schedule:Day Name
+    Consigne_Semaine,        !- Thursday Schedule:Day Name
+    Consigne_Semaine,        !- Friday Schedule:Day Name
+    Consigne_Absence,        !- Saturday Schedule:Day Name
+    Consigne_Absence,        !- Holiday Schedule:Day Name
+    Consigne_Absence,        !- SummerDesignDay Schedule:Day Name
+    Consigne_Absence,        !- WinterDesignDay Schedule:Day Name
+    Consigne_Absence,        !- CustomDay1 Schedule:Day Name
+    Consigne_Absence;        !- CustomDay2 Schedule:Day Name
+
+!-   ===========  ALL OBJECTS IN CLASS: SCHEDULE:YEAR ===========
+
+  Schedule:Year,
+    Consigne_Temp,           !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    Consigne_Temp_Semaine1,  !- Schedule:Week Name 1
+    1,                       !- Start Month 1
+    1,                       !- Start Day 1
+    12,                      !- End Month 1
+    31;                      !- End Day 1
+
+  Schedule:Year,
+    Occupation1,             !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    Consigne_Temp_Semaine1,  !- Schedule:Week Name 1
+    1,                       !- Start Month 1
+    1,                       !- Start Day 1
+    12,                      !- End Month 1
+    31;                      !- End Day 1
+
+  Schedule:Year,
+    Occupation2,             !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    Consigne_Temp_Semaine2,  !- Schedule:Week Name 1
+    1,                       !- Start Month 1
+    1,                       !- Start Day 1
+    12,                      !- End Month 1
+    31;                      !- End Day 1
+
+  Schedule:Year,
+    Occupation3,             !- Name
+    Temperature 5,           !- Schedule Type Limits Name
+    Consigne_Temp_Semaine3,  !- Schedule:Week Name 1
+    1,                       !- Start Month 1
+    1,                       !- Start Day 1
+    12,                      !- End Month 1
+    31;                      !- End Day 1
+
+!-   ===========  ALL OBJECTS IN CLASS: SCHEDULE:COMPACT ===========
+
+  Schedule:Compact,
+    People Use Schedule,     !- Name
+    Any Number,              !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For: Alldays,            !- Field 2
+    Until: 9:00,0,           !- Field 3
+    Until: 12:00,90,         !- Field 5
+    Until 13:00,0,           !- Field 7
+    Until: 17:00,45,         !- Field 9
+    Until 24:00,0;           !- Field 11
+
+  Schedule:Compact,
+    Always On,               !- Name
+    Any Number,              !- Schedule Type Limits Name
+    Through: 12/31,          !- Field 1
+    For: AllDays,            !- Field 2
+    Until: 24:00,1;          !- Field 3
+
+!-   ===========  ALL OBJECTS IN CLASS: MATERIAL ===========
+
+  Material,
+    Concrete Wall,           !- Name
+    MediumRough,             !- Roughness
+    0.12,                    !- Thickness {m}
+    1.2,                     !- Conductivity {W/m-K}
+    2400,             w       !- Density {kg/m3}
+    850,                     !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.65,                    !- Solar Absorptance
+    0.65;                    !- Visible Absorptance
+
+  Material,
+    Concrete Floor,          !- Name
+    MediumRough,             !- Roughness
+    0.15,                    !- Thickness {m}
+    1.2,                     !- Conductivity {W/m-K}
+    2400,                    !- Density {kg/m3}
+    850,                     !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.65,                    !- Solar Absorptance
+    0.65;                    !- Visible Absorptance
+
+  Material,
+    Concrete 300mm,          !- Name
+    MediumRough,             !- Roughness
+    0.03,                    !- Thickness {m}
+    1.2,                     !- Conductivity {W/m-K}
+    2400,                    !- Density {kg/m3}
+    850,                     !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.65,                    !- Solar Absorptance
+    0.65;                    !- Visible Absorptance
+
+  Material,
+    Insulator,               !- Name
+    Smooth,                  !- Roughness
+    0.1,                     !- Thickness {m}
+    0.045,                   !- Conductivity {W/m-K}
+    100,                     !- Density {kg/m3}
+    1000,                    !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.7,                     !- Solar Absorptance
+    0.7;                     !- Visible Absorptance
+
+  Material,
+    InsulatorRoof,           !- Name
+    Smooth,                  !- Roughness
+    0.1,                     !- Thickness {m}
+    0.045,                   !- Conductivity {W/m-K}
+    100,                     !- Density {kg/m3}
+    1000,                    !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.7,                     !- Solar Absorptance
+    0.7;                     !- Visible Absorptance
+
+  Material,
+    InsulatorFloor,          !- Name
+    Smooth,                  !- Roughness
+    0.1,                     !- Thickness {m}
+    0.045,                   !- Conductivity {W/m-K}
+    100,                     !- Density {kg/m3}
+    1000,                    !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.7,                     !- Solar Absorptance
+    0.7;                     !- Visible Absorptance
+
+  Material,
+    Concrete 500mm,          !- Name
+    MediumRough,             !- Roughness
+    0.05,                    !- Thickness {m}
+    1.2,                     !- Conductivity {W/m-K}
+    2400,                    !- Density {kg/m3}
+    850,                     !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.65,                    !- Solar Absorptance
+    0.65;                    !- Visible Absorptance
+
+  Material,
+    Concrete 600mm,          !- Name
+    MediumRough,             !- Roughness
+    0.06,                    !- Thickness {m}
+    1.2,                     !- Conductivity {W/m-K}
+    2400,                    !- Density {kg/m3}
+    850,                     !- Specific Heat {J/kg-K}
+    0.9,                     !- Thermal Absorptance
+    0.65,                    !- Solar Absorptance
+    0.65;                    !- Visible Absorptance
+
+  Material,
+    Wood,                    !- Name
+    Rough,                   !- Roughness
+    0.02,                    !- Thickness {m}
+    0.15,                    !- Conductivity {W/m-K}
+    550,                     !- Density {kg/m3}
+    2600,                    !- Specific Heat {J/kg-K}
+    0.2,                     !- Thermal Absorptance
+    0.4,                     !- Solar Absorptance
+    0.4;                     !- Visible Absorptance
+
+!-   ===========  ALL OBJECTS IN CLASS: WINDOWMATERIAL:SIMPLEGLAZINGSYSTEM ===========
+
+  WindowMaterial:SimpleGlazingSystem,
+    DoubleGlazing,           !- Name
+    1.4,                     !- U-Factor {W/m2-K}
+    0.38,                    !- Solar Heat Gain Coefficient
+    0.72;                    !- Visible Transmittance
+
+!-   ===========  ALL OBJECTS IN CLASS: CONSTRUCTION ===========
+
+  Construction,
+    Mur,                     !- Name
+    Concrete Wall,           !- Outside Layer
+    Insulator;               !- Layer 2
+
+  Construction,
+    Toit,                    !- Name
+    InsulatorRoof;           !- Outside Layer
+
+  Construction,
+    Sol,                     !- Name
+    Concrete Floor,          !- Outside Layer
+    InsulatorFloor;
+
+  Construction,
+    Window,                  !- Name
+    DoubleGlazing;           !- Outside Layer
+
+  Construction,
+    Door,                    !- Name
+    Wood;                    !- Outside Layer
+
+!-   ===========  ALL OBJECTS IN CLASS: GLOBALGEOMETRYRULES ===========
+
+  GlobalGeometryRules,
+    LowerLeftCorner,         !- Starting Vertex Position
+    Clockwise,               !- Vertex Entry Direction
+    Relative,                !- Coordinate System
+    ,                        !- Daylighting Reference Point Coordinate System
+    Relative;                !- Rectangular Surface Coordinate System
+
+!-   ===========  ALL OBJECTS IN CLASS: ZONE ===========
+
+  Zone,
+    CABINE,                  !- Name
+    0,                       !- Direction of Relative North {deg}
+    0,                       !- X Origin {m}
+    0,                       !- Y Origin {m}
+    0;                       !- Z Origin {m}
+
+!-   ===========  ALL OBJECTS IN CLASS: BUILDINGSURFACE:DETAILED ===========
+
+  BuildingSurface:Detailed,
+    Wall North,              !- Name
+    Wall,                    !- Surface Type
+    Mur,                     !- Construction Name
+    CABINE,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    autocalculate,           !- View Factor to Ground
+    4,                       !- Number of Vertices
+    3,3,0,  !- X,Y,Z ==> Vertex 1 {m}
+    3,3,3,  !- X,Y,Z ==> Vertex 2 {m}
+    0,3,3,  !- X,Y,Z ==> Vertex 3 {m}
+    0,3,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Wall East,               !- Name
+    Wall,                    !- Surface Type
+    Mur,                     !- Construction Name
+    CABINE,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    autocalculate,           !- View Factor to Ground
+    4,                       !- Number of Vertices
+    3,0,0,  !- X,Y,Z ==> Vertex 1 {m}
+    3,0,3,  !- X,Y,Z ==> Vertex 2 {m}
+    3,3,3,  !- X,Y,Z ==> Vertex 3 {m}
+    3,3,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Wall South,              !- Name
+    Wall,                    !- Surface Type
+    Mur,                     !- Construction Name
+    CABINE,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    autocalculate,           !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,0,0,  !- X,Y,Z ==> Vertex 1 {m}
+    0,0,3,  !- X,Y,Z ==> Vertex 2 {m}
+    3,0,3,  !- X,Y,Z ==> Vertex 3 {m}
+    3,0,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Wall West,               !- Name
+    Wall,                    !- Surface Type
+    Mur,                     !- Construction Name
+    CABINE,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    autocalculate,           !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,3,0,  !- X,Y,Z ==> Vertex 1 {m}
+    0,3,3,  !- X,Y,Z ==> Vertex 2 {m}
+    0,0,3,  !- X,Y,Z ==> Vertex 3 {m}
+    0,0,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Floor,                   !- Name
+    Floor,                   !- Surface Type
+    Sol,                     !- Construction Name
+    CABINE,                  !- Zone Name
+    ,                        !- Space Name
+    Ground,                  !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    NoSun,                   !- Sun Exposure
+    NoWind,                  !- Wind Exposure
+    autocalculate,           !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,0,0,  !- X,Y,Z ==> Vertex 1 {m}
+    3,0,0,  !- X,Y,Z ==> Vertex 2 {m}
+    3,3,0,  !- X,Y,Z ==> Vertex 3 {m}
+    0,3,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+  BuildingSurface:Detailed,
+    Roof,                    !- Name
+    Roof,                    !- Surface Type
+    Toit,                    !- Construction Name
+    CABINE,                  !- Zone Name
+    ,                        !- Space Name
+    Outdoors,                !- Outside Boundary Condition
+    ,                        !- Outside Boundary Condition Object
+    SunExposed,              !- Sun Exposure
+    WindExposed,             !- Wind Exposure
+    autocalculate,           !- View Factor to Ground
+    4,                       !- Number of Vertices
+    0,0,3,  !- X,Y,Z ==> Vertex 1 {m}
+    0,3,3,  !- X,Y,Z ==> Vertex 2 {m}
+    3,3,3,  !- X,Y,Z ==> Vertex 3 {m}
+    3,0,3;  !- X,Y,Z ==> Vertex 4 {m}
+
+!-   ===========  ALL OBJECTS IN CLASS: FENESTRATIONSURFACE:DETAILED ===========
+
+  FenestrationSurface:Detailed,
+    Window on Wall South,    !- Name
+    Window,                  !- Surface Type
+    Window,                  !- Construction Name
+    Wall South,              !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    1,0,1,  !- X,Y,Z ==> Vertex 1 {m}
+    1,0,2,  !- X,Y,Z ==> Vertex 2 {m}
+    2,0,2,  !- X,Y,Z ==> Vertex 3 {m}
+    2,0,1;  !- X,Y,Z ==> Vertex 4 {m}
+
+  FenestrationSurface:Detailed,
+    Door on Wall East,       !- Name
+    Door,                    !- Surface Type
+    Door,                    !- Construction Name
+    Wall East,               !- Building Surface Name
+    ,                        !- Outside Boundary Condition Object
+    ,                        !- View Factor to Ground
+    ,                        !- Frame and Divider Name
+    ,                        !- Multiplier
+    4,                       !- Number of Vertices
+    3,1,0,  !- X,Y,Z ==> Vertex 1 {m}
+    3,1,2,  !- X,Y,Z ==> Vertex 2 {m}
+    3,2,2,  !- X,Y,Z ==> Vertex 3 {m}
+    3,2,0;  !- X,Y,Z ==> Vertex 4 {m}
+
+!-   ===========  ALL OBJECTS IN CLASS: PEOPLE ===========
+
+  People,
+    Perso_Sensible_RDC,      !- Name
+    CABINE,                  !- Zone or ZoneList or Space or SpaceList Name
+    Occupation1,             !- Number of People Schedule Name
+    People,                  !- Number of People Calculation Method
+    0.1,                     !- Number of People
+    ,                        !- People per Floor Area {person/m2}
+    ,                        !- Floor Area per Person {m2/person}
+    ,                        !- Fraction Radiant
+    1,                       !- Sensible Heat Fraction
+    Occupation1,             !- Activity Level Schedule Name
+    ,                        !- Carbon Dioxide Generation Rate {m3/s-W}
+    No,                      !- Enable ASHRAE 55 Comfort Warnings
+    EnclosureAveraged,       !- Mean Radiant Temperature Calculation Type
+    ,                        !- Surface Name/Angle Factor List Name
+    ,                        !- Work Efficiency Schedule Name
+    ClothingInsulationSchedule;  !- Clothing Insulation Calculation Method
+
+!-   ===========  ALL OBJECTS IN CLASS: ZONEINFILTRATION:DESIGNFLOWRATE ===========
+
+  ZoneInfiltration:DesignFlowRate,
+    Main Zone infiltration,  !- Name
+    CABINE,                  !- Zone or ZoneList or Space or SpaceList Name
+    Always On,               !- Schedule Name
+    AirChanges/Hour,         !- Design Flow Rate Calculation Method
+    ,                        !- Design Flow Rate {m3/s}
+    ,                        !- Flow Rate per Floor Area {m3/s-m2}
+    ,                        !- Flow Rate per Exterior Surface Area {m3/s-m2}
+    1,                       !- Air Changes per Hour {1/hr}
+    1,                       !- Constant Term Coefficient
+    ,                        !- Temperature Term Coefficient
+    ,                        !- Velocity Term Coefficient
+    ;                        !- Velocity Squared Term Coefficient
+! 
+!-   ===========  ALL OBJECTS IN CLASS: HVACTEMPLATE:THERMOSTAT ===========
+! 
+!   HVACTemplate:Thermostat,
+!     Consigne_Temperature_Logement,  !- Name
+!     ,                        !- Heating Setpoint Schedule Name
+!     20,                      !- Constant Heating Setpoint {C}
+!     ,                        !- Cooling Setpoint Schedule Name
+!     26;                      !- Constant Cooling Setpoint {C}
+! 
+!-   ===========  ALL OBJECTS IN CLASS: HVACTEMPLATE:ZONE:IDEALLOADSAIRSYSTEM ===========
+! 
+!   HVACTemplate:Zone:IdealLoadsAirSystem,
+!     CABINE,                  !- Zone Name
+!     Consigne_Temperature_Logement,  !- Template Thermostat Name
+!     ,                        !- System Availability Schedule Name
+!     ,                        !- Maximum Heating Supply Air Temperature {C}
+!     ,                        !- Minimum Cooling Supply Air Temperature {C}
+!     ,                        !- Maximum Heating Supply Air Humidity Ratio {kgWater/kgDryAir}
+!     ,                        !- Minimum Cooling Supply Air Humidity Ratio {kgWater/kgDryAir}
+!     LimitCapacity,           !- Heating Limit
+!     ,                        !- Maximum Heating Air Flow Rate {m3/s}
+!     100,                     !- Maximum Sensible Heating Capacity {W}
+!     LimitCapacity,           !- Cooling Limit
+!     ,                        !- Maximum Cooling Air Flow Rate {m3/s}
+!     100,                     !- Maximum Total Cooling Capacity {W}
+!     ,                        !- Heating Availability Schedule Name
+!     ,                        !- Cooling Availability Schedule Name
+!     None,                    !- Dehumidification Control Type
+!     0.7,                     !- Cooling Sensible Heat Ratio {dimensionless}
+!     ,                        !- Dehumidification Setpoint {percent}
+!     None,                    !- Humidification Control Type
+!     ,                        !- Humidification Setpoint {percent}
+!     None,                    !- Outdoor Air Method
+!     ,                        !- Outdoor Air Flow Rate per Person {m3/s}
+!     ,                        !- Outdoor Air Flow Rate per Zone Floor Area {m3/s-m2}
+!     ,                        !- Outdoor Air Flow Rate per Zone {m3/s}
+!     ,                        !- Design Specification Outdoor Air Object Name
+!     None,                    !- Demand Controlled Ventilation Type
+!     NoEconomizer,            !- Outdoor Air Economizer Type
+!     None;                    !- Heat Recovery Type
+
+!-   ===========  ALL OBJECTS IN CLASS: OUTPUT:VARIABLE ===========
+
+  Output:Variable,*,Zone Mean Air Temperature,Hourly;
+
+  Output:Variable,*,Zone Air System Sensible Heating Rate,Hourly;
+
+  Output:Variable,*,Zone Air System Sensible Cooling Rate,Hourly;
+
+  Output:Variable,*,Site Outdoor Air Drybulb Temperature,Hourly;
+
+  Output:Variable,*,Zone Operative Temperature,Hourly;
+
+  Output:Variable,*,Zone Mean Radiant Temperature,Hourly;
+
+  Output:Variable,*,People Occupant Count,Hourly;
+
+  Output:Variable,*,Zone People Occupant Count,hourly;
+
+  Output:Variable,*,Space People Occupant Count,hourly;
+
+  Output:Variable,*,Zone Thermostat Heating Setpoint Temperature,hourly;
+
+  Output:Variable,*,Zone Thermostat Cooling Setpoint Temperature,hourly;
+
+  Output:Variable,*,Zone Air Relative Humidity,Hourly;
+
+!-   ===========  ALL OBJECTS IN CLASS: OUTPUT:VARIABLEDICTIONARY ===========
+
+  Output:VariableDictionary,regular;
+
+!-   ===========  ALL OBJECTS IN CLASS: OUTPUT:SURFACES:DRAWING ===========
+
+  Output:Surfaces:Drawing,DXF;
+
+!-   ===========  ALL OBJECTS IN CLASS: OUTPUT:CONSTRUCTIONS ===========
+
+  Output:Constructions,Constructions;
+
+  Output:VariableDictionary,IDF,Unsorted;
+
+! ***GENERAL REPORTING***
+
+  OutputControl:ReportingTolerances,
+    0.556,                   !- Tolerance for Time Heating Setpoint Not Met {deltaC}
+    0.556;                   !- Tolerance for Time Cooling Setpoint Not Met {deltaC}
+
+  Output:Surfaces:List,Details;
+
+  Output:Constructions,Constructions;
+
+! ***REPORT METERS/VARIABLES***
+
+  Output:Meter,Electricity:Facility,HOURLY;
+
+  Output:Meter,Fans:Electricity,HOURLY;
+
+  Output:Meter,Cooling:Electricity,HOURLY;
+
+  Output:Meter,Heating:Electricity,HOURLY;
+
+  Output:Meter,InteriorLights:Electricity,HOURLY;
+
+  Output:Meter,InteriorEquipment:Electricity,HOURLY;
+
+  Output:Meter,NaturalGas:Facility,HOURLY;
+
+  Output:Meter,Heating:NaturalGas,HOURLY;
+
+  Output:Meter,InteriorEquipment:NaturalGas,HOURLY;
+
+  Output:Meter,Water Heater:WaterSystems:NaturalGas,HOURLY;
+
+  ! ***REPORT TABLES***
+
+  OutputControl:Table:Style,
+    HTML;                    !- Column Separator
+
+  Output:Table:SummaryReports,
+    AnnualBuildingUtilityPerformanceSummary,  !- Report 1 Name
+    InputVerificationandResultsSummary,  !- Report 2 Name
+    ClimaticDataSummary,     !- Report 3 Name
+    EnvelopeSummary,         !- Report 4 Name
+    EquipmentSummary,        !- Report 5 Name
+    ComponentSizingSummary,  !- Report 6 Name
+    HVACSizingSummary,       !- Report 7 Name
+    SystemSummary;           !- Report 8 Name
+
+  Output:Table:Monthly,
+    Emissions Data Summary,  !- Name
+    4,                       !- Digits After Decimal
+    CO2:Facility,            !- Variable or Meter 1 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 1
+    NOx:Facility,            !- Variable or Meter 2 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 2
+    SO2:Facility,            !- Variable or Meter 3 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 3
+    PM:Facility,             !- Variable or Meter 4 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 4
+    Hg:Facility,             !- Variable or Meter 5 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 5
+    WaterEnvironmentalFactors:Facility,  !- Variable or Meter 6 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 6
+    Carbon Equivalent:Facility,  !- Variable or Meter 7 Name
+    SumOrAverage;            !- Aggregation Type for Variable or Meter 7
+
+  Output:Table:Monthly,
+    Components of Peak Electrical Demand,  !- Name
+    3,                       !- Digits After Decimal
+    Electricity:Facility,    !- Variable or Meter 1 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 1
+    Electricity:Facility,    !- Variable or Meter 2 Name
+    Maximum,                 !- Aggregation Type for Variable or Meter 2
+    InteriorLights:Electricity,  !- Variable or Meter 3 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 3
+    InteriorEquipment:Electricity,  !- Variable or Meter 4 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 4
+    Fans:Electricity,        !- Variable or Meter 5 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 5
+    Heating:Electricity,     !- Variable or Meter 6 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 6
+    Cooling:Electricity,     !- Variable or Meter 7 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 7
+    ExteriorLights:Electricity,  !- Variable or Meter 8 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 8
+    Pumps:Electricity,       !- Variable or Meter 9 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 9
+    HeatRejection:Electricity,  !- Variable or Meter 10 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 10
+    ExteriorEquipment:Electricity,  !- Variable or Meter 11 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 11
+    Humidification:Electricity,  !- Variable or Meter 12 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 12
+    HeatRecovery:Electricity,!- Variable or Meter 13 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 13
+    WaterSystems:Electricity,!- Variable or Meter 14 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 14
+    Refrigeration:Electricity,  !- Variable or Meter 15 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 15
+    Generators:Electricity,  !- Variable or Meter 16 Name
+    ValueWhenMaximumOrMinimum,  !- Aggregation Type for Variable or Meter 16
+    ElectricityProduced:Facility,  !- Variable or Meter 17 Name
+    ValueWhenMaximumOrMinimum;  !- Aggregation Type for Variable or Meter 17
+
+  Output:Table:Monthly,
+    Boiler Part Load Performance,  !- Name
+    2,                       !- Digits After Decimal
+    Boiler Part Load Ratio,  !- Variable or Meter 1 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 1
+    Boiler Part Load Ratio,  !- Variable or Meter 2 Name
+    Maximum;                 !- Aggregation Type for Variable or Meter 2
+
+  Output:Table:Monthly,
+    Heating Part Load Performance,  !- Name
+    0,                       !- Digits After Decimal
+    Heating Coil NaturalGas Rate,  !- Variable or Meter 1 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 1
+    Heating Coil NaturalGas Rate,  !- Variable or Meter 2 Name
+    Maximum;                 !- Aggregation Type for Variable or Meter 2
+
+  Output:Table:Monthly,
+    Cooling Part Load Performance,  !- Name
+    0,                       !- Digits After Decimal
+    Cooling Coil Electricity Rate,  !- Variable or Meter 1 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 1
+    Cooling Coil Electricity Rate,  !- Variable or Meter 2 Name
+    Maximum;                 !- Aggregation Type for Variable or Meter 2
+
+  Output:Table:Monthly,
+    Fan Part Load Performance,  !- Name
+    0,                       !- Digits After Decimal
+    Fan Electricity Rate,    !- Variable or Meter 1 Name
+    SumOrAverage,            !- Aggregation Type for Variable or Meter 1
+    Fan Electricity Rate,    !- Variable or Meter 2 Name
+    Maximum;                 !- Aggregation Type for Variable or Meter 2
+
+  Output:Table:TimeBins,
+    *,                       !- Key Value
+    Zone Air Relative Humidity,  !- Variable Name
+    60,                      !- Interval Start
+    10,                      !- Interval Size
+    4;                       !- Interval Count
+
+  Output:Table:TimeBins,
+    *,                       !- Key Value
+    Air System Outdoor Air Flow Fraction,  !- Variable Name
+    0.00,                    !- Interval Start
+    0.20,                    !- Interval Size
+    5;                       !- Interval Count
+
+  Output:Table:TimeBins,
+    *,                       !- Key Value
+    Availability Manager Night Cycle Control Status,  !- Variable Name
+    0,                       !- Interval Start
+    1,                       !- Interval Size
+    4;                       !- Interval Count
+
+  Output:SQLite,
+    SimpleAndTabular;        !- Option Type
+
+  ExternalInterface,
+    FunctionalMockupUnitImport;  !- Name of External Interface
+
+  ExternalInterface:FunctionalMockupUnitImport,
+    agentFMU.fmu,            !- FMU File Name
+    15,                      !- FMU Timeout {ms}
+    0;                       !- FMU LoggingOn
+
+  ExternalInterface:FunctionalMockupUnitImport:From:Variable,
+    CABINE,            !- Output:Variable Index Key Name
+    Zone Mean Air Temperature,  !- Output:Variable Name
+    agentFMU.fmu,            !- FMU File Name
+    FMI,                     !- FMU Instance Name
+    Block1:Zone1ZoneMeanAirTemperature;  !- FMU Variable Name
+! 
+! -------------------------------------------------------------
+! New objects created from ExpandObjects
+! -------------------------------------------------------------
+! 
+
+ScheduleTypeLimits,
+  HVACTemplate Any Number;                                 !- Name
+
+Schedule:Compact,
+  HVACTemplate-Always 20,                                  !- Name
+  HVACTemplate Any Number,                                 !- Schedule Type Limits Name
+  Through: 12/31,                                          !- Field 1
+  For: AllDays,                                            !- Field 2
+  Until: 24:00,                                            !- Field 3
+  20;                                                      !- Field 4
+
+Schedule:Compact,
+  HVACTemplate-Always 26,                                  !- Name
+  HVACTemplate Any Number,                                 !- Schedule Type Limits Name
+  Through: 12/31,                                          !- Field 1
+  For: AllDays,                                            !- Field 2
+  Until: 24:00,                                            !- Field 3
+  26;                                                      !- Field 4
+
+ThermostatSetpoint:DualSetpoint,
+  Consigne_Temperature_Logement Dual SP Control,           !- Name
+  HVACTemplate-Always 20,                                  !- Heating Setpoint Temperature Schedule Name
+  HVACTemplate-Always 26;                                  !- Cooling Setpoint Temperature Schedule Name
+
+Schedule:Compact,
+  HVACTemplate-Always 4,                                   !- Name
+  HVACTemplate Any Number,                                 !- Schedule Type Limits Name
+  Through: 12/31,                                          !- Field 1
+  For: AllDays,                                            !- Field 2
+  Until: 24:00,                                            !- Field 3
+  4;                                                       !- Field 4
+
+ZoneControl:Thermostat,
+  CABINE Thermostat,                                       !- Name
+  CABINE,                                                  !- Zone or ZoneList Name
+  HVACTemplate-Always 4,                                   !- Control Type Schedule Name
+  ThermostatSetpoint:DualSetpoint,                         !- Control Object Type
+  Consigne_Temperature_Logement Dual SP Control;           !- Control Name
+
+ZoneHVAC:EquipmentConnections,
+  CABINE,                                                  !- Zone Name
+  CABINE Equipment,                                        !- Zone Conditioning Equipment List Name
+  CABINE Ideal Loads Supply Inlet,                         !- Zone Air Inlet Node or NodeList Name
+  ,                                                        !- Zone Air Exhaust Node or NodeList Name
+  CABINE Zone Air Node,                                    !- Zone Air Node Name
+  CABINE Return Outlet;                                    !- Zone Return Air Node Name
+
+ZoneHVAC:EquipmentList,
+  CABINE Equipment,                                        !- Name
+  SequentialLoad,                                          !- Load Distribution Scheme
+  ZoneHVAC:IdealLoadsAirSystem,                            !- Zone Equipment Object Type
+  CABINE Ideal Loads Air System,                           !- Zone Equipment Name
+  1,                                                       !- Zone Equipment Cooling Sequence
+  1,                                                       !- Zone Equipment Heating or No-Load Sequence
+  ,                                                        !- Zone Equipment Sequential Cooling Fraction Schedule Name
+  ;                                                        !- Zone Equipment Sequential Heating Fraction Schedule Name
+
+ZoneHVAC:IdealLoadsAirSystem,
+  CABINE Ideal Loads Air System,                           !- Name
+  ,                                                        !- Availability Schedule Name
+  CABINE Ideal Loads Supply Inlet,                         !- Zone Supply Air Node Name
+  ,                                                        !- Zone Exhaust Air Node Name
+  ,                                                        !- System Inlet Air Node Name
+  50,                                                      !- Maximum Heating Supply Air Temperature [C]
+  13,                                                      !- Minimum Cooling Supply Air Temperature [C]
+  0.0156,                                                  !- Maximum Heating Supply Air Humidity Ratio [kg-H20/kg-air]
+  0.0077,                                                  !- Minimum Cooling Supply Air Humidity Ratio [kg-H20/kg-air]
+  LimitCapacity,                                           !- Heating Limit
+  ,                                                        !- Maximum Heating Air Flow Rate {m3/s}
+  100,                                                     !- Maximum Sensible Heating Capacity {m3/s}
+  LimitCapacity,                                           !- Cooling Limit
+  ,                                                        !- Maximum Cooling Air Flow Rate {m3/s}
+  100,                                                     !- Maximum Total Cooling Capacity {m3/s}
+  ,                                                        !- Heating Availability Schedule Name
+  ,                                                        !- Cooling Availability Schedule Name
+  None,                                                    !- Dehumidification Control Type
+  0.7,                                                     !- Cooling Sensible Heat Ratio
+  None,                                                    !- Humidification Control Type
+  ,                                                        !- Design Specification Outdoor Air Object Name
+  ,                                                        !- Outdoor Air Inlet Node Name
+  None,                                                    !- Demand Controlled Ventilation Type
+  NoEconomizer,                                            !- Outdoor Air Economizer Type
+  None,                                                    !- Heat Recovery Type
+  0.7,                                                     !- Sensible Heat Recovery Effectiveness
+  0.65;                                                    !- Latent Heat Recovery Effectiveness
+
+Site:GroundTemperature:BuildingSurface,
+  16,                                                      !- January Ground Temperature
+  15,                                                      !- February Ground Temperature
+  15,                                                      !- March Ground Temperature
+  16,                                                      !- April Ground Temperature
+  17,                                                      !- May Ground Temperature
+  18,                                                      !- June Ground Temperature
+  19,                                                      !- July Ground Temperature
+  19.5,                                                    !- August Ground Temperature
+  19,                                                      !- September Ground Temperature
+  18,                                                      !- October Ground Temperature
+  17,                                                      !- November Ground Temperature
+  16;                                                      !- December Ground Temperature

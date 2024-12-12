@@ -1,0 +1,23 @@
+services:
+  nomass_fmu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nomass:latest
+    container_name: nomass_fmu
+    working_dir: /app/build
+    entrypoint: ["tests/runUnitTests"]
+
+  jupyterlab:
+    image: nomass:latest
+    container_name: nomass_jupyter
+    depends_on:
+      - nomass_fmu
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./FMU:/app/build
+      - ./Configuration:/app/build/Configuration
+      - ./Scripts:/app/build/Scripts
+    working_dir: /app/build
+    command: ["jupyter-lab", "--ip=0.0.0.0", "--no-browser", "--allow-root"]
