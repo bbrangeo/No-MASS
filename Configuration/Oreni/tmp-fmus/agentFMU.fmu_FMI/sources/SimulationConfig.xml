@@ -1,0 +1,27 @@
+<simulation>
+    <seed>1</seed>
+    <simulateBuilding>1</simulateBuilding>
+    <simulateAgents>1</simulateAgents>
+    <numberOfAgents>2</numberOfAgents>
+    <presencePage>1</presencePage>
+    <models>
+        <windows>0</windows>
+        <shading>0</shading>
+        <lights>1</lights>
+    </models>
+    <building>
+        <zone>
+            <name>Block1:Zone1</name>
+            <activities>IT</activities>
+            <groundFloor>1</groundFloor>
+        </zone>
+    </building>
+    <agents>
+        <agent>
+            <office>Block1:Zone1</office>
+        </agent>
+        <agent>
+            <office>Block1:Zone1</office>
+        </agent>
+    </agents>
+</simulation>

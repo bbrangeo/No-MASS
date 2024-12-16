@@ -1,11 +1,7 @@
+import os
 import subprocess
-from shutil import copyfile, copytree, rmtree
-import random
-from time import sleep
-import sys, os
-import multiprocessing
-from multiprocessing import Process, Lock
 import xml.etree.ElementTree as ET
+from shutil import copyfile
 
 numberOfSimulations = 2
 locaitonOfEnergyPlus = "C:\EnergyPlusV8-3-0"
@@ -35,7 +31,7 @@ periods = ['runperiod','timestep','monthly']
 
 
 def runEP(run):
-    print "running simulation" + str(run)
+    print("running simulation" + str(run))
     location = locaitonOfEnergyPlus
 
     xmlFile = location + 'tmp-fmus/agentFMU.fmu_FMI/SimulationConfig.xml'

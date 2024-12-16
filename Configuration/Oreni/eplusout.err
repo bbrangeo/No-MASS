@@ -1,4 +1,6 @@
-Program Version,EnergyPlus, Version 24.1.0-9d7789a3ac, YMD=2024.12.12 16:34,
+Program Version,EnergyPlus, Version 25.1.0-acda84e38d (No OpenGL), YMD=2024.12.13 13:34,
+   ** Warning ** Version: in IDF="24.1" not the same as expected="25.1"
+   ** Warning ** Version: in IDF="24.1" not the same as expected="25.1"
    ** Warning ** GetInternalHeatGains: People="PERSO_SENSIBLE_RDC", Activity Level Schedule Name values
    **   ~~~   ** fall outside typical range [70,1000] W/person for Thermal Comfort Reporting.
    **   ~~~   ** Odd comfort values may result; Schedule="OCCUPATION1".
@@ -21,11 +23,14 @@ Program Version,EnergyPlus, Version 24.1.0-9d7789a3ac, YMD=2024.12.12 16:34,
    ************* All Return Air Paths passed integrity testing
    ************* No node connection errors were found.
    ************* Beginning Simulation
-   ** Severe  ** ExternalInterface/ExternalInterfaceExchangeVariables:FunctionalMock-up Unit for co-simulation is currently only supported on Windows and Linux.
+   ** Severe  ** ExternalInterface/InitExternalInterfaceFMUImport: Error when trying to
+   **   ~~~   ** get the path to the binaries of instance
+   **   ~~~   ** "FMI" of FMU "agentFMU.fmu".
+   **   ~~~   ** Check if binaries folder exists where the FMU has been unpacked.
    **  Fatal  ** ExternalInterface/StopExternalInterfaceIfError: Error in ExternalInterface: Check EnergyPlus *.err file.
    ...Summary of Errors that led to program termination:
    ..... Reference severe error count=1
-   ..... Last severe error=ExternalInterface/ExternalInterfaceExchangeVariables:FunctionalMock-up Unit for co-simulation is currently only supported on Windows and Linux.
+   ..... Last severe error=ExternalInterface/InitExternalInterfaceFMUImport: Error when trying to
    ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 1 Severe Errors.
    ************* EnergyPlus Sizing Error Summary. During Sizing: 0 Warning; 0 Severe Errors.
-   ************* EnergyPlus Terminated--Fatal Error Detected. 11 Warning; 1 Severe Errors; Elapsed Time=00hr 00min  0.09sec
+   ************* EnergyPlus Terminated--Fatal Error Detected. 13 Warning; 1 Severe Errors; Elapsed Time=00hr 00min  0.60sec
