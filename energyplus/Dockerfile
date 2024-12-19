@@ -34,7 +34,7 @@ RUN git clone --recurse-submodules https://github.com/NREL/EnergyPlus.git .
 
 # Configurer la compilation avec CMake
 RUN mkdir build && cd build && \
-    cmake .. -DCMAKE_CXX_STANDARD=11 -DCMAKE_BUILD_TYPE=Release -DBUILD_FORTRAN=ON && \
+    cmake .. -DCMAKE_CXX_STANDARD=11 -DCMAKE_BUILD_TYPE=DEBUG -DBUILD_FORTRAN=ON && \
     make -j$(nproc)
 
 # Ajouter EnergyPlus au PATH

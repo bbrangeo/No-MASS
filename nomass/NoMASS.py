@@ -244,13 +244,13 @@ class NoMASS(object):
             filename = os.path.basename(f)
             copyfile(f, rl + filename)
 
-    def makeExecutable(self, x):
+    def makeExecutable(self, x: int) -> None:
         rl = self.runLoc(x)
         nomassexe = rl + self.NoMASSstr
         st = os.stat(nomassexe)
         os.chmod(nomassexe, st.st_mode | stat.S_IEXEC)
 
-    def run(self, x):
+    def run(self, x: int) -> None:
         rl = self.runLoc(x)
         p = subprocess.Popen("./" + self.NoMASSstr, cwd=rl)
         p.communicate()

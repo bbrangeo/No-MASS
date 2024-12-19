@@ -1,6 +1,9 @@
 # Étape 1 : Utiliser une image de base
 FROM ubuntu:latest AS base
 
+# Définit la plateforme si nécessaire (AMD64)
+ARG TARGETPLATFORM=linux/amd64
+
 # Copier uniquement le répertoire /energyplus/build/Products de l'image source
 FROM energyplus:latest AS energyplus_image
 
@@ -38,7 +41,7 @@ ENV CXX=g++
 ENV CXXFLAGS="-std=c++11"
 
 # Étape 7 : Compiler les fichiers FMU
-RUN cd /app/build; cmake  ../FMU -DTests=on -DCMAKE_CXX_STANDARD=11 -DCMAKE_BUILD_TYPE=Debug; make -j$(nproc)
+RUN cd /app/build; cmake  ../FMU -DTests=on -DCMAKE_CXX_STANDARD=11 -DCMAKE_BUILD_TYPE=DEBUG; make -j$(nproc)
 
 # Étape 9 : Ajouter l'environnement virtuel au PATH
 ENV PATH="/app/venv/bin:${PATH}"
@@ -54,8 +57,8 @@ WORKDIR /app/build
 
 # Ajouter les exécutables au PATH
 ENV PATH="/energyplus/Products:${PATH}"
-ENV LD_LIBRARY_PATH="/energyplus/build/Products:${LD_LIBRARY_PATH}"
-RUN echo "/energyplus/build/Products" > /etc/ld.so.conf.d/energyplus.conf && ldconfig
+ENV LD_LIBRARY_PATH="/energyplus/Products:${LD_LIBRARY_PATH}"
+RUN echo "/energyplus/Products" > /etc/ld.so.conf.d/energyplus.conf && ldconfig
 
 # Étape 11 : Laisser CMD vide pour flexibilité
 CMD ["/bin/bash"]

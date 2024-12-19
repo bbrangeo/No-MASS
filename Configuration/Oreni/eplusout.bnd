@@ -1,4 +1,4 @@
-Program Version,EnergyPlus, Version 25.1.0-acda84e38d (No OpenGL), YMD=2024.12.13 13:34
+Program Version,EnergyPlus, Version 25.1.0-acda84e38d (No OpenGL), YMD=2024.12.18 21:11
 ! This file shows details about the branches, nodes, and other
 ! elements of the flow connections.
 ! This file is intended for use in "debugging" potential problems
@@ -102,6 +102,3 @@ Program Version,EnergyPlus, Version 25.1.0-acda84e38d (No OpenGL), YMD=2024.12.1
  #Non-Parent Node Connections,4
 ! <Non-Parent Node Connection>,<Node Name>,<Node ObjectType>,<Node ObjectName>,<Node ConnectionType>,<Node FluidStream>
  Non-Parent Node Connection,CABINE ZONE AIR NODE,ZONEHVAC:EQUIPMENTCONNECTIONS,CABINE,ZoneNode,1
- Non-Parent Node Connection,CABINE IDEAL LOADS SUPPLY INLET,ZONEHVAC:EQUIPMENTCONNECTIONS,CABINE,ZoneInlet,1
- Non-Parent Node Connection,CABINE RETURN OUTLET,ZONEHVAC:EQUIPMENTCONNECTIONS,CABINE,ZoneReturn,1
- Non-Parent Node Connection,CABINE IDEAL LOADS SUPPLY INLET,ZONEHVAC:IDEALLOADSAIRSYSTEM,CABINE IDEAL LOADS AIR SYSTEM,Outlet,1

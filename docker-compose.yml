@@ -1,5 +1,6 @@
 services:
   nomass_fmu:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,7 +17,7 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ./FMU:/app/build
+#      - ./FMU:/app/build
       - ./Configuration:/app/build/Configuration
       - ./Scripts:/app/build/Scripts
     working_dir: /app/build
