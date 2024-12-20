@@ -1,34 +1,44 @@
 import os
+from shutil import rmtree
 
 from nomass.NoMASS import NoMASS
 
-current_directory = os.getcwd()
-print("Le répertoire de travail actuel est :", current_directory)
+if __name__ == "__main__":
 
-result_output = "ExampleResult"
-nomassLearn = NoMASS()
+    current_directory = os.getcwd()
+    print("Le répertoire de travail actuel est :", current_directory)
 
-nomassLearn.runLocation = os.path.join(current_directory, result_output, "Simulation")
-nomassLearn.locationOfNoMASS = os.path.join(current_directory, "FMU", "build")
-nomassLearn.configurationDirectory = os.path.join(
-    current_directory, "Configuration", "Experiment3"
-)
-nomassLearn.resultsLocation = os.path.join(
-    current_directory, result_output, "ResultsLearning"
-)
+    result_output = "ExampleResult"
+    if os.path.exists(result_output):
+        rmtree(result_output)
 
-nomassLearn.PVFile = "PV_single_profile.csv"
-nomassLearn.epsilon = 0.1
-nomassLearn.alpha = 0.1
-nomassLearn.gamma = 0.1
-nomassLearn.printInput = True
-nomassLearn.pandasFiles = True
-nomassLearn.numberOfSimulations = 2  # 300
-nomassLearn.learn = True
-nomassLearn.learningXMLFile = "SimulationConfig.xml"
-nomassLearn.simulate()
-df = nomassLearn.getPandasDF()
-nomassLearn.deleteLearningData()
+    nomassLearn = NoMASS()
 
+    nomassLearn.runLocation = os.path.join(
+        current_directory, result_output, "Simulation"
+    )
+    nomassLearn.locationOfNoMASS = os.path.join(current_directory, "FMU", "build")
+    nomassLearn.configurationDirectory = os.path.join(
+        current_directory, "Configuration", "Experiment3"
+    )
+    nomassLearn.resultsLocation = os.path.join(
+        current_directory, result_output, "ResultsLearning"
+    )
 
-print(df.head(10))
+    nomassLearn.PVFile = "PV_single_profile.csv"
+    nomassLearn.epsilon = 0.1
+    nomassLearn.alpha = 0.1
+    nomassLearn.gamma = 0.1
+    nomassLearn.printInput = True
+    nomassLearn.pandasFiles = True
+    nomassLearn.numberOfSimulations = 10  # 300
+    nomassLearn.learn = True
+    nomassLearn.learningXMLFile = "SimulationConfig.xml"
+    # nomassLearn.simulate()
+    nomassLearn.simulate_parallel(num_processes=4)
+    df = nomassLearn.getPandasDF()
+    nomassLearn.deleteLearningData()
+
+    print(df.head(10))
+
+    df.to_csv(os.path.join(result_output, "results.csv"))

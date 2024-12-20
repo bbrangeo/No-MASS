@@ -1,4 +1,5 @@
 import glob
+import multiprocessing
 import os
 import random
 import stat
@@ -108,6 +109,29 @@ class NoMASS(object):
         elapsed = time.time() - self.start
         print("Total Simulation Time: %02d seconds" % elapsed)
 
+    def simulation_task(self, x):
+        """Fonction exécutée pour chaque simulation."""
+
+        if x % 25 == 1:
+            elapsed = time.time() - self.start
+            print(f"Simulation: {x} Time: {elapsed:.2f} seconds")
+        self.copyToRunLocation(x)
+        self.makeExecutable(x)
+        self.configuration(x)
+        self.run(x)
+        self.copyToResultsLocation(x)
+        if self.clean:
+            rmtree(self.runLoc(x))
+
+    def simulate_parallel(self, num_processes=4):
+        """Lance les simulations en parallèle."""
+        self.start = time.time()  # Démarrage du chronomètre
+        with multiprocessing.Pool(processes=num_processes) as pool:
+            # Préparer les arguments pour chaque simulation
+            args = [x for x in range(0, self.numberOfSimulations)]
+            # Lancer les simulations en parallèle
+            pool.map(self.simulation_task, args)
+
     def learning(self):
         """ """
         return self.learn
@@ -190,63 +214,100 @@ class NoMASS(object):
         rl = self.resultsLocation
         if not os.path.exists(rl):
             os.makedirs(rl)
+
         if self.outFiles:
             outfileStr = "NoMASS-" + str(x).zfill(5) + ".out"
-            copyfile(self.runLoc(x) + self.outFile, rl + outfileStr)
-        self.createPandasFiles(x, self.runLoc(x) + self.outFile)
+            copyfile(
+                os.path.join(self.runLoc(x), self.outFile), os.path.join(rl, outfileStr)
+            )
+
+        self.createPandasFiles(x, os.path.join(self.runLoc(x), self.outFile))
+
         if self.xmlFiles:
             outfileStr = "SimulationConfig-" + str(x).zfill(5) + ".xml"
-            copyfile(self.runLoc(x) + self.simulationFile, rl + outfileStr)
+            copyfile(
+                os.path.join(self.runLoc(x), self.simulationFile),
+                os.path.join(rl, outfileStr),
+            )
+
         if self.learning():
-            for f in glob.glob(self.runLoc(x) + self.appLearningFile):
+            for f in glob.glob(os.path.join(self.runLoc(x), self.appLearningFile)):
                 path = os.path.dirname(f)
                 filename = os.path.basename(f)
-                copyfile(f, rl + filename + "." + str(x).zfill(5))
+                copyfile(f, os.path.join(rl, filename + "." + str(x).zfill(5)))
                 ll = self.learntDataLocation()
-                copyfile(f, ll + filename)
+                copyfile(f, os.path.join(ll, filename))
 
     def runLoc(self, x):
-        return self.runLocation + self.simulationLocation + str(x) + "/"
+        print(
+            "runLoc =>",
+            os.path.join(self.runLocation, self.simulationLocation + str(x)),
+        )
+        return os.path.join(self.runLocation, self.simulationLocation + str(x)) + "/"
 
     def learntDataLocation(self):
         if self.learntData == "":
-            self.learntData = self.resultsLocation + "learningdata/"
-            if not os.path.exists(self.learntData):
-                os.makedirs(self.learntData)
+            self.learntData = os.path.join(self.resultsLocation, "learningdata")
+            try:
+                if not os.path.exists(self.learntData):
+                    os.makedirs(self.learntData)
+            except FileExistsError as e:
+                print(e)
         return self.learntData
 
     def copyToRunLocation(self, x):
         rl = self.runLoc(x)
         if not os.path.exists(rl):
             os.makedirs(rl)
+
+        print(
+            "copyToRunLocation =>",
+            os.path.join(self.locationOfNoMASS, self.NoMASSstr),
+            os.path.join(rl, self.NoMASSstr),
+        )
         copyfile(
-            os.path.join(self.locationOfNoMASS, self.NoMASSstr), rl + self.NoMASSstr
+            os.path.join(self.locationOfNoMASS, self.NoMASSstr),
+            os.path.join(rl, self.NoMASSstr),
         )
         con = self.configurationDirectory
-        copyfile(os.path.join(con, self.simulationFile), rl + self.simulationFile)
-        copyfile(os.path.join(con, self.activityFile), rl + self.activityFile)
-        copyfile(os.path.join(con, self.learningXMLFile), rl + self.learningXMLFile)
         copyfile(
-            os.path.join(con, self.largeApplianceFile), rl + self.largeApplianceFile
+            os.path.join(con, self.simulationFile),
+            os.path.join(rl + self.simulationFile),
+        )
+        copyfile(
+            os.path.join(con, self.activityFile), os.path.join(rl + self.activityFile)
+        )
+        copyfile(
+            os.path.join(con, self.learningXMLFile),
+            os.path.join(rl + self.learningXMLFile),
+        )
+        copyfile(
+            os.path.join(con, self.largeApplianceFile),
+            os.path.join(rl + self.largeApplianceFile),
         )
         copyfile(
             os.path.join(con, self.HeatingPowerFile),
             os.path.join(rl + self.HeatingPowerFile),
         )
         copyfile(os.path.join(con, self.PVFile), os.path.join(rl, self.PVFile))
+
         for x in self.appFiles:
             copyfile(os.path.join(con, x), os.path.join(rl, x))
-        if os.path.isdir(rl + self.smallApplianceFolder):
+
+        if os.path.isdir(os.path.join(rl, self.smallApplianceFolder)):
             rmtree(os.path.join(rl, self.smallApplianceFolder))
+
         copytree(
             os.path.join(con, self.smallApplianceFolder),
             os.path.join(rl, self.smallApplianceFolder),
         )
+
         ll = self.learntDataLocation()
         if self.learning():
             if not os.path.exists(ll):
                 os.makedirs(ll)
-        for f in glob.glob(ll + self.appLearningFile):
+
+        for f in glob.glob(os.path.join(ll, self.appLearningFile)):
             path = os.path.dirname(f)
             filename = os.path.basename(f)
             copyfile(f, os.path.join(rl, filename))
