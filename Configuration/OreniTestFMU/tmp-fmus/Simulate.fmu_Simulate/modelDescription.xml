@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription fmiVersion="2.0" modelName="Simulate" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}"
+                     generationTool="PythonFMU 0.6.5" generationDateAndTime="2024-12-20T01:49:58+00:00"
+                     variableNamingConvention="structured" description="A simple description" author="Boris"
+                     version="1.2">
+    <CoSimulation needsExecutionTool="true" canHandleVariableCommunicationStepSize="true" canInterpolateInputs="false"
+                  canBeInstantiatedOnlyOncePerProcess="false" canGetAndSetFMUstate="false" canSerializeFMUstate="false"
+                  modelIdentifier="Simulate" canNotUseMemoryManagementFunctions="true">
+        <SourceFiles>
+            <File name="src/cppfmu/cppfmu_common.hpp"/>
+            <File name="src/cppfmu/cppfmu_cs.hpp"/>
+            <File name="src/pythonfmu/PySlaveInstance.hpp"/>
+            <File name="src/pythonfmu/IPyState.hpp"/>
+            <File name="src/pythonfmu/PyState.hpp"/>
+            <File name="src/cppfmu/fmi_functions.cpp"/>
+            <File name="src/cppfmu/cppfmu_cs.cpp"/>
+            <File name="src/pythonfmu/PySlaveInstance.cpp"/>
+            <File name="CMakeLists.txt"/>
+            <File name="src/CMakeLists.txt"/>
+        </SourceFiles>
+    </CoSimulation>
+    <LogCategories>
+        <Category name="logStatusWarning" description="Log messages with fmi2Warning status."/>
+        <Category name="logStatusDiscard" description="Log messages with fmi2Discard status."/>
+        <Category name="logStatusError" description="Log messages with fmi2Error status."/>
+        <Category name="logStatusFatal" description="Log messages with fmi2Fatal status."/>
+        <Category name="logAll" description="Log all messages."/>
+    </LogCategories>
+    <ModelVariables>
+        <ScalarVariable name="Input1" valueReference="0" causality="input">
+            <Real start="1"/>
+        </ScalarVariable>
+        <ScalarVariable name="Output1" valueReference="1" causality="output">
+            <Real/>
+        </ScalarVariable>
+    </ModelVariables>
+    <ModelStructure>
+        <Outputs>
+            <Unknown index="2"/>
+        </Outputs>
+    </ModelStructure>
+</fmiModelDescription>
