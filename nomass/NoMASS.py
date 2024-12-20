@@ -90,6 +90,7 @@ class NoMASS(object):
         logging.debug("printInput: {}".format(self.printInput))
         logging.debug("numberOfSimulations: {}".format(self.numberOfSimulations))
         logging.debug("Learning: {}".format(self.learn))
+
         con = self.configurationDirectory
         tree = ET.parse(os.path.join(con, self.simulationFile))
         root = tree.getroot()
@@ -132,6 +133,7 @@ class NoMASS(object):
             if x % 25 == 1:
                 elapsed = time.time() - self.start
                 logging.debug(f"Simulation: {x} Time: {elapsed:.2f} seconds")
+
             self.copyToRunLocation(x)
             self.makeExecutable(x)
             self.configuration(x)
@@ -464,3 +466,7 @@ class NoMASS(object):
             ]
             buildingNumber += 1
         return self.simulationConfigInfo
+
+
+if __name__ == "__main__":
+    toot = NoMASS()

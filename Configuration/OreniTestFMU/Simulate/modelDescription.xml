@@ -1,42 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<fmiModelDescription fmiVersion="2.0" modelName="Simulate" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}"
-                     generationTool="PythonFMU 0.6.5" generationDateAndTime="2024-12-20T01:49:58+00:00"
-                     variableNamingConvention="structured" description="A simple description" author="Boris"
-                     version="1.2">
-    <CoSimulation needsExecutionTool="true" canHandleVariableCommunicationStepSize="true" canInterpolateInputs="false"
-                  canBeInstantiatedOnlyOncePerProcess="false" canGetAndSetFMUstate="false" canSerializeFMUstate="false"
-                  modelIdentifier="Simulate" canNotUseMemoryManagementFunctions="true">
-        <SourceFiles>
-            <File name="src/cppfmu/cppfmu_common.hpp"/>
-            <File name="src/cppfmu/cppfmu_cs.hpp"/>
-            <File name="src/pythonfmu/PySlaveInstance.hpp"/>
-            <File name="src/pythonfmu/IPyState.hpp"/>
-            <File name="src/pythonfmu/PyState.hpp"/>
-            <File name="src/cppfmu/fmi_functions.cpp"/>
-            <File name="src/cppfmu/cppfmu_cs.cpp"/>
-            <File name="src/pythonfmu/PySlaveInstance.cpp"/>
-            <File name="CMakeLists.txt"/>
-            <File name="src/CMakeLists.txt"/>
-        </SourceFiles>
-    </CoSimulation>
-    <LogCategories>
-        <Category name="logStatusWarning" description="Log messages with fmi2Warning status."/>
-        <Category name="logStatusDiscard" description="Log messages with fmi2Discard status."/>
-        <Category name="logStatusError" description="Log messages with fmi2Error status."/>
-        <Category name="logStatusFatal" description="Log messages with fmi2Fatal status."/>
-        <Category name="logAll" description="Log all messages."/>
-    </LogCategories>
+<fmiModelDescription
+        description="Model with interfaces for media with moist air that will be linked to the BCVTB which models the response of the room"
+        fmiVersion="1.0" generationDateAndTime="2012-04-17T19:12:58Z"
+        generationTool="Dymola Version 2012 FD01 (32-bit), 2011-11-22" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}"
+        modelIdentifier="libFMI" modelName="libFMI" numberOfContinuousStates="0" numberOfEventIndicators="0"
+        variableNamingConvention="structured" version="1.2">
+    <TypeDefinitions>
+        <Type name="Modelica.Blocks.Interfaces.RealInput">
+            <RealType/>
+        </Type>
+        <Type name="Modelica.Blocks.Interfaces.RealOutput">
+            <RealType/>
+        </Type>
+    </TypeDefinitions>
+    <DefaultExperiment startTime="0.0" stopTime="1.0" tolerance="1E-005"/>
     <ModelVariables>
-        <ScalarVariable name="Input1" valueReference="0" causality="input">
-            <Real start="1"/>
-        </ScalarVariable>
-        <ScalarVariable name="Output1" valueReference="1" causality="output">
-            <Real/>
+        <ScalarVariable causality="input" name="Block1:Zone1ZoneMeanAirTemperature" valueReference="3">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
         </ScalarVariable>
     </ModelVariables>
-    <ModelStructure>
-        <Outputs>
-            <Unknown index="2"/>
-        </Outputs>
-    </ModelStructure>
 </fmiModelDescription>

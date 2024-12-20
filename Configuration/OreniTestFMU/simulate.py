@@ -19,5 +19,7 @@ class Simulate(Fmi2Slave):
 
     def do_step(self, current_time, step_size):
         print(self.Input1)
+        self.Output1 = self.Input1 * 2
+
         print(self.Output1)
         return True

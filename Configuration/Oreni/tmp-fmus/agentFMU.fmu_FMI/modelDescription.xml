@@ -1,10 +1,8 @@
 <fmiModelDescription
         description="Model with interfaces for media with moist air that will be linked to the BCVTB which models the response of the room"
         fmiVersion="1.0" generationDateAndTime="2012-04-17T19:12:58Z"
-        generationTool="Dymola Version 2012 FD01 (32-bit), 2011-11-22"
-        guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}"
-        modelIdentifier="libFMI"
-        modelName="libFMI" numberOfContinuousStates="0" numberOfEventIndicators="0"
+        generationTool="Dymola Version 2012 FD01 (32-bit), 2011-11-22" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}"
+        modelIdentifier="libFMI" modelName="libFMI" numberOfContinuousStates="0" numberOfEventIndicators="0"
         variableNamingConvention="structured" version="1.2">
     <TypeDefinitions>
         <Type name="Modelica.Blocks.Interfaces.RealInput">

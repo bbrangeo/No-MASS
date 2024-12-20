@@ -824,7 +824,7 @@
     CABINE,            !- Output:Variable Index Key Name
     Zone Mean Air Temperature,  !- Output:Variable Name
     agentFMU.fmu,            !- FMU File Name
-    FMI,                     !- FMU Instance Name
+    libFMI,                     !- FMU Instance Name
     Block1:Zone1ZoneMeanAirTemperature;  !- FMU Variable Name
 
 

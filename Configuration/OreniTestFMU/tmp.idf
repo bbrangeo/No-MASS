@@ -1,0 +1,14 @@
+ExternalInterface,
+  FunctionalMockupUnitImport;		!- Name of External Interface
+
+ExternalInterface:FunctionalMockupUnitImport,
+  Simulate.fmu,		!- FMU File Name
+   ,		!- FMU Timeout in milli-seconds
+   ;		!- FMU LoggingOn
+
+ExternalInterface:FunctionalMockupUnitImport:From:Variable,
+   ,		!- Output:Variable Index Key Name
+   ,		!- Output:Variable Name
+   Simulate.fmu,		!- FMU File Name
+   ,		!- FMU Instance Name
+   Block1:Zone1ZoneMeanAirTemperature;		!- FMU Variable Name
