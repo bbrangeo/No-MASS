@@ -2,14 +2,21 @@ import os
 
 from nomass.NoMASS import NoMASS
 
-home = "."
+current_directory = os.getcwd()
+print("Le répertoire de travail actuel est :", current_directory)
 
+result_output = "ExampleResult"
 nomassLearn = NoMASS()
 
-nomassLearn.runLocation = "./Simulation/"
-nomassLearn.locationOfNoMASS = "./FMU/build/"
-nomassLearn.configurationDirectory = os.path.join(home, "./Configuration/Experiment3/")
-nomassLearn.resultsLocation = "./ResultsLearning/"
+nomassLearn.runLocation = os.path.join(current_directory, result_output, "Simulation")
+nomassLearn.locationOfNoMASS = os.path.join(current_directory, "FMU", "build")
+nomassLearn.configurationDirectory = os.path.join(
+    current_directory, "Configuration", "Experiment3"
+)
+nomassLearn.resultsLocation = os.path.join(
+    current_directory, result_output, "ResultsLearning"
+)
+
 nomassLearn.PVFile = "PV_single_profile.csv"
 nomassLearn.epsilon = 0.1
 nomassLearn.alpha = 0.1

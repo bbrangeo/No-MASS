@@ -5,6 +5,7 @@ import stat
 import subprocess
 import time
 import xml.etree.ElementTree as ET
+import platform
 from shutil import copyfile, copytree, rmtree
 
 import pandas as pd
@@ -61,7 +62,7 @@ class NoMASS(object):
         print("numberOfSimulations: {}".format(self.numberOfSimulations))
         print("Learning: {}".format(self.learn))
         con = self.configurationDirectory
-        tree = ET.parse(con + self.simulationFile)
+        tree = ET.parse(os.path.join(con, self.simulationFile))
         root = tree.getroot()
         for buildings in root.findall("buildings"):
             for building in buildings.findall("building"):
@@ -228,13 +229,19 @@ class NoMASS(object):
         copyfile(
             os.path.join(con, self.largeApplianceFile), rl + self.largeApplianceFile
         )
-        copyfile(os.path.join(con, self.HeatingPowerFile), rl + self.HeatingPowerFile)
-        copyfile(os.path.join(con, self.PVFile), rl + self.PVFile)
+        copyfile(
+            os.path.join(con, self.HeatingPowerFile),
+            os.path.join(rl + self.HeatingPowerFile),
+        )
+        copyfile(os.path.join(con, self.PVFile), os.path.join(rl, self.PVFile))
         for x in self.appFiles:
-            copyfile(con + x, rl + x)
+            copyfile(os.path.join(con, x), os.path.join(rl, x))
         if os.path.isdir(rl + self.smallApplianceFolder):
-            rmtree(rl + self.smallApplianceFolder)
-        copytree(con + self.smallApplianceFolder, rl + self.smallApplianceFolder)
+            rmtree(os.path.join(rl, self.smallApplianceFolder))
+        copytree(
+            os.path.join(con, self.smallApplianceFolder),
+            os.path.join(rl, self.smallApplianceFolder),
+        )
         ll = self.learntDataLocation()
         if self.learning():
             if not os.path.exists(ll):
@@ -242,17 +249,21 @@ class NoMASS(object):
         for f in glob.glob(ll + self.appLearningFile):
             path = os.path.dirname(f)
             filename = os.path.basename(f)
-            copyfile(f, rl + filename)
+            copyfile(f, os.path.join(rl, filename))
 
     def makeExecutable(self, x: int) -> None:
         rl = self.runLoc(x)
-        nomassexe = rl + self.NoMASSstr
+        nomassexe = os.path.join(rl, self.NoMASSstr)
         st = os.stat(nomassexe)
         os.chmod(nomassexe, st.st_mode | stat.S_IEXEC)
 
     def run(self, x: int) -> None:
         rl = self.runLoc(x)
-        p = subprocess.Popen("./" + self.NoMASSstr, cwd=rl)
+        if platform.system() == "Windows":
+            self.NoMASSstr = self.NoMASSstr + ".exe"
+            p = subprocess.Popen(self.NoMASSstr, cwd=rl)
+        else:
+            p = subprocess.Popen("./" + self.NoMASSstr, cwd=rl)
         p.communicate()
 
     def createPandasFiles(self, x, filename):
