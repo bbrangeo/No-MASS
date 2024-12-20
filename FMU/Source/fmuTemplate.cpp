@@ -50,47 +50,47 @@ static fmiValueReference vrStates[NUMBER_OF_STATES] = STATES;
 // ---------------------------------------------------------------------------
 
 // fname is fmiInstantiateModel or fmiInstantiateSlave
-static fmiComponent instantiateModel(const char* fname, fmiString instanceName,
-    fmiString GUID, fmiCallbackFunctions functions, fmiBoolean loggingOn) {
+static fmiComponent instantiateModel(const char *fname, fmiString instanceName,
+                                     fmiString GUID, fmiCallbackFunctions functions, fmiBoolean loggingOn) {
     DataStore::clearValues();
 
     Configuration::setStepCount(-1);
     if (valToRefs.empty()) {
         loadVariables();
-	modelInstance->sim.preprocess();
+        modelInstance->sim.preprocess();
     }
     return modelInstance.get();
 }
 
 fmiComponent fmiInstantiateModel(fmiString instanceName, fmiString GUID,
-    fmiCallbackFunctions functions, fmiBoolean loggingOn) {
+                                 fmiCallbackFunctions functions, fmiBoolean loggingOn) {
     return instantiateModel("", instanceName, GUID, functions, loggingOn);
 }
 
 // fname is fmiInitialize or fmiInitializeSlave
 
 fmiStatus fmiInitialize(fmiComponent c, fmiBoolean toleranceControlled,
-      fmiReal relativeTolerance, fmiEventInfo* eventInfo) {
+                        fmiReal relativeTolerance, fmiEventInfo *eventInfo) {
     if (LOG.getError()) {
-     return fmiError;
+        return fmiError;
     }
     return fmiOK;
 }
 
 // fname is fmiTerminate or fmiTerminateSlave
-static fmiStatus terminate(const char* fname, fmiComponent c) {
+static fmiStatus terminate(const char *fname, fmiComponent c) {
     return fmiOK;
 }
 
 // fname is freeModelInstance of freeSlaveInstance
-void freeInstance(char* fname, fmiComponent c) {
+void freeInstance(char *fname, fmiComponent c) {
 }
 
 // ---------------------------------------------------------------------------
 // FMI functions: class methods not depending of a specific model instance
 // ---------------------------------------------------------------------------
 
-const char* fmiGetVersion() {
+const char * fmiGetVersion() {
     return fmiVersion;
 }
 
@@ -104,55 +104,55 @@ fmiStatus fmiSetDebugLogging(fmiComponent c, fmiBoolean loggingOn) {
 }
 
 fmiStatus fmiSetReal(fmiComponent c, const fmiValueReference vr[],
-      size_t nvr, const fmiReal value[]) {
+                     size_t nvr, const fmiReal value[]) {
     for (unsigned int i = 0; i < nvr; i++) {
         DataStore::addValueS(valToRefs.at(vr[i]), value[i]);
         // std::cout << valToRefs.at(vr[i]) << " " <<  value[i] << std::endl;
     }
     if (LOG.getError()) {
-      return fmiError;
+        return fmiError;
     }
     return fmiOK;
 }
 
 fmiStatus fmiSetInteger(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, const fmiInteger value[]) {
+                        size_t nvr, const fmiInteger value[]) {
     return fmiOK;
 }
 
 fmiStatus fmiSetBoolean(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, const fmiBoolean value[]) {
+                        size_t nvr, const fmiBoolean value[]) {
     return fmiOK;
 }
 
 fmiStatus fmiSetString(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, const fmiString value[]) {
+                       size_t nvr, const fmiString value[]) {
     return fmiOK;
 }
 
 fmiStatus fmiGetReal(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, fmiReal value[]) {
+                     size_t nvr, fmiReal value[]) {
     for (unsigned int i = 0; i < nvr; i++) {
         value[i] = DataStore::getValueS(valToRefs.at(vr[i]));
     }
     if (LOG.getError()) {
-      return fmiError;
+        return fmiError;
     }
     return fmiOK;
 }
 
 fmiStatus fmiGetInteger(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, fmiInteger value[]) {
+                        size_t nvr, fmiInteger value[]) {
     return fmiOK;
 }
 
 fmiStatus fmiGetBoolean(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, fmiBoolean value[]) {
+                        size_t nvr, fmiBoolean value[]) {
     return fmiOK;
 }
 
 fmiStatus fmiGetString(fmiComponent c, const fmiValueReference vr[],
-    size_t nvr, fmiString  value[]) {
+                       size_t nvr, fmiString value[]) {
     return fmiOK;
 }
 
@@ -160,24 +160,24 @@ fmiStatus fmiGetString(fmiComponent c, const fmiValueReference vr[],
 // FMI functions: only for FMI Co-Simulation 1.0
 // ---------------------------------------------------------------------------
 
-const char* fmiGetTypesPlatform() {
+const char * fmiGetTypesPlatform() {
     return fmiPlatform;
 }
 
-fmiComponent fmiInstantiateSlave(fmiString  instanceName, fmiString  GUID,
-    fmiString  fmuLocation, fmiString  mimeType, fmiReal timeout,
-    fmiBoolean visible, fmiBoolean interactive, fmiCallbackFunctions functions,
-    fmiBoolean loggingOn) {
+fmiComponent fmiInstantiateSlave(fmiString instanceName, fmiString GUID,
+                                 fmiString fmuLocation, fmiString mimeType, fmiReal timeout,
+                                 fmiBoolean visible, fmiBoolean interactive, fmiCallbackFunctions functions,
+                                 fmiBoolean loggingOn) {
     // ignoring arguments: fmuLocation, mimeType, timeout, visible, interactive
 
     Configuration::RunLocation = fmuLocation;
     Configuration::RunLocation = Configuration::RunLocation + "/";
     return instantiateModel("fmiInstantiateSlave", instanceName,
-      GUID, functions, loggingOn);
+                            GUID, functions, loggingOn);
 }
 
 fmiStatus fmiInitializeSlave(fmiComponent c, fmiReal tStart,
-    fmiBoolean StopTimeDefined, fmiReal tStop) {
+                             fmiBoolean StopTimeDefined, fmiReal tStop) {
     return fmiOK;
 }
 
@@ -190,18 +190,18 @@ fmiStatus fmiResetSlave(fmiComponent c) {
 }
 
 void fmiFreeSlaveInstance(fmiComponent c) {
-        modelInstance->sim.postprocess();
+    modelInstance->sim.postprocess();
 }
 
 fmiStatus fmiSetRealInputDerivatives(fmiComponent c,
-    const fmiValueReference vr[], size_t nvr, const fmiInteger order[],
-    const fmiReal value[]) {
+                                     const fmiValueReference vr[], size_t nvr, const fmiInteger order[],
+                                     const fmiReal value[]) {
     return fmiWarning;
 }
 
 fmiStatus fmiGetRealOutputDerivatives(fmiComponent c,
-    const fmiValueReference vr[], size_t  nvr,
-    const fmiInteger order[], fmiReal value[]) {
+                                      const fmiValueReference vr[], size_t nvr,
+                                      const fmiInteger order[], fmiReal value[]) {
     return fmiWarning;
 }
 
@@ -220,43 +220,44 @@ fmiStatus fmiCancelStep(fmiComponent c) {
  * @return
  */
 fmiStatus fmiDoStep(fmiComponent c, fmiReal currentCommunicationPoint,
-    fmiReal communicationStepSize, fmiBoolean newStep) {
+                    fmiReal communicationStepSize, fmiBoolean newStep) {
     modelInstance->sim.preTimeStep();
     modelInstance->sim.timeStep();
     modelInstance->sim.postTimeStep();
+
     if (LOG.getError()) {
-      return fmiError;
+        return fmiError;
     }
     return fmiOK;
 }
 
-static fmiStatus getStatus(const char* fname, fmiComponent c,
-    const fmiStatusKind s) {
+static fmiStatus getStatus(const char *fname, fmiComponent c,
+                           const fmiStatusKind s) {
     return fmiError;
 }
 
 fmiStatus fmiGetStatus(fmiComponent c, const fmiStatusKind s,
-    fmiStatus* value) {
+                       fmiStatus *value) {
     return getStatus("fmiGetStatus", c, s);
 }
 
 fmiStatus fmiGetRealStatus(fmiComponent c, const fmiStatusKind s,
-    fmiReal* value) {
+                           fmiReal *value) {
     return getStatus("fmiGetRealStatus", c, s);
 }
 
 fmiStatus fmiGetIntegerStatus(fmiComponent c, const fmiStatusKind s,
-    fmiInteger* value) {
+                              fmiInteger *value) {
     return getStatus("fmiGetIntegerStatus", c, s);
 }
 
 fmiStatus fmiGetBooleanStatus(fmiComponent c, const fmiStatusKind s,
-    fmiBoolean* value) {
+                              fmiBoolean *value) {
     return getStatus("fmiGetBooleanStatus", c, s);
 }
 
 fmiStatus fmiGetStringStatus(fmiComponent c, const fmiStatusKind s,
-    fmiString*  value) {
+                             fmiString *value) {
     return getStatus("fmiGetStringStatus", c, s);
 }
 
@@ -265,57 +266,56 @@ fmiStatus fmiGetStringStatus(fmiComponent c, const fmiStatusKind s,
  * @details Checks the modelDescription file so the agent model know which variables in the array are which
  */
 void loadVariables() {
-  std::string filename =
-    Configuration::RunLocation + "modelDescription.xml";
+    std::string filename =
+            Configuration::RunLocation + "modelDescription.xml";
 
-  LOG << " Loading XML file: -" << filename << "-\n";
+    LOG << " Loading XML file: -" << filename << "-\n";
 
 
-  namespace rx = rapidxml;
-  rx::file<> xmlFile(filename.c_str());  // Default template is char
-  rx::xml_document<> doc;
-  doc.parse<0>(xmlFile.data());    // 0 means default parse flags
-  rx::xml_node<> *root_node = doc.first_node("fmiModelDescription");
-  rx::xml_node<> *mv_node = root_node->first_node("ModelVariables");
-  rx::xml_node<> *node = mv_node->first_node("ScalarVariable");
-  while (node) {
-    rx::xml_attribute<> *pAttr;
-    pAttr = node->first_attribute("name");
-    std::string name = pAttr->value();
-    pAttr = node->first_attribute("causality");
-    std::string causality = pAttr->value();
-    pAttr = node->first_attribute("valueReference");
-    int valueReference = std::stoi(pAttr->value());
-    Configuration::outputRegexs.push_back(name);
-    DataStore::addVariable(name);
-    if (causality.compare("input") == 0) {
-        //std::cout << "added: " << name << std::endl;
-
-    } else {
-        rx::xml_node<> *cnode = node->first_node();
-        double starValue = 0;
-        if (std::strcmp(cnode->name(), "Real") == 0) {
-          pAttr = cnode->first_attribute("start");
-          starValue = std::stod(pAttr->value());
+    namespace rx = rapidxml;
+    rx::file<> xmlFile(filename.c_str()); // Default template is char
+    rx::xml_document<> doc;
+    doc.parse<0>(xmlFile.data()); // 0 means default parse flags
+    rx::xml_node<> *root_node = doc.first_node("fmiModelDescription");
+    rx::xml_node<> *mv_node = root_node->first_node("ModelVariables");
+    rx::xml_node<> *node = mv_node->first_node("ScalarVariable");
+    while (node) {
+        rx::xml_attribute<> *pAttr;
+        pAttr = node->first_attribute("name");
+        std::string name = pAttr->value();
+        pAttr = node->first_attribute("causality");
+        std::string causality = pAttr->value();
+        pAttr = node->first_attribute("valueReference");
+        int valueReference = std::stoi(pAttr->value());
+        Configuration::outputRegexs.push_back(name);
+        DataStore::addVariable(name);
+        if (causality.compare("input") == 0) {
+            std::cout << "added: " << name << std::endl;
+        } else {
+            rx::xml_node<> *cnode = node->first_node();
+            double starValue = 0;
+            if (std::strcmp(cnode->name(), "Real") == 0) {
+                pAttr = cnode->first_attribute("start");
+                starValue = std::stod(pAttr->value());
+            }
+            DataStore::addValueS(name, starValue);
         }
-        DataStore::addValueS(name, starValue);
+        valToRefs[valueReference] = name;
+        node = node->next_sibling();
     }
-    valToRefs[valueReference] = name;
-    node = node->next_sibling();
-  }
-  LOG << " Loaded XML file: -" << filename << "-\n";
+    LOG << " Loaded XML file: -" << filename << "-\n";
 }
 
-fmiStatus fmiGetModelTypesPlatform() {return fmiOK;}
-fmiStatus fmiFreeModelInstance() {return fmiOK;}
-fmiStatus fmiSetTime() {return fmiOK;}
-fmiStatus fmiSetContinuousStates() {return fmiOK;}
-fmiStatus fmiCompletedIntegratorStep() {return fmiOK;}
+fmiStatus fmiGetModelTypesPlatform() { return fmiOK; }
+fmiStatus fmiFreeModelInstance() { return fmiOK; }
+fmiStatus fmiSetTime() { return fmiOK; }
+fmiStatus fmiSetContinuousStates() { return fmiOK; }
+fmiStatus fmiCompletedIntegratorStep() { return fmiOK; }
 
-fmiStatus fmiGetDerivatives() {return fmiOK;}
-fmiStatus fmiGetEventIndicators() {return fmiOK;}
-fmiStatus fmiEventUpdate() {return fmiOK;}
-fmiStatus fmiGetContinuousStates() {return fmiOK;}
-fmiStatus fmiGetNominalContinuousStates() {return fmiOK;}
-fmiStatus fmiGetStateValueReferences() {return fmiOK;}
-fmiStatus fmiTerminate() {return fmiOK;}
+fmiStatus fmiGetDerivatives() { return fmiOK; }
+fmiStatus fmiGetEventIndicators() { return fmiOK; }
+fmiStatus fmiEventUpdate() { return fmiOK; }
+fmiStatus fmiGetContinuousStates() { return fmiOK; }
+fmiStatus fmiGetNominalContinuousStates() { return fmiOK; }
+fmiStatus fmiGetStateValueReferences() { return fmiOK; }
+fmiStatus fmiTerminate() { return fmiOK; }

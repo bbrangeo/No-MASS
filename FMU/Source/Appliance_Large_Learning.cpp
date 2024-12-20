@@ -7,10 +7,10 @@
 #include "Utility.hpp"
 #include "Appliance_Large_Learning.hpp"
 
-Appliance_Large_Learning::Appliance_Large_Learning() {}
+Appliance_Large_Learning::Appliance_Large_Learning() {
+}
 
 void Appliance_Large_Learning::setup(ConfigStructAppliance a) {
-
   setID(a.id);
   setHoulyPriority(a.priority);
   setHoulyTimeRequired(a.timeRequired);
@@ -62,7 +62,6 @@ void Appliance_Large_Learning::calculateProfile() {
     profile.nonLearningStep++;
     model.decreaseDuration();
     p = getPowerAt(stepCount);
-
   }
   if (profile.power.size()) {
     powerProfile.push(profile);
@@ -72,7 +71,7 @@ void Appliance_Large_Learning::calculateProfile() {
 
 void Appliance_Large_Learning::startLearningPeriod(const int hourOfTheDay) {
   if (hourOfTheDay == powerProfile.front().startTime &&
-    powerProfile.front().isLearningPeriod == false) {
+      powerProfile.front().isLearningPeriod == false) {
     powerProfile.front().isLearningPeriod = true;
   }
 }
@@ -94,7 +93,7 @@ bool Appliance_Large_Learning::learnStepLessThanProfile() const {
   auto it = powerProfile.front();
   int s = it.power.size();
   int l = it.learningStep;
-   return (l >= s);
+  return (l >= s);
 }
 
 void Appliance_Large_Learning::eraseFirstPowerProfile() {
@@ -142,16 +141,16 @@ void Appliance_Large_Learning::step() {
 
 void Appliance_Large_Learning::beforeClear() {
   if (powerProfile.empty() == false && powerProfile.front().isLearningPeriod) {
-      addToCost(getReceivedCost());
+    addToCost(getReceivedCost());
   }
 }
 
 void Appliance_Large_Learning::saveActualProfile() {
   double p = 0.0;
   if (powerProfile.empty() == false &&
-              powerProfile.front().nonLearningStep > 0) {
+      powerProfile.front().nonLearningStep > 0) {
     int i = powerProfile.front().power.size() -
-                                  powerProfile.front().nonLearningStep;
+            powerProfile.front().nonLearningStep;
     p = powerProfile.front().power[i];
     powerProfile.front().nonLearningStep--;
   }
@@ -194,6 +193,6 @@ void Appliance_Large_Learning::postprocess() {
 }
 
 void Appliance_Large_Learning::setHoulyTimeRequired(
-              const std::vector<double> & houlyTimeRequired) {
+  const std::vector<double> &houlyTimeRequired) {
   this->houlyTimeRequired = houlyTimeRequired;
 }

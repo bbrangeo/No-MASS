@@ -6,7 +6,8 @@
 #include "Utility.hpp"
 #include "Appliance_Large_Learning_CSV.hpp"
 
-Appliance_Large_Learning_CSV::Appliance_Large_Learning_CSV() {}
+Appliance_Large_Learning_CSV::Appliance_Large_Learning_CSV() {
+}
 
 /**
  * @brief Check large appliance model for a turn on, then generate the profile
@@ -31,7 +32,7 @@ void Appliance_Large_Learning_CSV::setupModel() {
   model.setID(id);
   model.parseConfiguration(Configuration::FileLargeAppliance);
 
-  for(auto x : Utility::csvToTable<double>(file, false)) {
+  for (auto x: Utility::csvToTable<double>(file, false)) {
     profileCSV.push_back(x[0]);
   }
 }

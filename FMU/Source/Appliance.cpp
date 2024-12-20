@@ -7,7 +7,8 @@
 #include "Configuration.hpp"
 #include "Appliance.hpp"
 
-Appliance::Appliance() {}
+Appliance::Appliance() {
+}
 
 double Appliance::getPriority() const {
   int timeStep = Configuration::getStepCount();
@@ -73,11 +74,11 @@ void Appliance::saveLocal() {
 }
 
 void Appliance::saveNeighbourhoodCalculate() {
-    parametersNeighbourhood.supply = parametersLocal.suppliedLeft - parameters.suppliedLeft;
-    parametersNeighbourhood.suppliedLeft = parameters.suppliedLeft;
-    parametersNeighbourhood.received = parameters.received - parametersLocal.received;
-    parametersNeighbourhood.power =  parameters.power - parametersLocal.received;
-    parametersNeighbourhood.receivedCost =  parameters.receivedCost - parametersLocal.receivedCost;
+  parametersNeighbourhood.supply = parametersLocal.suppliedLeft - parameters.suppliedLeft;
+  parametersNeighbourhood.suppliedLeft = parameters.suppliedLeft;
+  parametersNeighbourhood.received = parameters.received - parametersLocal.received;
+  parametersNeighbourhood.power = parameters.power - parametersLocal.received;
+  parametersNeighbourhood.receivedCost = parameters.receivedCost - parametersLocal.receivedCost;
 }
 
 void Appliance::saveNeighbourhood() {
@@ -88,12 +89,13 @@ void Appliance::saveNeighbourhood() {
   DataStore::addValue(datastoreNeighbourhoodIDCost, parametersNeighbourhood.receivedCost);
 }
 
-void Appliance::saveGlobalCalculate(){
+void Appliance::saveGlobalCalculate() {
   parametersGrid.supply = parametersNeighbourhood.suppliedLeft - parameters.suppliedLeft;
   parametersGrid.suppliedLeft = parameters.suppliedLeft;
   parametersGrid.received = parameters.received - parametersNeighbourhood.received - parametersLocal.received;
-  parametersGrid.power =  parameters.power - parametersNeighbourhood.received - parametersLocal.received;
-  parametersGrid.receivedCost =  parameters.receivedCost - parametersNeighbourhood.receivedCost  - parametersLocal.receivedCost;
+  parametersGrid.power = parameters.power - parametersNeighbourhood.received - parametersLocal.received;
+  parametersGrid.receivedCost = parameters.receivedCost - parametersNeighbourhood.receivedCost - parametersLocal.
+                                receivedCost;
 }
 
 void Appliance::saveGlobal() {
@@ -134,6 +136,7 @@ bool Appliance::isGlobal() const {
 void Appliance::setGlobal(bool global) {
   this->global = global;
 }
+
 void Appliance::setPower(const double power) {
   this->parameters.power = power;
 }
@@ -146,11 +149,11 @@ void Appliance::setSupplyCost(const double supplyCost) {
   this->parameters.supplyCost = supplyCost;
 }
 
-void Appliance::setHourlyCost(const std::vector<double> & cost) {
+void Appliance::setHourlyCost(const std::vector<double> &cost) {
   hourlyCost = cost;
 }
 
-void Appliance::setHoulyPriority(const std::vector<double> & priority) {
+void Appliance::setHoulyPriority(const std::vector<double> &priority) {
   this->hourlyPriority = priority;
 }
 
@@ -172,11 +175,11 @@ int Appliance::calculateHourOfDay() const {
  */
 bool Appliance::hasActivities(const std::vector<int> &Activities) {
   match = this->Activities.empty();
-  for (int i : this->Activities) {
-    for (int j : Activities) {
+  for (int i: this->Activities) {
+    for (int j: Activities) {
       if (i == j) {
-          match = true;
-          break;
+        match = true;
+        break;
       }
     }
   }
@@ -215,50 +218,62 @@ double Appliance::getReceivedCost() const {
   return parameters.receivedCost;
 }
 
-double Appliance::getLocalSupply() const{
+double Appliance::getLocalSupply() const {
   return parametersLocal.supply;
 }
-double Appliance::getLocalSupplyLeft() const{
+
+double Appliance::getLocalSupplyLeft() const {
   return parametersLocal.suppliedLeft;
 }
-double Appliance::getLocalReceived() const{
+
+double Appliance::getLocalReceived() const {
   return parametersLocal.received;
 }
-double Appliance::getLocalReceivedCost() const{
+
+double Appliance::getLocalReceivedCost() const {
   return parametersLocal.receivedCost;
 }
-double Appliance::getLocalPower() const{
+
+double Appliance::getLocalPower() const {
   return parametersLocal.power;
 }
 
-double Appliance::getNeighbourhoodSupply() const{
+double Appliance::getNeighbourhoodSupply() const {
   return parametersNeighbourhood.supply;
 }
-double Appliance::getNeighbourhoodSupplyLeft() const{
+
+double Appliance::getNeighbourhoodSupplyLeft() const {
   return parametersNeighbourhood.suppliedLeft;
 }
-double Appliance::getNeighbourhoodReceived() const{
+
+double Appliance::getNeighbourhoodReceived() const {
   return parametersNeighbourhood.received;
 }
-double Appliance::getNeighbourhoodReceivedCost() const{
+
+double Appliance::getNeighbourhoodReceivedCost() const {
   return parametersNeighbourhood.receivedCost;
 }
-double Appliance::getNeighbourhoodPower() const{
+
+double Appliance::getNeighbourhoodPower() const {
   return parametersNeighbourhood.power;
 }
 
-double Appliance::getGridSupply() const{
+double Appliance::getGridSupply() const {
   return parametersGrid.supply;
 }
-double Appliance::getGridSupplyLeft() const{
+
+double Appliance::getGridSupplyLeft() const {
   return parametersGrid.suppliedLeft;
 }
-double Appliance::getGridReceived() const{
+
+double Appliance::getGridReceived() const {
   return parametersGrid.received;
 }
-double Appliance::getGridReceivedCost() const{
+
+double Appliance::getGridReceivedCost() const {
   return parametersGrid.receivedCost;
 }
-double Appliance::getGridPower() const{
+
+double Appliance::getGridPower() const {
   return parametersGrid.power;
 }

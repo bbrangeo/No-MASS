@@ -20,12 +20,13 @@ double Simulation::getGridCost() {
 }
 
 Simulation::Simulation() {
-        simulationConfigurationFile = "SimulationConfig.xml";
+  simulationConfigurationFile = "SimulationConfig.xml";
 }
 
-void Simulation::setConfigurationurationFile(const std::string & filename) {
+void Simulation::setConfigurationurationFile(const std::string &filename) {
   this->simulationConfigurationFile = filename;
 }
+
 /**
  * @brief Calls the simulation preprocess
  * @details Reads in the configuration file and sends to parser.
@@ -33,27 +34,27 @@ void Simulation::setConfigurationurationFile(const std::string & filename) {
  */
 void Simulation::preprocess() {
   parseConfiguration(Configuration::RunLocation
-    + simulationConfigurationFile);
+                     + simulationConfigurationFile);
   SimulationTime::preprocess();
   if (!LOG.getError()) {
     setupSimulationModel();
   }
 }
 
-void Simulation::parseConfiguration(const std::string & file) {
-    Configuration::parseConfiguration(file);
-    GridPowerDataId = DataStore::addVariable("grid_power");
-    GridCostDataId = DataStore::addVariable("grid_cost");
-    GridReceivedDataId = DataStore::addVariable("grid_received");
+void Simulation::parseConfiguration(const std::string &file) {
+  Configuration::parseConfiguration(file);
+  GridPowerDataId = DataStore::addVariable("grid_power");
+  GridCostDataId = DataStore::addVariable("grid_cost");
+  GridReceivedDataId = DataStore::addVariable("grid_received");
 }
 
 void Simulation::setupSimulationModel() {
-    for (ConfigStructBuilding b : Configuration::buildings) {
-      buildings.push_back(Building());
-      buildings.back().setup(b);
-      buildings.back().preprocess();
-    }
-    lvn.setup();
+  for (ConfigStructBuilding b: Configuration::buildings) {
+    buildings.push_back(Building());
+    buildings.back().setup(b);
+    buildings.back().preprocess();
+  }
+  lvn.setup();
 }
 
 /**
@@ -61,7 +62,7 @@ void Simulation::setupSimulationModel() {
  *
  */
 void Simulation::postprocess() {
-  for (Building &b : buildings) {
+  for (Building &b: buildings) {
     b.postprocess();
   }
   DataStore::print();
@@ -85,28 +86,28 @@ void Simulation::preTimeStep() {
 void Simulation::timeStep() {
   std::shuffle(buildings.begin(), buildings.end(), Utility::engine);
   calculateGridCost();
-  //local negotiation
-  for (Building &b : buildings) {
-      b.step();
-      b.stepAppliancesUse();
-      // add to contracts
-      b.addContactsTo(&building_negotiation, true);
+  //local negotiations
+  for (Building &b: buildings) {
+    b.step();
+    b.stepAppliancesUse();
+    // add to contracts
+    b.addContactsTo(&building_negotiation, true);
   }
 
   // battery negotiation
-  for (Building &b : buildings) {
-      b.stepAppliancesUseBatteries(&building_negotiation);
+  for (Building &b: buildings) {
+    b.stepAppliancesUseBatteries(&building_negotiation);
   }
   if (buildings.size() > 1) {
     // only process contracts if there is a neighbourhood
     building_negotiation.process();
   }
-  for (Building &b : buildings) {
-      b.stepAppliancesNegotiationNeighbourhood(building_negotiation);
+  for (Building &b: buildings) {
+    b.stepAppliancesNegotiationNeighbourhood(building_negotiation);
   }
   building_negotiation.clear();
 
-  for (Building &b : buildings) {
+  for (Building &b: buildings) {
     b.addContactsTo(&building_negotiation, false);
   }
 
@@ -126,7 +127,7 @@ void Simulation::timeStep() {
   m.suppliedLeft = m.supplied;
   building_negotiation.submit(m);
   building_negotiation.process();
-  for (Building &b : buildings) {
+  for (Building &b: buildings) {
     b.stepAppliancesNegotiation(building_negotiation);
   }
   m = building_negotiation.getContract(m.buildingID, m.id);
@@ -140,16 +141,16 @@ void Simulation::timeStep() {
  * @brief processes After timestep
  */
 void Simulation::postTimeStep() {
-  for (Building &b : buildings) {
-      b.postTimeStep();
-      lvn.setPowerForID(b.getPower(), b.getID());
+  for (Building &b: buildings) {
+    b.postTimeStep();
+    lvn.setPowerForID(b.getPower(), b.getID());
   }
   lvn.postTimeStep();
 }
 
-void Simulation::calculateGridCost(){
+void Simulation::calculateGridCost() {
   gridCost = 0;
-  if (!Configuration::info.GridCost.empty()){
+  if (!Configuration::info.GridCost.empty()) {
     gridCost = Configuration::info.GridCost[0];
     if (Configuration::info.GridCost.size() == 24) {
       int stepCount = Configuration::getStepCount();

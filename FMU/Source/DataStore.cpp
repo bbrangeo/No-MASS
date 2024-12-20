@@ -12,28 +12,29 @@
 #include "DataStore.hpp"
 
 std::unordered_map<std::string, int> DataStore::variableMap;
-std::vector<std::vector<float>> DataStore::intMap;
+std::vector<std::vector<float> > DataStore::intMap;
 
 int DataStore::variableCount = 0;
 
-DataStore::DataStore() {}
+DataStore::DataStore() {
+}
 
 int DataStore::getID(const std::string &name) {
-  //  std::cout << "getID: " << name << std::endl;
+  // std::cout << "getID: " << name << std::endl;
   return variableMap.at(name);
 }
 
 int DataStore::addVariable(const std::string &name) {
   int ret = -1;
   if (name != "") {
-    for (std::string reg : Configuration::outputRegexs) {
+    for (std::string reg: Configuration::outputRegexs) {
       std::regex rgx(reg);
       std::smatch match;
       if (std::regex_match(name, match, rgx)) {
         if (variableMap.find(name) == variableMap.end()) {
-          //  std::cout << "addVariable: " << ret << ": " << name << std::endl;
+          std::cout << "addVariable: " << ret << ": " << name << std::endl;
           ret = DataStore::variableCount;
-          //  std::cout << "addVariable: " << ret << ": " << name << std::endl;
+          std::cout << "addVariable: " << ret << ": " << name << std::endl;
           variableMap.insert(std::make_pair(name, ret));
           intMap.push_back(std::vector<float>());
           DataStore::variableCount++;
@@ -48,16 +49,21 @@ int DataStore::addVariable(const std::string &name) {
 }
 
 void DataStore::addValueS(const std::string &name, const float value) {
-    if (name != "") {
-        //  std::cout << "addValueS: " << name << ": " << value << std::endl;
-        int val = variableMap.at(name);
-        //  std::cout << "addValueS: " << val;
-        //  std::cout << ": " << name << ": " << value << std::endl;
-        addValue(val, value);
+  if (name != "") {
+    std::cout << "addValueS: " << name << ": " << value << std::endl;
+    // Vérifie si la clé existe dans variableMap
+    if (variableMap.count(name) > 0) {
+      int val = variableMap.at(name);
+      std::cout << "addValueS: " << val;
+      std::cout << ": " << name << ": " << value << std::endl;
+      addValue(val, value);
+    } else {
+      std::cerr << "Error: Key '" << name << "' not found in variableMap" << std::endl;
     }
+  }
 }
 
-void DataStore::addValue(const int & id, const float val) {
+void DataStore::addValue(const int &id, const float val) {
   if (id > -1) {
     intMap.at(id).push_back(val);
   }
@@ -65,12 +71,12 @@ void DataStore::addValue(const int & id, const float val) {
 
 
 float DataStore::getValueForZone(const std::string &name,
-                                        const std::string &zoneName) {
-    return getValueS(zoneName + name);
+                                 const std::string &zoneName) {
+  return getValueS(zoneName + name);
 }
 
-float DataStore::getValueS(const std::string & name) {
-  //  std::cout << "get: " << name << std::endl;
+float DataStore::getValueS(const std::string &name) {
+  //  // std::cout << "get: " << name << std::endl;
   if (variableMap.find(name) == variableMap.end()) {
     LOG << "Cannot find the variable: " << name;
     LOG << "\nThis could happen for a number of reasons:\n";
@@ -83,62 +89,62 @@ float DataStore::getValueS(const std::string & name) {
     return 0;
   }
   int id = variableMap.at(name);
-  //  std::cout << "get: " << id << ": " << name << std::endl;
+  // std::cout << "get: " << id << ": " << name << std::endl;
   return getValue(id);
 }
 
-float DataStore::getValue(const int & id) {
-  //  std::cout << "getValue: " << id << ": ";
+float DataStore::getValue(const int &id) {
+  // std::cout << "getValue: " << id << ": ";
   float ret = intMap.at(id).back();
-  //  std::cout << ret << std::endl;
+  // std::cout << ret << std::endl;
 
   return ret;
 }
 
 void DataStore::clearValues() {
-  //std::cout << "clear values" << std::endl;
-  std::vector<std::vector<float>>::iterator it;
-  for (it=intMap.begin(); it != intMap.end(); ++it) {
+  std::cout << "clear values" << std::endl;
+  std::vector<std::vector<float> >::iterator it;
+  for (it = intMap.begin(); it != intMap.end(); ++it) {
     it->clear();
   }
 }
 
 void DataStore::clear() {
-  //std::cout << "clear" << std::endl;
-    variableMap.clear();
-    intMap.clear();
-    DataStore::variableCount = 0;
+  std::cout << "DataStore clear" << std::endl;
+  variableMap.clear();
+  intMap.clear();
+  DataStore::variableCount = 0;
 }
 
 void DataStore::print() {
   if (Configuration::info.save) {
-    //  std::cout << "print " << std::endl;
+    // std::cout << "print " << std::endl;
     std::ofstream myfile;
     myfile.open("NoMASS.out");
     myfile << std::fixed << std::setprecision(Configuration::info.precision);
     myfile << "stepCount";
     std::vector<int> ids;
     unsigned int maxSize = 0;
-    std::unordered_map<std::string, int >::const_iterator it;
-    for (it=variableMap.cbegin(); it != variableMap.cend(); ++it) {
-        myfile << "," << it->first;
-        int val = it->second;
-        ids.push_back(val);
-        if (maxSize < intMap.at(val).size()) {
-          maxSize = intMap.at(val).size();
-        }
+    std::unordered_map<std::string, int>::const_iterator it;
+    for (it = variableMap.cbegin(); it != variableMap.cend(); ++it) {
+      myfile << "," << it->first;
+      int val = it->second;
+      ids.push_back(val);
+      if (maxSize < intMap.at(val).size()) {
+        maxSize = intMap.at(val).size();
+      }
     }
     myfile << "\n";
 
     for (unsigned int i = 0; i < maxSize; i++) {
-        myfile << i;
-        for (unsigned int j : ids) {
-            myfile << ",";
-            if (intMap.at(j).size() > i) {
-              myfile << intMap.at(j).at(i);
-            }
+      myfile << i;
+      for (unsigned int j: ids) {
+        myfile << ",";
+        if (intMap.at(j).size() > i) {
+          myfile << intMap.at(j).at(i);
         }
-        myfile << "\n";
+      }
+      myfile << "\n";
     }
     myfile.close();
   }

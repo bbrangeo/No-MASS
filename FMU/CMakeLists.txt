@@ -1,5 +1,9 @@
 cmake_minimum_required (VERSION 2.6)
 
+if(APPLE)
+  cmake_policy(SET CMP0042 NEW)
+endif()
+
 
 ################################
 # Options
@@ -8,6 +12,7 @@ cmake_minimum_required (VERSION 2.6)
 option(Tests "Tests" OFF)
 option(CrossCompile32 "CrossCompile32" OFF)
 option(CrossCompile64 "CrossCompile64" OFF)
+option(CrossCompileLinux64 "CrossCompileLinux64" OFF)
 
 ################################
 # Cross Compiling
@@ -25,6 +30,38 @@ if(CrossCompile32 OR CrossCompile64)
   SET(CMAKE_C_COMPILER ${COMPILER_PREFIX}-gcc)
   find_program(CMAKE_CXX_COMPILER NAMES ${COMPILER_PREFIX}-g++)
   SET(CMAKE_CXX_COMPILER ${COMPILER_PREFIX}-g++)
+
+  set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+  set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+  set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+endif()
+
+
+if(CrossCompileLinux64)
+  SET(CMAKE_SYSTEM_NAME Linux)
+#  set(COMPILER_PREFIX "x86_64-elf")
+#  set(CMAKE_FIND_ROOT_PATH /opt/homebrew/opt/x86_64-elf)
+#  set(CMAKE_ENABLE_EXPORTS OFF)
+#  set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+#  set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+
+#  find_program(CMAKE_RC_COMPILER NAMES ${COMPILER_PREFIX}-windres)
+#  SET(CMAKE_RC_COMPILER ${COMPILER_PREFIX}-windres)
+
+#  find_program(CMAKE_C_COMPILER NAMES ${COMPILER_PREFIX}-gcc)
+#  SET(CMAKE_C_COMPILER ${COMPILER_PREFIX}-gcc)
+
+#  find_program(CMAKE_CXX_COMPILER NAMES ${COMPILER_PREFIX}-c++)
+#  SET(CMAKE_CXX_COMPILER ${COMPILER_PREFIX}-g++)
+
+  # Spécifie le compilateur
+  set(CMAKE_C_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
+  set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang++")
+
+  # Options pour cibler Linux
+  set(CMAKE_CXX_FLAGS "-target x86_64-linux-gnu")
+  set(CMAKE_EXE_LINKER_FLAGS "-L/opt/homebrew/lib/x86_64-linux-gnu -L/opt/homebrew/opt/glib/lib -Wl,--rpath,/opt/homebrew/opt/glib/lib")
 
   set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
   set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -109,6 +146,9 @@ target_link_libraries(FMI NoMASSstatic)
 
 add_executable(NoMASS Source/main.cpp)
 target_link_libraries(NoMASS NoMASSstatic)
+
+add_executable(NoMASS2 Source/main_boris.cpp)
+target_link_libraries(NoMASS2 NoMASSstatic)
 
 if(UNIX OR APPLE)
   set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "-Werror -Wall -Wextra")

@@ -7,7 +7,8 @@
 #include "Utility.hpp"
 #include "Appliance_Small.hpp"
 
-Appliance_Small::Appliance_Small() {}
+Appliance_Small::Appliance_Small() {
+}
 
 void Appliance_Small::setup(ConfigStructAppliance a) {
   setID(a.id);

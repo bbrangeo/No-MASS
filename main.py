@@ -14,6 +14,7 @@ if __name__ == "__main__":
         rmtree(result_output)
 
     nomassLearn = NoMASS()
+    nomassLearn.NoMASSstr = "NoMASS"
     nomassLearn.setup_logging(level=logging.INFO)
 
     nomassLearn.runLocation = os.path.join(
@@ -38,10 +39,12 @@ if __name__ == "__main__":
 
     nomassLearn.printInput = True
     nomassLearn.pandasFiles = True
+    nomassLearn.clean = True
+
     # TODO : faire une function bool pour remove files
     # nomassLearn.removeFiles =True
 
-    nomassLearn.numberOfSimulations = 100  # 300
+    nomassLearn.numberOfSimulations = 4  # 300
     nomassLearn.learn = True
     nomassLearn.learningXMLFile = "SimulationConfig.xml"
 
@@ -55,7 +58,7 @@ if __name__ == "__main__":
     df = nomassLearn.getPandasDF()
 
     # REMOVE
-    nomassLearn.deleteLearningData()
+    # nomassLearn.deleteLearningData()
 
     print(df.head(10))
     df.to_csv(os.path.join(result_output, "results.csv"))

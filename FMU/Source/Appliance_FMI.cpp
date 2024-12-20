@@ -16,7 +16,7 @@ void Appliance_FMI::setup(ConfigStructAppliance a) {
 /**
  * @brief Set the variable name of the variable we want to retrieve at run time
  */
-void Appliance_FMI::setFMIVariableName(const std::string & FMIVariableName) {
+void Appliance_FMI::setFMIVariableName(const std::string &FMIVariableName) {
   this->FMIVariableName = DataStore::addVariable(FMIVariableName);
 }
 

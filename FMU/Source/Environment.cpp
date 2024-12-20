@@ -5,10 +5,14 @@
 #include "Configuration.hpp"
 #include "Environment.hpp"
 
+#include <iostream>
+#include <ostream>
+
 double Environment::dailyMeanTemperature = 0;
 std::deque<double> Environment::outDoorTemperatures;
 
-Environment::Environment() {}
+Environment::Environment() {
+}
 
 double Environment::getDailyMeanTemperature() {
   return dailyMeanTemperature;
@@ -17,19 +21,27 @@ double Environment::getDailyMeanTemperature() {
 void Environment::calculateDailyMeanTemperature() {
   if (Configuration::info.windows) {
     double outdoorTemperature = getOutdoorAirDrybulbTemperature();
+    std::cout << "outdoorTemperature " << outdoorTemperature << "°C" << std::endl;
+
     outDoorTemperatures.push_back(outdoorTemperature);
+
     if (outDoorTemperatures.size() >
-          (Configuration::info.timeStepsPerHour * 24)) {
-            outDoorTemperatures.pop_front();
+        (Configuration::info.timeStepsPerHour * 24)) {
+      outDoorTemperatures.pop_front();
     }
+
     dailyMeanTemperature = 0;
-    for (const double temp : outDoorTemperatures) {
-            dailyMeanTemperature += temp;
+    for (const double temp: outDoorTemperatures) {
+      dailyMeanTemperature += temp;
+      std::cout << "outdoorTemperature " << dailyMeanTemperature << "°C" << std::endl;
+
     }
+
     dailyMeanTemperature =
-      dailyMeanTemperature /
+        dailyMeanTemperature /
         static_cast<double>(outDoorTemperatures.size());
   }
+  std::cout << "Calculating daily mean temperature " << dailyMeanTemperature << std::endl;
 }
 
 

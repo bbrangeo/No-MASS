@@ -6,6 +6,9 @@
 #include "DataStore.hpp"
 #include "SimulationTime.hpp"
 
+#include <iostream>
+#include <ostream>
+
 std::vector<int> SimulationTime::monthCount;
 int SimulationTime::stepCount = 0;
 int SimulationTime::minute = 0;
@@ -65,6 +68,9 @@ void SimulationTime::preprocess() {
 void SimulationTime::trackTime() {
   Configuration::step();
   stepCount = Configuration::getStepCount();
+  std::cout << "Step Count: " << stepCount << std::endl;
+  std::cout << "\n " << stepCount << std::endl;
+
   minute = (stepCount * Configuration::lengthOfTimestep()) / 60;
   hour = minute / 60;
   day = hour / 24;
@@ -79,10 +85,12 @@ void SimulationTime::trackTime() {
 
   hourOfDay = hour % 24;
   minuteOfDay = minute % 1440;
+
   DataStore::addValue(databaseIdStepCount, stepCount);
   DataStore::addValue(databaseIdHour, hour);
   DataStore::addValue(databaseIdDay, day);
   DataStore::addValue(databaseIdMonth, month);
   DataStore::addValue(databaseIdHourOfDay, hourOfDay);
   DataStore::addValue(databaseIdMinuteOfDay, minuteOfDay);
+
 }

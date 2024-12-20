@@ -63,7 +63,7 @@ deploy:
   provider: releases
   api-key: "e9ce95182cc7c302f0f74029411c7d912a6afcfa "
   file:
-    - "FMU/build/libFMI.so"
+    - "FMU/build/FMI.so"
     - "FMU/build32/libFMI32.dll"
     - "FMU/build64/libFMI64.dll"
   skip_cleanup: true

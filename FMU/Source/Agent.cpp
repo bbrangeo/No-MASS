@@ -2,17 +2,23 @@
 
 #include "Agent.hpp"
 
-Agent::Agent() {}
+Agent::Agent() {
+}
 
-void Agent::setup() {}
+void Agent::setup() {
+}
 
-void Agent::preprocess() {}
+void Agent::preprocess() {
+}
 
-void Agent::step() {}
+void Agent::step() {
+}
 
-void Agent::postprocess() {}
+void Agent::postprocess() {
+}
 
-void Agent::postTimeStep() {}
+void Agent::postTimeStep() {
+}
 
 void Agent::setBuildingID(const int id) {
     buildingID = id;
@@ -30,6 +36,6 @@ int Agent::getBuildingID() const {
     return buildingID;
 }
 
-void Agent::setIDString(const std::string & idString) {
-  this->idString = idString;
+void Agent::setIDString(const std::string &idString) {
+    this->idString = idString;
 }
