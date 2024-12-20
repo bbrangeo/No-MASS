@@ -1,3 +1,4 @@
+import logging
 import os
 from shutil import rmtree
 
@@ -13,13 +14,13 @@ if __name__ == "__main__":
         rmtree(result_output)
 
     nomassLearn = NoMASS()
-
+    nomassLearn.setup_logging(level=logging.DEBUG)
     nomassLearn.runLocation = os.path.join(
         current_directory, result_output, "Simulation"
     )
     nomassLearn.locationOfNoMASS = os.path.join(current_directory, "FMU", "build")
     nomassLearn.configurationDirectory = os.path.join(
-        current_directory, "Configuration", "Experiment3"
+        current_directory, "Configuration", "Experiment4"
     )
     nomassLearn.resultsLocation = os.path.join(
         current_directory, result_output, "ResultsLearning"
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     nomassLearn.gamma = 0.1
     nomassLearn.printInput = True
     nomassLearn.pandasFiles = True
-    nomassLearn.numberOfSimulations = 10  # 300
+    nomassLearn.numberOfSimulations = 4  # 300
     nomassLearn.learn = True
     nomassLearn.learningXMLFile = "SimulationConfig.xml"
     # nomassLearn.simulate()

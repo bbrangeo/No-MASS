@@ -10,6 +10,8 @@ import platform
 from shutil import copyfile, copytree, rmtree
 
 import pandas as pd
+import logging
+import colorlog
 
 
 class NoMASS(object):
@@ -46,6 +48,32 @@ class NoMASS(object):
         self.gamma = 0.1
         self.start = time.time()
 
+    # Configuration du logger
+    @staticmethod
+    def setup_logging(level: int = logging.DEBUG):
+        if len(logging.getLogger().handlers) == 0:  # Évite les duplications de handlers
+            handler = colorlog.StreamHandler()
+            handler.setFormatter(
+                colorlog.ColoredFormatter(
+                    "%(log_color)s%(asctime)s - %(levelname)s - %(message)s",
+                    log_colors={
+                        "DEBUG": "cyan",
+                        "INFO": "green",
+                        "WARNING": "yellow",
+                        "ERROR": "red",
+                        "CRITICAL": "bold_red",
+                    },
+                )
+            )
+            logging.basicConfig(
+                level=level,  # Niveau de détail
+                format="%(asctime)s - %(levelname)s - %(message)s",
+                handlers=[
+                    handler,
+                    # logging.FileHandler("simulation.log"),  # Enregistre dans un fichier
+                ],
+            )
+
     def deleteLearningData(self):
         """ """
         ll = self.learntDataLocation()
@@ -55,13 +83,13 @@ class NoMASS(object):
 
     def printConfiguration(self):
         """ """
-        print("Run location: {}".format(self.runLocation))
-        print("locationOfNoMASS: {}".format(self.locationOfNoMASS))
-        print("configurationDirectory: {}".format(self.configurationDirectory))
-        print("resultsLocation: {}".format(self.resultsLocation))
-        print("printInput: {}".format(self.printInput))
-        print("numberOfSimulations: {}".format(self.numberOfSimulations))
-        print("Learning: {}".format(self.learn))
+        logging.debug("Run location: {}".format(self.runLocation))
+        logging.debug("locationOfNoMASS: {}".format(self.locationOfNoMASS))
+        logging.debug("configurationDirectory: {}".format(self.configurationDirectory))
+        logging.debug("resultsLocation: {}".format(self.resultsLocation))
+        logging.debug("printInput: {}".format(self.printInput))
+        logging.debug("numberOfSimulations: {}".format(self.numberOfSimulations))
+        logging.debug("Learning: {}".format(self.learn))
         con = self.configurationDirectory
         tree = ET.parse(os.path.join(con, self.simulationFile))
         root = tree.getroot()
@@ -71,34 +99,39 @@ class NoMASS(object):
                     agentcount = 0
                     for agent in agents.findall("agent"):
                         agentcount = agentcount + 1
-                    print("Number of agents {}".format(agentcount))
+                    logging.debug("Number of agents {}".format(agentcount))
                 for apps in building.findall("Appliances"):
-                    print(
+                    logging.debug(
                         "Number of large appliances {}".format(
                             len(apps.findall("Large"))
                         )
                     )
-                    print(
+                    logging.debug(
                         "Number of small appliances {}".format(
                             len(apps.findall("Small"))
                         )
                     )
-                    print("Number of pv appliances {}".format(len(apps.findall("pv"))))
+                    logging.debug(
+                        "Number of pv appliances {}".format(len(apps.findall("pv")))
+                    )
                     if apps.findall("Grid"):
-                        print("Grid enabled")
+                        logging.debug("Grid enabled")
 
     def simulate(self):
         """ """
         self.start = time.time()
+
         ll = os.path.join(self.resultsLocation, "NoMASS.out.hdf")
         if os.path.exists(ll):
             os.remove(ll)
+
         if self.printInput:
             self.printConfiguration()
+
         for x in range(0, self.numberOfSimulations):
             if x % 25 == 1:
                 elapsed = time.time() - self.start
-                print("Simulation: %i Time: %02d seconds" % (x, elapsed))
+                logging.debug(f"Simulation: {x} Time: {elapsed:.2f} seconds")
             self.copyToRunLocation(x)
             self.makeExecutable(x)
             self.configuration(x)
@@ -107,14 +140,13 @@ class NoMASS(object):
             if self.clean:
                 rmtree(self.runLoc(x))
         elapsed = time.time() - self.start
-        print("Total Simulation Time: %02d seconds" % elapsed)
+        logging.debug(f"Total Simulation Time: {elapsed:.2f}seconds")
 
     def simulation_task(self, x):
         """Fonction exécutée pour chaque simulation."""
-
         if x % 25 == 1:
             elapsed = time.time() - self.start
-            print(f"Simulation: {x} Time: {elapsed:.2f} seconds")
+            logging.debug(f"Simulation: {x} Time: {elapsed:.2f} seconds")
         self.copyToRunLocation(x)
         self.makeExecutable(x)
         self.configuration(x)
@@ -125,12 +157,24 @@ class NoMASS(object):
 
     def simulate_parallel(self, num_processes=4):
         """Lance les simulations en parallèle."""
+        self.setup_logging()  # Configurer le logger
+
+        if self.printInput:
+            self.printConfiguration()
+
+        logging.info(
+            f"Starting simulations: {self.numberOfSimulations} tasks with {num_processes} processes."
+        )
+
         self.start = time.time()  # Démarrage du chronomètre
         with multiprocessing.Pool(processes=num_processes) as pool:
             # Préparer les arguments pour chaque simulation
             args = [x for x in range(0, self.numberOfSimulations)]
             # Lancer les simulations en parallèle
             pool.map(self.simulation_task, args)
+
+        elapsed = time.time() - self.start
+        logging.info(f"All simulations completed. Total time: {elapsed:.2f} seconds.")
 
     def learning(self):
         """ """
@@ -239,7 +283,7 @@ class NoMASS(object):
                 copyfile(f, os.path.join(ll, filename))
 
     def runLoc(self, x):
-        print(
+        logging.debug(
             "runLoc =>",
             os.path.join(self.runLocation, self.simulationLocation + str(x)),
         )
@@ -260,7 +304,7 @@ class NoMASS(object):
         if not os.path.exists(rl):
             os.makedirs(rl)
 
-        print(
+        logging.debug(
             "copyToRunLocation =>",
             os.path.join(self.locationOfNoMASS, self.NoMASSstr),
             os.path.join(rl, self.NoMASSstr),
