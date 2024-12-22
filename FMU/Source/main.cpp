@@ -7,7 +7,7 @@ Simulation sim;
 
 int main(int argc, char *argv[]) {
     if (argc > 1) {
-        sim.setConfigurationurationFile(argv[1]);
+        sim.setConfigurationFile(argv[1]);
     }
 
     sim.preprocess();

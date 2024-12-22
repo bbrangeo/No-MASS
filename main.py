@@ -14,7 +14,7 @@ if __name__ == "__main__":
         rmtree(result_output)
 
     nomassLearn = NoMASS()
-    nomassLearn.NoMASSstr = "NoMASS"
+    nomassLearn.NoMASSstr = "NoMASS2"
     nomassLearn.setup_logging(level=logging.INFO)
 
     nomassLearn.runLocation = os.path.join(
@@ -24,7 +24,10 @@ if __name__ == "__main__":
     nomassLearn.locationOfNoMASS = os.path.join(current_directory, "FMU", "build")
 
     nomassLearn.configurationDirectory = os.path.join(
-        current_directory, "Configuration", "Experiment4"
+        # current_directory, "Configuration", "Experiment4"
+        current_directory,
+        "Configuration",
+        "HouseWindows-MD",
     )
 
     nomassLearn.resultsLocation = os.path.join(

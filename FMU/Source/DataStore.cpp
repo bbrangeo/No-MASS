@@ -32,9 +32,9 @@ int DataStore::addVariable(const std::string &name) {
       std::smatch match;
       if (std::regex_match(name, match, rgx)) {
         if (variableMap.find(name) == variableMap.end()) {
-          std::cout << "addVariable: " << ret << ": " << name << std::endl;
+          // std::cout << "addVariable: " << ret << ": " << name << std::endl;
           ret = DataStore::variableCount;
-          std::cout << "addVariable: " << ret << ": " << name << std::endl;
+          // std::cout << "addVariable: " << ret << ": " << name << std::endl;
           variableMap.insert(std::make_pair(name, ret));
           intMap.push_back(std::vector<float>());
           DataStore::variableCount++;
@@ -50,12 +50,12 @@ int DataStore::addVariable(const std::string &name) {
 
 void DataStore::addValueS(const std::string &name, const float value) {
   if (name != "") {
-    std::cout << "addValueS: " << name << ": " << value << std::endl;
+    // std::cout << "addValueS: " << name << ": " << value << std::endl;
     // Vérifie si la clé existe dans variableMap
     if (variableMap.count(name) > 0) {
       int val = variableMap.at(name);
-      std::cout << "addValueS: " << val;
-      std::cout << ": " << name << ": " << value << std::endl;
+      // std::cout << "addValueS: " << val;
+      // std::cout << ": " << name << ": " << value << std::endl;
       addValue(val, value);
     } else {
       std::cerr << "Error: Key '" << name << "' not found in variableMap" << std::endl;
@@ -148,4 +148,33 @@ void DataStore::print() {
     }
     myfile.close();
   }
+
+  std::ofstream myfileOreni;
+  myfileOreni.open("OreniNoMASS.csv");
+  myfileOreni << std::fixed << std::setprecision(Configuration::info.precision);
+  myfileOreni << "stepCount";
+  std::vector<int> ids;
+  unsigned int maxSize = 0;
+  std::unordered_map<std::string, int>::const_iterator it;
+  for (it = variableMap.cbegin(); it != variableMap.cend(); ++it) {
+    myfileOreni << "," << it->first;
+    int val = it->second;
+    ids.push_back(val);
+    if (maxSize < intMap.at(val).size()) {
+      maxSize = intMap.at(val).size();
+    }
+  }
+  myfileOreni << "\n";
+
+  for (unsigned int i = 0; i < maxSize; i++) {
+    myfileOreni << i;
+    for (unsigned int j: ids) {
+      myfileOreni << ",";
+      if (intMap.at(j).size() > i) {
+        myfileOreni << intMap.at(j).at(i);
+      }
+    }
+    myfileOreni << "\n";
+  }
+  myfileOreni.close();
 }

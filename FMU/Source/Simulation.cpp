@@ -23,7 +23,7 @@ Simulation::Simulation() {
   simulationConfigurationFile = "SimulationConfig.xml";
 }
 
-void Simulation::setConfigurationurationFile(const std::string &filename) {
+void Simulation::setConfigurationFile(const std::string &filename) {
   this->simulationConfigurationFile = filename;
 }
 

@@ -1,11 +1,12 @@
 <simulation>
-    <seed>1</seed>
+    <seed>10</seed>
     <simulateBuilding>1</simulateBuilding>
     <simulateAgents>1</simulateAgents>
     <numberOfAgents>2</numberOfAgents>
     <presencePage>0</presencePage>
+    <save>1</save>
     <models>
-        <windows>0</windows>
+        <windows>1</windows>
         <shading>0</shading>
         <lights>0</lights>
     </models>

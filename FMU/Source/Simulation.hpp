@@ -25,7 +25,7 @@ class Simulation {
     void timeStep();
     void postTimeStep();
 
-    void setConfigurationurationFile(const std::string & filename);
+    void setConfigurationFile(const std::string & filename);
     static double getGridCost();
 
  private:

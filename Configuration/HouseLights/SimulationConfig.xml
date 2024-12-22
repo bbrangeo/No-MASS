@@ -4,6 +4,7 @@
     <simulateAgents>1</simulateAgents>
     <numberOfAgents>2</numberOfAgents>
     <presencePage>0</presencePage>
+    <save>1</save>
     <models>
         <windows>0</windows>
         <shading>0</shading>
