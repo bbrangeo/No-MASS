@@ -42,7 +42,6 @@ class NoMASS(object):
         self.learntData = ""
         self.clean = True
         self.pandasFiles = False
-        self.outFiles = False
         self.xmlFiles = False
         self.seed = -1
         self.printInput = False
@@ -144,6 +143,7 @@ class NoMASS(object):
             self.copyToResultsLocation(x)
             if self.clean:
                 rmtree(self.runLoc(x))
+
         elapsed = time.time() - self.start
         logging.debug(f"Total Simulation Time: {elapsed:.2f}seconds")
 
@@ -178,6 +178,8 @@ class NoMASS(object):
             args = [x for x in range(0, self.numberOfSimulations)]
             # Lancer les simulations en parallèle
             pool.map(self.simulation_task, args)
+
+        self.createHDFFiles(self.resultsLocation)
 
         elapsed = time.time() - self.start
         logging.info(f"All simulations completed. Total time: {elapsed:.2f} seconds.")
@@ -265,15 +267,12 @@ class NoMASS(object):
         if not os.path.exists(rl):
             os.makedirs(rl)
 
-        if self.outFiles:
-            outfileStr = "NoMASS-" + str(x).zfill(5) + ".out"
-            copyfile(
-                os.path.join(self.runLoc(x), self.outFile), os.path.join(rl, outfileStr)
-            )
+        outfileStr = "NoMASS-" + str(x).zfill(5) + ".out"
+        copyfile(
+            os.path.join(self.runLoc(x), self.outFile), os.path.join(rl, outfileStr)
+        )
 
-            # self.createPandasFiles(x, os.path.join(rl, outfileStr))
-
-        self.createPandasFiles(x, os.path.join(self.runLoc(x), self.outFile))
+        # self.createPandasFiles(x, os.path.join(self.runLoc(x), self.outFile))
 
         if self.xmlFiles:
             outfileStr = "SimulationConfig-" + str(x).zfill(5) + ".xml"
@@ -392,6 +391,22 @@ class NoMASS(object):
                     key="file%i" % x,
                     mode="a",
                 )
+
+    def createHDFFiles(self, result_directory):
+        # Motif pour trouver tous les fichiers NoMASS*
+        pattern = os.path.join(self.resultsLocation, "NoMASS-*.out")
+
+        # Récupérer tous les fichiers correspondant au motif
+        files = glob.glob(pattern)
+        for x, file in enumerate(files):
+            a = pd.read_csv(file)
+            a["nsim"] = x
+            a.to_hdf(
+                path_or_buf=os.path.join(self.resultsLocation, "NoMASS.out.hdf"),
+                key="file%i" % x,
+                mode="a",
+            )
+            os.remove(file)  # Supprimer le fichier temporaire après fusion
 
     def getPandasDF(self, nrows=None) -> pd.DataFrame:
         ad = pd.DataFrame()
