@@ -179,7 +179,7 @@ class NoMASS(object):
             # Lancer les simulations en parallèle
             pool.map(self.simulation_task, args)
 
-        self.createHDFFiles(self.resultsLocation)
+        self.createHDFFiles()
 
         elapsed = time.time() - self.start
         logging.info(f"All simulations completed. Total time: {elapsed:.2f} seconds.")
@@ -394,7 +394,7 @@ class NoMASS(object):
                     mode="a",
                 )
 
-    def createHDFFiles(self, result_directory):
+    def createHDFFiles(self):
         # Motif pour trouver tous les fichiers NoMASS*
         pattern = os.path.join(self.resultsLocation, "NoMASS-*.out")
 
