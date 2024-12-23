@@ -33,8 +33,7 @@ void Simulation::setConfigurationFile(const std::string &filename) {
  * Sets up the EnergyPlus processor, the AgentModel and the ZoneManager.
  */
 void Simulation::preprocess() {
-  parseConfiguration(Configuration::RunLocation
-                     + simulationConfigurationFile);
+  parseConfiguration(Configuration::RunLocation + simulationConfigurationFile);
   SimulationTime::preprocess();
   if (!LOG.getError()) {
     setupSimulationModel();
@@ -85,7 +84,11 @@ void Simulation::preTimeStep() {
  */
 void Simulation::timeStep() {
   std::shuffle(buildings.begin(), buildings.end(), Utility::engine);
+  std::cout << "shuffle buildings: " << std::endl;
+
   calculateGridCost();
+  std::cout << "calculateGridCost " << std::endl;
+
   //local negotiations
   for (Building &b: buildings) {
     b.step();

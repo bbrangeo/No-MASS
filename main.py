@@ -14,7 +14,7 @@ if __name__ == "__main__":
         rmtree(result_output)
 
     nomassLearn = NoMASS()
-    nomassLearn.NoMASSstr = "NoMASS2"
+    nomassLearn.NoMASSstr = "NoMASS"
     nomassLearn.setup_logging(level=logging.INFO)
 
     nomassLearn.runLocation = os.path.join(
@@ -24,10 +24,12 @@ if __name__ == "__main__":
     nomassLearn.locationOfNoMASS = os.path.join(current_directory, "FMU", "build")
 
     nomassLearn.configurationDirectory = os.path.join(
-        # current_directory, "Configuration", "Experiment4"
         current_directory,
         "Configuration",
-        "HouseWindows-MD",
+        "Experiment4",
+        # current_directory,
+        # "Configuration",
+        # "HouseWindows-MD",
     )
 
     nomassLearn.resultsLocation = os.path.join(
@@ -42,7 +44,7 @@ if __name__ == "__main__":
 
     nomassLearn.printInput = True
     nomassLearn.pandasFiles = True
-    nomassLearn.clean = True
+    nomassLearn.clean = False
 
     # TODO : faire une function bool pour remove files
     # nomassLearn.removeFiles =True

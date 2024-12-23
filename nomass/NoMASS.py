@@ -12,6 +12,9 @@ from shutil import copyfile, copytree, rmtree
 import pandas as pd
 import logging
 import colorlog
+from multiprocessing import Lock
+
+lock = Lock()
 
 
 class NoMASS(object):
@@ -154,6 +157,7 @@ class NoMASS(object):
         self.configuration(x)
         self.run(x)
         self.copyToResultsLocation(x)
+
         if self.clean:
             rmtree(self.runLoc(x))
 
@@ -267,6 +271,8 @@ class NoMASS(object):
                 os.path.join(self.runLoc(x), self.outFile), os.path.join(rl, outfileStr)
             )
 
+            # self.createPandasFiles(x, os.path.join(rl, outfileStr))
+
         self.createPandasFiles(x, os.path.join(self.runLoc(x), self.outFile))
 
         if self.xmlFiles:
@@ -377,18 +383,20 @@ class NoMASS(object):
         if self.pandasFiles:
             if not os.path.exists(filename):
                 raise FileNotFoundError(f"The file {filename} does not exist.")
+            print("createPandasFiles =>", filename)
             a = pd.read_csv(filename)
             a["nsim"] = x
-            a.to_hdf(
-                path_or_buf=os.path.join(self.resultsLocation, "NoMASS.out.hdf"),
-                key="file%i" % x,
-                mode="a",
-            )
+            with lock:  # Verrouiller l'accès au fichier
+                a.to_hdf(
+                    path_or_buf=os.path.join(self.resultsLocation, "NoMASS.out.hdf"),
+                    key="file%i" % x,
+                    mode="a",
+                )
 
     def getPandasDF(self, nrows=None) -> pd.DataFrame:
         ad = pd.DataFrame()
         with pd.HDFStore(
-            path=os.path.join(self.resultsLocation, "NoMASS.out.hdf")
+            path=os.path.join(self.resultsLocation, "NoMASS.out.hdf"), mode="r"
         ) as store:
             for j in range(0, self.numberOfSimulations):
                 a = store.get("file%i" % j)

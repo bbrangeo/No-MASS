@@ -24,39 +24,27 @@
     <ScalarVariable causality="input" name="EMSepTimeStep" valueReference="5">
       <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
     </ScalarVariable>
-    <ScalarVariable causality="input" name="MainZoneMeanAirTemperature" valueReference="6">
+    <ScalarVariable causality="input" name="Block1:MasterBedroomZoneMeanAirTemperature" valueReference="6">
       <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
     </ScalarVariable>
-    <ScalarVariable causality="input" name="MainZoneAirRelativeHumidity" valueReference="7">
+    <ScalarVariable causality="input" name="Block1:MasterBedroomZoneAirRelativeHumidity" valueReference="7">
       <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
     </ScalarVariable>
-	    <ScalarVariable causality="input" name="MainZoneMeanRadiantTemperature" valueReference="8">
+	    <ScalarVariable causality="input" name="Block1:MasterBedroomZoneMeanRadiantTemperature" valueReference="8">
       <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
     </ScalarVariable>
-    <ScalarVariable causality="input" name="MainDaylightingReferencePoint1Illuminance" valueReference="9">
+    <ScalarVariable causality="input" name="Block1:MasterBedroomDaylightingReferencePoint1Illuminance" valueReference="9">
       <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
     </ScalarVariable>
-    <ScalarVariable causality="output" name="MainZoneNumberOfOccupants" valueReference="10">
+    <ScalarVariable causality="output" name="Block1:MasterBedroomZoneNumberOfOccupants" valueReference="10">
       <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
     </ScalarVariable>
-    <ScalarVariable causality="output" name="MainZoneWindowState" valueReference="11">
+    <ScalarVariable causality="output" name="Block1:MasterBedroomZoneWindowState" valueReference="11">
+      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
+    </ScalarVariable>
+    <ScalarVariable causality="output" name="Block1:MasterBedroomAverageGains" valueReference="15">
       <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
     </ScalarVariable>
 
-    <ScalarVariable causality="output" name="KitchenAverageGains" valueReference="12">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="LivingRoomAverageGains" valueReference="13">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="BathroomAverageGains" valueReference="14">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="MasterBedroomAverageGains" valueReference="15">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="OfficeAverageGains" valueReference="16">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
   </ModelVariables>
 </fmiModelDescription>

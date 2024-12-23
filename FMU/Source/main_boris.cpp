@@ -6,6 +6,10 @@
 #include <cstring>
 #include <cstddef>
 #include <unistd.h> // Pour getopt
+#include <ctime>
+#include <random>
+#include <iostream>
+#include <cstdlib>
 
 #include "rapidxml_utils.hpp"
 #include "rapidxml.hpp"
@@ -20,6 +24,29 @@ std::map<int, std::string> valToRefs;
 
 Simulation sim;
 
+
+// Fonction pour générer un booléen aléatoire
+bool randomBool() {
+    std::random_device rd; // Graine pour le générateur
+    std::mt19937 gen(rd()); // Générateur Mersenne Twister
+    std::uniform_int_distribution<int> dist(0, 1); // Distribution de 0 à 1
+
+    return dist(gen) == 1;
+}
+
+// Fonction pour générer un float aléatoire borné
+float randomFloat(float min, float max) {
+    if (min > max) {
+        std::swap(min, max); // S'assurer que min est inférieur ou égal à max
+    }
+
+    // Générateur de nombre aléatoire
+    std::random_device rd; // Graine pour le générateur
+    std::mt19937 gen(rd()); // Générateur Mersenne Twister
+    std::uniform_real_distribution<float> dist(min, max);
+
+    return dist(gen);
+}
 
 /**
  * @brief Checks the modelDescription file for parameter names
@@ -63,21 +90,26 @@ void loadVariables(std::string filename) {
 }
 
 int main(int argc, char *argv[]) {
+    /* RESET */
+
     DataStore::clear();
     DataStore::clearValues();
     Configuration::setStepCount(-1);
+
+    /* DECLARATION */
 
     std::string filenameModelDescription;
     std::string filenameSimulationConfig;
 
     float temperature = 0.0;
     bool help = false;
+    int option;
 
-    int opt;
+    /* OPTIONS LINE COMMAND */
 
     // Utiliser getopt pour analyser les options
-    while ((opt = getopt(argc, argv, "hc:d:t:")) != -1) {
-        switch (opt) {
+    while ((option = getopt(argc, argv, "hc:d:t:")) != -1) {
+        switch (option) {
             case 'h': // Option -h pour afficher l'aide
                 help = true;
                 break;
@@ -116,47 +148,46 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // Afficher les résultats
+    /* READ FILES XML */
+
     if (!filenameModelDescription.empty()) {
-        std::cout << "filenameModelDescription: " << filenameModelDescription << std::endl;
-        loadVariables(Configuration::RunLocation + filenameModelDescription);
+        loadVariables(filenameModelDescription);
     } else {
-        std::cout << "filenameModelDescription not provided.\n";
+        filenameModelDescription = Configuration::RunLocation + "modelDescription.xml";
+        loadVariables(filenameModelDescription);
     }
 
-    // Afficher les résultats
     if (!filenameSimulationConfig.empty()) {
-        std::cout << "filenameSimulationConfig: " << filenameSimulationConfig << "\n" << std::endl;
-        sim.setConfigurationFile(Configuration::RunLocation + filenameSimulationConfig);
+        sim.setConfigurationFile(filenameSimulationConfig);
     } else {
-        std::cout << "filenameSimulationConfig not provided.\n";
+        filenameSimulationConfig = Configuration::RunLocation + "SimulationConfig.xml";
+        sim.setConfigurationFile(Configuration::RunLocation + filenameSimulationConfig);
     }
 
-    std::cout << "Temperature value: " << temperature <<   ".\n"<<std::endl;
+    DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");
 
-    // if (argc > 1) {
-    //     sim.setConfigurationFile(argv[1]);
-    //     std::string filenameModelDescription = argv[2];
-    // } else {
-    //     std::string filenameSimulationConfig =
-    //             Configuration::RunLocation + "SimulationConfig.xml";
-    //
-    //     sim.setConfigurationFile(filenameSimulationConfig);
-    //     std::string filenameModelDescription = Configuration::RunLocation + "modelDescription.xml";
-    //
-    //     loadVariables(filenameModelDescription);;
-    // }
+    if (!filenameModelDescription.empty()) {
+        DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", temperature);
+    } else {
+        DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", 21);
+    }
+
+
+    /* AFFICHAGE FILES XML */
+
+    std::cout << ".\n" << "filenameSimulationConfig : " << filenameSimulationConfig << ".\n" << std::endl;
+    std::cout << "filenameModelDescription : " << filenameModelDescription << ".\n" << std::endl;
+    std::cout << "Temperature value : " << temperature << ".\n" << std::endl;
 
     if (LOG.getError()) {
-        std::cout << "ERROR OK: " << std::endl;
+        std::cout << "ERROR OK " << "\n" << std::endl;
     }
 
-    std::cout << "setConfigurationFile OK: " << std::endl;
+    /* PREPROCESS : Reads in the configuration file and sends to parser.*/
+
     sim.preprocess();
-    std::cout << "Preprocess OK: " << std::endl;
+    std::cout << "PREPROCESS OK" << "\n" << std::endl;
 
-
-    std::cout << "Configuration OK: " << std::endl;
     // Configuration::info.save = true;
     // Configuration::info.windows = true;
     // Configuration::info.windowsLearn = true;
@@ -167,23 +198,121 @@ int main(int argc, char *argv[]) {
     // Configuration::info.learnep = 0.8;
     // Configuration::info.learnupdate = true;
 
+    // Exemple d'utilisation
+    float min = 18.0f;
+    float max = 22.0f;
 
-    std::cout << "Info OK: " << std::endl;
+    // Affichage d'un float aléatoire borné
+    std::cout << "Nombre aléatoire entre " << min << " et " << max << ": "
+            << randomFloat(min, max) << std::endl;
 
-    // DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");
-    DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", temperature);
+    /*
+    added: EnvironmentSiteExteriorHorizontalSkyIlluminance
+    added: EnvironmentSiteRainStatus
+    added: EnvironmentSiteOutdoorAirDrybulbTemperature
+    added: EMSwarmUpComplete
+    added: EMSepTimeStep
+    added: MainZoneMeanAirTemperature
+    added: MainZoneAirRelativeHumidity
+    added: MainZoneMeanRadiantTemperature
+    added: MainDaylightingReferencePoint1Illuminance
+     */
+    int days = Utility::calculateNumberOfDays(Configuration::info.startDay,
+                                              Configuration::info.startMonth,
+                                              Configuration::info.endDay,
+                                              Configuration::info.endMonth);
 
-    std::cout << "DataStore OK: " << std::endl;
+    std::cout << "NoMASS2.exe => days : " << days << std::endl;
 
-    for (int i = 0; i < 10; i++) {
+    int totoaltimesteps = days * 24 * Configuration::info.timeStepsPerHour;
+
+    if (totoaltimesteps <= 0) {
+        totoaltimesteps = 10;
+    }
+    std::cout << "NoMASS.exe => totoaltimesteps (days * 24 * Configuration::info.timeStepsPerHour) : " <<
+            totoaltimesteps << std::endl;
+
+    DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", randomFloat(50.0f, 80.0f));
+    DataStore::addValueS("EnvironmentSiteExteriorHorizontalSkyIlluminance", 200);
+    DataStore::addValueS("EnvironmentSiteRainStatus", randomBool());
+    DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", randomFloat(min, max));
+
+    for (int i = 0; i < 70; i++) {
+
+        // DataStore::addValueS("EMSwarmUpComplete", randomFloat(min, max));
+        // DataStore::addValueS("EMSepTimeStep", randomFloat(min, max));
+        DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", randomFloat(18.0f, 22.0f));
+        DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", randomFloat(18.0f, 22.0f));
+        // DataStore::addValueS("MainDaylightingReferencePoint1Illuminance", randomFloat(18.0f, 22.0f));
+
         sim.preTimeStep();
+        std::cout << "preTimeStep : " << std::endl;
+
         sim.timeStep();
+        std::cout << "timeStep: " << std::endl;
+
         sim.postTimeStep();
+        std::cout << "postTimeStep : " <<  std::endl;
+
     }
 
-    // int KitchenAverageGains = DataStore::getValueS("Block2:OfficeZoneMeanRadiantTemperature");
-    // std::cout << "timeStep KitchenAverageGains: " << KitchenAverageGains << std::endl;
-    // DataStore::print();
+    // // int KitchenAverageGains = DataStore::getValueS("Block2:OfficeZoneMeanRadiantTemperature");
+    // // std::cout << "timeStep KitchenAverageGains: " << KitchenAverageGains << std::endl;
+    // // DataStore::print();
+    //
+    // // DataStore::clear();
+    // // DataStore::addVariable("Block1:MasterBedroomZoneMeanAirTemperature");
+    // // DataStore::addVariable("Block1:MasterBedroomZoneAirRelativeHumidity");
+    // // DataStore::addVariable("Block1:MasterBedroomZoneMeanRadiantTemperature");
+    // DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", 21);
+    // DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", 21);
+    // DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", 21);
+    // // DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");
+    // // DataStore::addVariable("EnvironmentSiteRainStatus");
+    // DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", 18);
+    // DataStore::addValueS("EnvironmentSiteRainStatus", 0);
+    //
+    // sim.preTimeStep();
+    // sim.timeStep();
+    // int WindowState = DataStore::getValueS("Block1:MasterBedroomZoneWindowState");
+    // sim.postTimeStep();
+    //
+    // // DataStore::addVariable("Block1:MasterBedroomZoneMeanAirTemperature");
+    // // DataStore::addVariable("Block1:MasterBedroomZoneAirRelativeHumidity");
+    // // DataStore::addVariable("Block1:MasterBedroomZoneMeanRadiantTemperature");
+    // // DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");
+    // // DataStore::addVariable("EnvironmentSiteRainStatus");
+    // DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", 21);
+    // DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", 21);
+    // DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", 21);
+    // DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", 18);
+    // DataStore::addValueS("EnvironmentSiteRainStatus", 0);
+    //
+    // for (int i = 1; i < 10; i++) {
+    //     sim.preTimeStep();
+    //     sim.timeStep();
+    //     WindowState = DataStore::getValueS("Block1:MasterBedroomZoneWindowState");
+    //     // EXPECT_EQ(WindowState, 0);
+    //     sim.postTimeStep();
+    // }
+    //
+    // DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", 28);
+    // DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", 100);
+    // DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", 100);
+    // DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", 15);
+    // DataStore::addValueS("EnvironmentSiteRainStatus", 0);
+    //
+    // // for (i = 100;; i++) {
+    // //     sim.preTimeStep();
+    // //     sim.timeStep();
+    // //     //WindowState = DataStore::getValueS("Block1:MasterBedroomWindowState0");
+    // //     // int occs = DataStore::getValueS("Block1:MasterBedroomNumberOfOccupants");
+    // //     // if (occs > 0) {
+    // //     // EXPECT_EQ(WindowState, 1);
+    // //     // break;
+    // //     // }
+    // //     sim.postTimeStep();
+    // // }
 
     // WRITE RESULTATS
     sim.postprocess();

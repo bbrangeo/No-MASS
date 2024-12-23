@@ -24,10 +24,11 @@ int SimulationTime::databaseIdMonth;
 int SimulationTime::databaseIdHourOfDay;
 int SimulationTime::databaseIdMinuteOfDay;
 
-SimulationTime::SimulationTime() {}
+SimulationTime::SimulationTime() {
+}
 
 void SimulationTime::reset() {
-  SimulationTime::stepCount = 0;//-1;
+  SimulationTime::stepCount = 0; //-1;
   SimulationTime::minute = 0;
   SimulationTime::hour = 0;
   SimulationTime::day = 0;
@@ -68,15 +69,14 @@ void SimulationTime::preprocess() {
 void SimulationTime::trackTime() {
   Configuration::step();
   stepCount = Configuration::getStepCount();
-  std::cout << "Step Count: " << stepCount << std::endl;
-  std::cout << "\n " << stepCount << std::endl;
+  std::cout << "Step Count: " << stepCount << "\n " << std::endl;
 
   minute = (stepCount * Configuration::lengthOfTimestep()) / 60;
   hour = minute / 60;
   day = hour / 24;
 
   month = 1;
-  for (int mc : monthCount) {
+  for (int mc: monthCount) {
     if (mc > day || month + 1 > 12) {
       break;
     }
@@ -92,5 +92,4 @@ void SimulationTime::trackTime() {
   DataStore::addValue(databaseIdMonth, month);
   DataStore::addValue(databaseIdHourOfDay, hourOfDay);
   DataStore::addValue(databaseIdMinuteOfDay, minuteOfDay);
-
 }

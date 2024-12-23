@@ -1,0 +1,56 @@
+   *************
+   ************* ===== Final No-MASS (Detailed Occupancy) Error Summary =====
+   **  Fatal  ** 
+   **   ~~~   ** Loading XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** 
+   **   ~~~   ** END Loaded XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** Cannot find the variable: Block1:MasterBedroomWindowState
+   **   ~~~   ** This could happen for a number of reasons:
+   **   ~~~   **  - Check the Zone Name is correct in the NoMass simulation configuration file
+   **   ~~~   **  - Check that all variable are defined in the model description file
+   *************
+   *************
+   *************
+   ************* ===== Final No-MASS (Detailed Occupancy) Error Summary =====
+   **  Fatal  ** 
+   **   ~~~   ** Loading XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** 
+   **   ~~~   ** END Loaded XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** Cannot find the variable: Block1:MainZoneWindowState
+   **   ~~~   ** This could happen for a number of reasons:
+   **   ~~~   **  - Check the Zone Name is correct in the NoMass simulation configuration file
+   **   ~~~   **  - Check that all variable are defined in the model description file
+   *************
+   *************
+   *************
+   ************* ===== Final No-MASS (Detailed Occupancy) Error Summary =====
+   **  Fatal  ** 
+   **   ~~~   ** Loading XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** 
+   **   ~~~   ** END Loaded XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** Cannot find the variable: Block1:MainZoneWindowState
+   **   ~~~   ** This could happen for a number of reasons:
+   **   ~~~   **  - Check the Zone Name is correct in the NoMass simulation configuration file
+   **   ~~~   **  - Check that all variable are defined in the model description file
+   *************
+   *************
+   *************
+   ************* ===== Final No-MASS (Detailed Occupancy) Error Summary =====
+   **  Fatal  ** 
+   **   ~~~   ** Loading XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** 
+   **   ~~~   ** END Loaded XML file: -modelDescription.xml-
+   **   ~~~   ** 
+   **   ~~~   ** Cannot find the variable: Block1:MasterBedroomWindowState
+   **   ~~~   ** This could happen for a number of reasons:
+   **   ~~~   **  - Check the Zone Name is correct in the NoMass simulation configuration file
+   **   ~~~   **  - Check that all variable are defined in the model description file
+   *************
+   *************
