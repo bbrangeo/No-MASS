@@ -43,7 +43,7 @@
                     <sex>sex2</sex>
                     <bedroom>Block1:MasterBedroom</bedroom>
                     <profile>
-                        <file>Activity.xml</file>
+                        <file>HouseWindows-MD/Activity.xml</file>
                     </profile>
                 </agent>
                 <agent>
@@ -59,7 +59,7 @@
 
                     <bedroom>Block1:MasterBedroom</bedroom>
                     <profile>
-                        <file>Activity.xml</file>
+                        <file>HouseWindows-MD/Activity.xml</file>
                     </profile>
                 </agent>
             </agents>

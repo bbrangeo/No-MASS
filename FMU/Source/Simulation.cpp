@@ -87,6 +87,7 @@ void Simulation::timeStep() {
   std::cout << "shuffle buildings: " << std::endl;
 
   calculateGridCost();
+
   std::cout << "calculateGridCost " << std::endl;
 
   //local negotiations

@@ -38,6 +38,21 @@ if(CrossCompile32 OR CrossCompile64)
 endif()
 
 
+set(ASIO_LIBRARY_DIR "/opt/homebrew/Cellar/asio/1.30.2/lib")
+set(ASIO_INCLUDE_DIR "/opt/homebrew/Cellar/asio/1.30.2/include")
+
+# Rechercher Asio
+find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
+
+# Si Asio est trouvé, ajouter son répertoire d'en-tête
+if(ASIO_INCLUDE_DIR)
+  message(STATUS "Found Asio: ${ASIO_INCLUDE_DIR}")
+  include_directories(${ASIO_INCLUDE_DIR})
+else()
+  message(FATAL_ERROR "Asio not found. Install via 'brew install asio'")
+endif()
+
+
 if(CrossCompileLinux64)
   SET(CMAKE_SYSTEM_NAME Linux)
 #  set(COMPILER_PREFIX "x86_64-elf")
@@ -147,8 +162,12 @@ target_link_libraries(FMI NoMASSstatic)
 add_executable(NoMASS Source/main.cpp)
 target_link_libraries(NoMASS NoMASSstatic)
 
-add_executable(NoMASS2 Source/main_boris.cpp)
+add_executable(NoMASS2  Source/simulator_server.cpp)
+add_executable(NoMASS2Server Source/simulator_server.cpp)
+add_executable(NoMASS2Client Source/simulator_client.cpp)
+
 target_link_libraries(NoMASS2 NoMASSstatic)
+target_link_libraries(NoMASS2Server NoMASSstatic)
 
 if(UNIX OR APPLE)
   set_source_files_properties(${SRC} PROPERTIES COMPILE_FLAGS "-Werror -Wall -Wextra")
@@ -158,8 +177,6 @@ elseif(WIN32)
 endif()
 
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
-
-
 
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
