@@ -124,7 +124,7 @@ class NoMASS(object):
         """ """
         self.start = time.time()
 
-        ll = os.path.join(self.resultsLocation, "NoMASS.out.hdf")
+        ll = os.path.join(self.resultsLocation, f"{self.outFile }.hdf")
         if os.path.exists(ll):
             os.remove(ll)
 
@@ -387,7 +387,9 @@ class NoMASS(object):
             a["nsim"] = x
             with lock:  # Verrouiller l'accès au fichier
                 a.to_hdf(
-                    path_or_buf=os.path.join(self.resultsLocation, "NoMASS.out.hdf"),
+                    path_or_buf=os.path.join(
+                        self.resultsLocation, f"{self.outFile }.hdf"
+                    ),
                     key="file%i" % x,
                     mode="a",
                 )
@@ -402,7 +404,7 @@ class NoMASS(object):
             a = pd.read_csv(file)
             a["nsim"] = x
             a.to_hdf(
-                path_or_buf=os.path.join(self.resultsLocation, "NoMASS.out.hdf"),
+                path_or_buf=os.path.join(self.resultsLocation, f"{self.outFile}.hdf"),
                 key="file%i" % x,
                 mode="a",
             )
