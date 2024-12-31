@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message SensorData {
+    string parameter = 1;
+    double value = 2;
+    string unit = 3;
+}
+
+message SensorDataList {
+    repeated SensorData data = 1;
+}

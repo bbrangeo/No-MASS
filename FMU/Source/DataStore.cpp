@@ -7,10 +7,12 @@
 #include <iomanip>
 #include <string>
 #include <regex>
+
 #include "Log.hpp"
 #include "Configuration.hpp"
 #include "DataStore.hpp"
 
+using json = nlohmann::json;
 std::unordered_map<std::string, int> DataStore::variableMap;
 std::vector<std::vector<float> > DataStore::intMap;
 
@@ -69,6 +71,30 @@ void DataStore::addValue(const int &id, const float val) {
   }
 }
 
+json DataStore::getJSONVariables() {
+  json result;
+  try {
+    for (const auto& pair : variableMap) {
+      std::string name = pair.first;
+
+      // Vérifier si la clé existe
+      if (variableMap.find(name) == variableMap.end()) {
+        std::cerr << "Clé non trouvée : " << name << std::endl;
+        continue; // Passer à la prochaine clé
+      }
+      // int id = variableMap.at(name);
+      // Récupération de la valeur float
+      // float value = getValue(id);
+      result[name] = pair.first;
+    }
+  } catch (const std::exception &e) {
+    // Gestion générique des autres exceptions
+    std::cerr << "Erreur générale : " << e.what() << std::endl;
+  }
+
+  return result;
+}
+
 
 float DataStore::getValueForZone(const std::string &name,
                                  const std::string &zoneName) {
@@ -94,9 +120,9 @@ float DataStore::getValueS(const std::string &name) {
 }
 
 float DataStore::getValue(const int &id) {
-  // std::cout << "getValue: " << id << ": ";
+  std::cout << "getValue: " << id << ": ";
   float ret = intMap.at(id).back();
-  // std::cout << ret << std::endl;
+  std::cout << ret << std::endl;
 
   return ret;
 }

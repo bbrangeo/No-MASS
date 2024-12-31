@@ -13,7 +13,7 @@
 #include <random>
 #include <asio.hpp> // Bibliothèque pour gérer les sockets (utilisez `apt install libasio-dev` ou ajoutez asio à votre projet)
 
-#include <nlohmann/json.hpp> // Inclure la bibliothèque JSON
+
 
 #include "rapidxml_utils.hpp"
 #include "rapidxml.hpp"
@@ -22,8 +22,8 @@
 #include "DataStore.hpp"
 #include "Configuration.hpp"
 #include "Log.hpp"
+#include "message.pb.h"  // Classes Protobuf générées
 
-using json = nlohmann::json;
 
 using asio::ip::tcp;
 
@@ -104,51 +104,48 @@ void handle_client(tcp::socket socket) {
     float max = 22.0f;
 
     try {
-        // Lire les données
-        asio::streambuf buffer;
-        asio::read_until(socket, buffer, "\n"); // Lire jusqu'à "\n"
-        // Convertir le buffer en chaîne
-        std::string input = asio::buffer_cast<const char *>(buffer.data());
-        std::cout << "Reçu du client : " << input << std::endl;
+        // Lire la longueur du message
+        uint32_t length = 0;
+        asio::read(socket, asio::buffer(&length, sizeof(length)));
 
-        // Tenter de parser la chaîne en JSON
-        nlohmann::json json_data;
-        try {
-            json_data = nlohmann::json::parse(input);
-        } catch (const nlohmann::json::exception &e) {
-            std::cerr << "Erreur de parsing du JSON : " << e.what() << std::endl;
-            return;
-        }
+        // Lire les données sérialisées
+        std::vector<char> buffer(length);
+        asio::read(socket, asio::buffer(buffer.data(), length));
 
-        // Vérifier si c'est un tableau JSON
-        if (!json_data.is_array()) {
-            std::cerr << "Erreur : Données reçues ne sont pas un tableau JSON !" << std::endl;
-            return;
-        }
+        // Désérialiser les données Protobuf
+        SensorDataList sensor_data_list;
+        // if (!sensor_data_list.ParseFromArray(buffer.data(), length)) {
+        //     throw std::runtime_error("Erreur de parsing Protobuf");
+        // }
 
-        // Parcourir le tableau JSON
-        for (const auto &json_entry: json_data) {
-            // Vérifier si l'entrée est un objet JSON
-            if (!json_entry.is_object()) {
-                std::cerr << "Erreur : Entrée du tableau n'est pas un objet JSON !" << std::endl;
-                continue;
-            }
+        // Traiter les données
+        double total = 0.0;
+        int count = 0;
+        for (const auto& data : sensor_data_list.data()) {
+            DataStore::addValueS(data.parameter(), randomFloat(min, max));
 
-            // Accéder aux données en utilisant `value()` pour éviter les erreurs
-            std::string parameter = json_entry.value("parameter", "Inconnu");
-            double value = json_entry.value("value", 0.0);
-            std::string unit = json_entry.value("unit", "Inconnu");
-
-            DataStore::addValueS(parameter, randomFloat(min, max));
-            std::cout << "Paramètre : " << parameter << std::endl;
-            std::cout << "Valeur : " << value << "\n" << unit << std::endl;
+            std::cout << "Paramètre : " << data.parameter() << ", "
+                      << "Valeur : " << data.value() << ", "
+                      << "Unité : " << data.unit() << std::endl;
+            total += data.value();
+            count++;
         }
 
         // Affichage d'un float aléatoire borné
         std::cout << "Nombre aléatoire entre " << min << " et " << max << ": "
                 << randomFloat(min, max) << std::endl;
 
-
+        /*
+        added: EnvironmentSiteExteriorHorizontalSkyIlluminance
+        added: EnvironmentSiteRainStatus
+        added: EnvironmentSiteOutdoorAirDrybulbTemperature
+        added: EMSwarmUpComplete
+        added: EMSepTimeStep
+        added: MainZoneMeanAirTemperature
+        added: MainZoneAirRelativeHumidity
+        added: MainZoneMeanRadiantTemperature
+        added: MainDaylightingReferencePoint1Illuminance
+         */
         int days = Utility::calculateNumberOfDays(Configuration::info.startDay,
                                                   Configuration::info.startMonth,
                                                   Configuration::info.endDay,
@@ -190,18 +187,6 @@ void handle_client(tcp::socket socket) {
         std::string response = std::to_string(AverageGains) + "\n";
         asio::write(socket, asio::buffer(response));
 
-        json result = DataStore::getJSONVariables();
-        std::cout << result.dump(4) << std::endl; // JSON pretty print with 4 spaces
-
-        std::string response2 = result.dump(4) + "\n";
-        asio::write(socket, asio::buffer(response2));
-
-        // for (const std::string& name : names) {
-        //     std::cout << name << std::endl;
-        //     std::string response2 = name + "\n";
-        //     asio::write(socket, asio::buffer(response2));
-        //
-        // }
     } catch (std::exception &e) {
         std::cerr << "Erreur lors du traitement du client : " << e.what() << std::endl;
     }

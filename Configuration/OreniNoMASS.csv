@@ -1,3 +1,0 @@
-stepCount,Block1:MasterBedroomZoneNumberOfOccupants,Block1:MasterBedroomZoneAirRelativeHumidity,Block1:MasterBedroomAverageGains,Block1:MasterBedroomZoneWindowState,Block1:MasterBedroomZoneMeanAirTemperature,EMSepTimeStep,Block1:MasterBedroomDaylightingReferencePoint1Illuminance,Block1:MasterBedroomZoneMeanRadiantTemperature,EMSwarmUpComplete,EnvironmentSiteOutdoorAirDrybulbTemperature,EnvironmentSiteRainStatus,EnvironmentSiteExteriorHorizontalSkyIlluminance
-0,0.00000,52.62666,0.00000,0.00000,20.12463,,,19.07859,,0.00000,0.00000,200.00000
-1,,,48.29408,,,,,,,5.00000,,

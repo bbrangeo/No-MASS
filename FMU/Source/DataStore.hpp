@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <nlohmann/json.hpp>
 
  /**
   * @brief Stores all the data at each timestep
@@ -18,6 +19,10 @@ class DataStore {
     static int getID(const std::string &name);
     static void addValueS(const std::string &name, const float val);
     static void addValue(const int & id, const float val);
+
+    static nlohmann::json getJSONVariables();
+
+
     static float getValueS(const std::string &name);
     static float getValue(const int & id);
     static float getValueForZone(const std::string &name, const std::string &zoneName);
