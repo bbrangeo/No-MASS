@@ -24,6 +24,16 @@ if __name__ == "__main__":
     # Construire un tableau de JSON
     json_data = [
         {
+            "parameter": "EMSwarmUpComplete",
+            "value": random.uniform(0, 35),
+            "unit": "s",
+        },
+        {
+            "parameter": "EMSepTimeStep",
+            "value": 0.01,
+            "unit": "s",
+        },
+        {
             "parameter": "EnvironmentSiteOutdoorAirDrybulbTemperature",
             "value": random.uniform(18.0, 35.0),
             "unit": "°C",
@@ -34,6 +44,11 @@ if __name__ == "__main__":
             "unit": "°C",
         },
         {
+            "parameter": "EnvironmentSiteExteriorHorizontalSkyIlluminance",
+            "value": random.uniform(150.0, 180.0),
+            "unit": "%",
+        },
+        {
             "parameter": "Block1:MasterBedroomZoneMeanAirTemperature",
             "value": random.uniform(18.0, 35.0),
             "unit": "°C",
@@ -41,6 +56,16 @@ if __name__ == "__main__":
         {
             "parameter": "Block1:MasterBedroomZoneAirRelativeHumidity",
             "value": random.uniform(50.0, 80.0),
+            "unit": "%",
+        },
+        {
+            "parameter": "Block1:MasterBedroomZoneMeanRadiantTemperature",
+            "value": random.uniform(18.0, 35.0),
+            "unit": "°C",
+        },
+        {
+            "parameter": "Block1:MasterBedroomDaylightingReferencePoint1Illuminance",
+            "value": random.uniform(150.0, 180.0),
             "unit": "%",
         },
     ]

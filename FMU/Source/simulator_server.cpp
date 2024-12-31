@@ -140,13 +140,13 @@ void handle_client(tcp::socket socket) {
             std::string unit = json_entry.value("unit", "Inconnu");
 
             DataStore::addValueS(parameter, randomFloat(min, max));
-            std::cout << "Paramètre : " << parameter << std::endl;
-            std::cout << "Valeur : " << value << "\n" << unit << std::endl;
+            // std::cout << "Paramètre : " << parameter << std::endl;
+            // std::cout << "Valeur : " << value << "\n" << unit << std::endl;
         }
 
         // Affichage d'un float aléatoire borné
-        std::cout << "Nombre aléatoire entre " << min << " et " << max << ": "
-                << randomFloat(min, max) << std::endl;
+        // std::cout << "Nombre aléatoire entre " << min << " et " << max << ": "
+        //         << randomFloat(min, max) << std::endl;
 
 
         int days = Utility::calculateNumberOfDays(Configuration::info.startDay,
@@ -164,15 +164,13 @@ void handle_client(tcp::socket socket) {
         std::cout << "NoMASS.exe => totoaltimesteps (days * 24 * Configuration::info.timeStepsPerHour) : " <<
                 totoaltimesteps << std::endl;
 
-        DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", randomFloat(50.0f, 80.0f));
-        DataStore::addValueS("EnvironmentSiteExteriorHorizontalSkyIlluminance", 200);
-        DataStore::addValueS("EnvironmentSiteRainStatus", randomBool());
-
-
+        // DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", randomFloat(50.0f, 80.0f));
+        // DataStore::addValueS("EnvironmentSiteExteriorHorizontalSkyIlluminance", 200);
+        // DataStore::addValueS("EnvironmentSiteRainStatus", randomBool());
         // DataStore::addValueS("EMSwarmUpComplete", randomFloat(min, max));
         // DataStore::addValueS("EMSepTimeStep", randomFloat(min, max));
-        DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", randomFloat(18.0f, 22.0f));
-        DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", randomFloat(18.0f, 22.0f));
+        // DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", randomFloat(18.0f, 22.0f));
+        // DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", randomFloat(18.0f, 22.0f));
         // DataStore::addValueS("MainDaylightingReferencePoint1Illuminance", randomFloat(18.0f, 22.0f));
 
         sim.preTimeStep();
@@ -285,7 +283,7 @@ int main(int argc, char *argv[]) {
             sim.setConfigurationFile(filenameSimulationConfig);
         } else {
             filenameSimulationConfig = Configuration::RunLocation + "SimulationConfig.xml";
-            sim.setConfigurationFile(Configuration::RunLocation + filenameSimulationConfig);
+            sim.setConfigurationFile(filenameSimulationConfig);
         }
 
         DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");

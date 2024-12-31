@@ -14,7 +14,7 @@
 
 using json = nlohmann::json;
 std::unordered_map<std::string, int> DataStore::variableMap;
-std::vector<std::vector<float> > DataStore::intMap;
+std::vector<std::vector<float> > DataStore::intMap = {};
 
 int DataStore::variableCount = 0;
 
@@ -74,7 +74,7 @@ void DataStore::addValue(const int &id, const float val) {
 json DataStore::getJSONVariables() {
   json result;
   try {
-    for (const auto& pair : variableMap) {
+    for (const auto &pair: variableMap) {
       std::string name = pair.first;
 
       // Vérifier si la clé existe
@@ -82,10 +82,22 @@ json DataStore::getJSONVariables() {
         std::cerr << "Clé non trouvée : " << name << std::endl;
         continue; // Passer à la prochaine clé
       }
-      // int id = variableMap.at(name);
-      // Récupération de la valeur float
-      // float value = getValue(id);
-      result[name] = pair.first;
+      try {
+        // int id = variableMap.at(name);
+        // std::cout << "get: " << name << std::endl;
+        // Afficher le type de la variable
+        // std::cout << "Type de 'value' : " << typeid(getValueS(name)).name() << std::endl;
+        // std::cout << "get: " << getValueS(name) << std::endl;
+
+        // Récupération de la valeur float
+        // const float value = getValue(id);
+        // std::cout << "get: " << value << std::endl;
+        float value = getValueS(name);
+
+        result[name] = value;
+      } catch (const std::exception &e) {
+        std::cerr << "Erreur générale : " << e.what() << std::endl;
+      }
     }
   } catch (const std::exception &e) {
     // Gestion générique des autres exceptions
@@ -102,7 +114,7 @@ float DataStore::getValueForZone(const std::string &name,
 }
 
 float DataStore::getValueS(const std::string &name) {
-  //  // std::cout << "get: " << name << std::endl;
+  std::cout << "getValueS: " << name << std::endl;
   if (variableMap.find(name) == variableMap.end()) {
     LOG << "Cannot find the variable: " << name;
     LOG << "\nThis could happen for a number of reasons:\n";
@@ -112,19 +124,53 @@ float DataStore::getValueS(const std::string &name) {
     LOG << "in the model description file\n";
     LOG.error();
     exit(-1);
-    return 0;
   }
-  int id = variableMap.at(name);
-  // std::cout << "get: " << id << ": " << name << std::endl;
-  return getValue(id);
+  try {
+    int id = variableMap.at(name);
+    // Vérification de la validité de l'ID
+    if (id < 0) {
+      LOG << "Invalid ID: " << id;
+      LOG.error();
+      exit(-1);
+    }
+
+    // Appel sécurisé à getValue
+    try {
+      float value = getValue(id);
+
+      return value;
+    } catch (const std::exception &e) {
+      LOG << "Erreur DataStore::getValueS: Exception during getValue: " << e.what();
+      LOG.error();
+      exit(-1);
+    }
+  } catch (const std::exception &e) {
+    std::cerr << "Erreur DataStore::getValueS: Erreur générale : " << e.what() << std::endl;
+    exit(-1);
+  }
 }
 
 float DataStore::getValue(const int &id) {
-  std::cout << "getValue: " << id << ": ";
-  float ret = intMap.at(id).back();
-  std::cout << ret << std::endl;
+  try {
+    // Vérification si l'ID existe
+    if (id < 0 || id >= static_cast<int>(intMap.size())) {
+      std::cerr << "Erreur DataStore::getValue: ID invalide ou hors des limites : " << id <<  std::endl;
+      exit(-1);
+    }
 
-  return ret;
+    // Vérification si le vecteur est vide
+    if (intMap[id].empty()) {
+      std::cerr << "Erreur DataStore::getValue: vecteur vide pour l'ID : " << id << std::endl;
+      exit(-1);
+    }
+
+    float ret = intMap.at(id).back();
+
+    return ret;
+  } catch (const std::exception &e) {
+    std::cerr << "Erreur générale : " << e.what() << std::endl;
+    exit(-1);
+  }
 }
 
 void DataStore::clearValues() {
