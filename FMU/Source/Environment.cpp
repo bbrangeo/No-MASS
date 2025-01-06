@@ -33,7 +33,7 @@ void Environment::calculateDailyMeanTemperature() {
     dailyMeanTemperature = 0;
     for (const double temp: outDoorTemperatures) {
       dailyMeanTemperature += temp;
-      std::cout << "outdoorTemperature " << dailyMeanTemperature << "°C" << std::endl;
+      // std::cout << "outdoorTemperature " << dailyMeanTemperature << "°C" << std::endl;
 
     }
 

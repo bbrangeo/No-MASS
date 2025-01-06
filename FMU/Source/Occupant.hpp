@@ -74,6 +74,7 @@ class Occupant : public Agent {
     std::vector<double> activities;
     std::vector<int> availableActions;
     std::shared_ptr<Building_Zone> zonePtrPrevious;
+    std::shared_ptr<Building_Zone> zonePtr;
     State state; //!< Occupants current state
     StateMachine stateMachine; //!< transitions occupant between states
 

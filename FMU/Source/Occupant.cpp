@@ -20,7 +20,8 @@
 #include "Utility.hpp"
 #include "Occupant.hpp"
 
-Occupant::Occupant() {}
+Occupant::Occupant() {
+}
 
 /**
  * @brief Initialises the occupant
@@ -31,40 +32,41 @@ Occupant::Occupant() {}
  * @param zones Zones that the agent can inhabit
  */
 void Occupant::setup(int id, const ConfigStructAgent &agent,
-      const std::vector<std::shared_ptr<Building_Zone>> &zones) {
-    this->id = id;
-    datastoreIdActivity = DataStore::addVariable(idString + "Activity");
-    datastoreIdHeatGains = DataStore::addVariable(idString + "HeatGains");
-    bedroom = buildingName + agent.bedroom;
-    office = buildingName + agent.office;
-    power = agent.power;
-    if (power == 0) {
-      // no power causes problems with agent not present allso having no power
-      // so set smallest possible
-      power = std::numeric_limits<double>::epsilon();
-    }
+                     const std::vector<std::shared_ptr<Building_Zone> > &zones) {
+  std::cout << "Occupant setup" << std::endl;
+  this->id = id;
+  datastoreIdActivity = DataStore::addVariable(idString + "Activity");
+  datastoreIdHeatGains = DataStore::addVariable(idString + "HeatGains");
+  bedroom = buildingName + agent.bedroom;
+  office = buildingName + agent.office;
+  power = agent.power;
+  if (power == 0) {
+    // no power causes problems with agent not present allso having no power
+    // so set smallest possible
+    power = std::numeric_limits<double>::epsilon();
+  }
 
-    for (const std::shared_ptr<Building_Zone> & buldingZone : zones) {
-        if (Configuration::info.presencePage &&
-            buldingZone->hasActivity(3) &&
-            !buldingZone->isNamed(office)) {
-          continue;
-        }
-        if (!Configuration::info.presencePage &&
-            buldingZone->hasActivity(0) &&
-            !buldingZone->isNamed(bedroom) &&
-            buldingZone->getNumberOfActivities() == 1) {
-          continue;
-        }
-        agentZones.push_back(Occupant_Zone());
-        agentZones.back().setup(buildingID, *buldingZone, id, agent);
+  for (const std::shared_ptr<Building_Zone> &buldingZone: zones) {
+    if (Configuration::info.presencePage &&
+        buldingZone->hasActivity(3) &&
+        !buldingZone->isNamed(office)) {
+      continue;
     }
-    if (Configuration::info.presencePage) {
-      model_presenceFromPage(agent);
-    } else {
-      model_activity(agent);
+    if (!Configuration::info.presencePage &&
+        buldingZone->hasActivity(0) &&
+        !buldingZone->isNamed(bedroom) &&
+        buldingZone->getNumberOfActivities() == 1) {
+      continue;
     }
-    initialiseStates(zones);
+    agentZones.push_back(Occupant_Zone());
+    agentZones.back().setup(buildingID, *buldingZone, id, agent);
+  }
+  if (Configuration::info.presencePage) {
+    model_presenceFromPage(agent);
+  } else {
+    model_activity(agent);
+  }
+  initialiseStates(zones);
 }
 
 /**
@@ -74,46 +76,46 @@ void Occupant::setup(int id, const ConfigStructAgent &agent,
  * @param zones Zones that the occupant can inhabit
  */
 void Occupant::initialiseStates(
-                  const std::vector<std::shared_ptr<Building_Zone>> &zones) {
-    State present(-100,-1,-1,"");
-    if (Configuration::info.presencePage) {
-        State it(3, 70, 1, "IT");
-        matchStateToZone(&it, zones);
-        present.addState(it);
-    } else {
-        State sleep(0, 46, 2.55, "Sleep");
-        State passive(1, 58, 1, "Passive");
-        State audioVisual(2, 70, 1, "AudioVisual");
-        State it(3, 70, 1, "IT");
-        State cooking(4, 116, 1, "Cooking");
-        State cleaning(5, 116, 1, "Cleaning");
-        State washing(6, 116, 0, "Washing");
-        State metabolic(7, 93, 1, "Metabolic");
-        State washingAppliance(8, 116, 1, "WashingAppliance");
-        matchStateToZone(&sleep, zones);
-        matchStateToZone(&passive, zones);
-        matchStateToZone(&washingAppliance, zones);
-        matchStateToZone(&washing, zones);
-        matchStateToZone(&audioVisual, zones);
-        matchStateToZone(&cleaning, zones);
-        matchStateToZone(&cooking, zones);
-        matchStateToZone(&metabolic, zones);
-        matchStateToZone(&it, zones);
-        present.addState(sleep);
-        present.addState(passive);
-        present.addState(washingAppliance);
-        present.addState(washing);
-        present.addState(audioVisual);
-        present.addState(cleaning);
-        present.addState(cooking);
-        present.addState(metabolic);
-        present.addState(it);
-    }
-    stateMachine.addState(present);
-    State out(9, 0, 1, "Out");
-    matchStateToZone(&out, zones);
-    stateMachine.addState(out);
-    setState(out);
+  const std::vector<std::shared_ptr<Building_Zone> > &zones) {
+  State present(-100, -1, -1, "");
+  if (Configuration::info.presencePage) {
+    State it(3, 70, 1, "IT");
+    matchStateToZone(&it, zones);
+    present.addState(it);
+  } else {
+    State sleep(0, 46, 2.55, "Sleep");
+    State passive(1, 58, 1, "Passive");
+    State audioVisual(2, 70, 1, "AudioVisual");
+    State it(3, 70, 1, "IT");
+    State cooking(4, 116, 1, "Cooking");
+    State cleaning(5, 116, 1, "Cleaning");
+    State washing(6, 116, 0, "Washing");
+    State metabolic(7, 93, 1, "Metabolic");
+    State washingAppliance(8, 116, 1, "WashingAppliance");
+    matchStateToZone(&sleep, zones);
+    matchStateToZone(&passive, zones);
+    matchStateToZone(&washingAppliance, zones);
+    matchStateToZone(&washing, zones);
+    matchStateToZone(&audioVisual, zones);
+    matchStateToZone(&cleaning, zones);
+    matchStateToZone(&cooking, zones);
+    matchStateToZone(&metabolic, zones);
+    matchStateToZone(&it, zones);
+    present.addState(sleep);
+    present.addState(passive);
+    present.addState(washingAppliance);
+    present.addState(washing);
+    present.addState(audioVisual);
+    present.addState(cleaning);
+    present.addState(cooking);
+    present.addState(metabolic);
+    present.addState(it);
+  }
+  stateMachine.addState(present);
+  State out(9, 0, 1, "Out");
+  matchStateToZone(&out, zones);
+  stateMachine.addState(out);
+  setState(out);
 }
 
 /**
@@ -122,24 +124,35 @@ void Occupant::initialiseStates(
  * @param zones zones to be searched for which the state will belong
  */
 void Occupant::matchStateToZone(State *s,
-                  const std::vector<std::shared_ptr<Building_Zone>> &zones) {
-    for (unsigned int i =0; i < zones.size(); i++) {
-      if (Configuration::info.presencePage &&
-          zones[i]->hasActivity(3) &&
-          !zones[i]->isNamed(office)) {
-        continue;
-      }
-      if (!Configuration::info.presencePage &&
-          zones[i]->hasActivity(0) &&
-          !zones[i]->isNamed(bedroom) &&
-          zones[i]->getNumberOfActivities() == 1) {
-        continue;
-      }
-      if (zones[i]->hasActivity(s->getId())) {
-          s->setZonePtr(zones[i]);
-          break;
-      }
+                                const std::vector<std::shared_ptr<Building_Zone> > &zones) {
+  for (unsigned int i = 0; i < zones.size(); i++) {
+
+    if (Configuration::info.presencePage &&
+        zones[i]->hasActivity(3) &&
+        !zones[i]->isNamed(office)) {
+      std::cout << "\n\nOccupant::matchStateToZone 1" << std::endl;
+
+      continue;
     }
+
+    if (!Configuration::info.presencePage &&
+        zones[i]->hasActivity(0) &&
+        !zones[i]->isNamed(bedroom) &&
+        zones[i]->getNumberOfActivities() == 1) {
+      std::cout << "\n\nOccupant::matchStateToZone 2" << std::endl;
+
+      continue;
+    }
+
+    if (zones[i]->hasActivity(s->getId())) {
+      std::cout << "\n\n Occupant::matchStateToZone 3" << std::endl;
+      std::cout << "Occupant::matchStateToZone s->getId() " << s->getId() <<std::endl;
+      std::cout << "Occupant::matchStateToZone zones[i]->hasActivity(s->getId()) " << zones[i]->hasActivity(s->getId())<<std::endl;
+
+      s->setZonePtr(zones[i]);
+      break;
+    }
+  }
 }
 
 /**
@@ -148,24 +161,32 @@ void Occupant::matchStateToZone(State *s,
  * of zone that an agent will be interacting with.
  */
 void Occupant::step() {
-    int stepCount = Configuration::getStepCount();
-    int newStateID = activities.at(stepCount);
-    zonePtrPrevious = state.getZonePtr();
-    state = stateMachine.transistionTo(newStateID);
+  int stepCount = Configuration::getStepCount();
+  int newStateID = activities.at(stepCount);
+  zonePtrPrevious = state.getZonePtr();
 
-    std::shared_ptr<Building_Zone> zonePtr = state.getZonePtr();
+  state = stateMachine.transistionTo(newStateID);
+  zonePtr = state.getZonePtr();
 
-    metabolicRate = state.getMetabolicRate();
-    clo = state.getClo();
-    for (Occupant_Zone &agentZone : agentZones) {
-      agentZone.setClo(clo);
-      agentZone.setMetabolicRate(metabolicRate);
-      agentZone.step(*zonePtr, *zonePtrPrevious, activities);
-      agentZone.stepPre(*zonePtr, *zonePtrPrevious, activities);
+  metabolicRate = state.getMetabolicRate();
+  clo = state.getClo();
+  for (Occupant_Zone &agentZone: agentZones) {
+    // BORIS
+    if (zonePtr == nullptr || zonePtrPrevious == nullptr) {
+      continue;
     }
-    DataStore::addValue(datastoreIdHeatGains,
-                                getCurrentRadientGains(*zonePtr));
-    DataStore::addValue(datastoreIdActivity, newStateID);
+    agentZone.setClo(clo);
+    agentZone.setMetabolicRate(metabolicRate);
+    agentZone.step(*zonePtr, *zonePtrPrevious, activities);
+    agentZone.stepPre(*zonePtr, *zonePtrPrevious, activities);
+  }
+  // BORIS
+  if (zonePtr == nullptr || zonePtrPrevious == nullptr) {
+    std::cerr << "Erreur Occupant : zonePtr est null après transition à l'état " << newStateID << std::endl;
+    return;
+  }
+  DataStore::addValue(datastoreIdHeatGains, getCurrentRadientGains(*zonePtr));
+  DataStore::addValue(datastoreIdActivity, newStateID);
 }
 
 /**
@@ -174,17 +195,17 @@ void Occupant::step() {
  * saves the result to the activity array for recall later
  */
 void Occupant::model_activity(const ConfigStructAgent &agent) {
-    Model_Activity_Survival ma;
-    ma.setAge(agent.age);
-    ma.setComputer(agent.computer);
-    ma.setCivstat(agent.civstat);
-    ma.setUnemp(agent.unemp);
-    ma.setRetired(agent.retired);
-    ma.setEdtry(agent.edtry);
-    ma.setFamstat(agent.famstat);
-    ma.setSex(agent.sex);
-    ma.setProbMap(agent.profile);
-    activities = ma.preProcessActivities();
+  Model_Activity_Survival ma;
+  ma.setAge(agent.age);
+  ma.setComputer(agent.computer);
+  ma.setCivstat(agent.civstat);
+  ma.setUnemp(agent.unemp);
+  ma.setRetired(agent.retired);
+  ma.setEdtry(agent.edtry);
+  ma.setFamstat(agent.famstat);
+  ma.setSex(agent.sex);
+  ma.setProbMap(agent.profile);
+  activities = ma.preProcessActivities();
 }
 
 /**
@@ -194,22 +215,22 @@ void Occupant::model_activity(const ConfigStructAgent &agent) {
  * IT and Out
  */
 void Occupant::model_presenceFromPage(const ConfigStructAgent &agent) {
-    Model_Presence presence;
-    presence.setProbMap(agent.profile);
-    presence.calculatePresenceFromPage();
-    for (unsigned int i = 0; i < presence.size(); ++i) {
-        if (presence.at(i)) {
-            activities.push_back(3);
-        } else {
-            activities.push_back(9);
-        }
+  Model_Presence presence;
+  presence.setProbMap(agent.profile);
+  presence.calculatePresenceFromPage();
+  for (unsigned int i = 0; i < presence.size(); ++i) {
+    if (presence.at(i)) {
+      activities.push_back(3);
+    } else {
+      activities.push_back(9);
     }
+  }
 }
 
 
 double Occupant::getCurrentRadientGains(const Building_Zone &zone) const {
   double state = 0.0;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       state = agentZone.getHeatgains();
       break;
@@ -224,7 +245,7 @@ double Occupant::getPower() const {
 
 bool Occupant::getDesiredLightState(const Building_Zone &zone) const {
   bool state = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       state = agentZone.getDesiredLightState();
       break;
@@ -234,30 +255,30 @@ bool Occupant::getDesiredLightState(const Building_Zone &zone) const {
 }
 
 bool Occupant::getDesiredWindowState(const Building_Zone &zone) const {
-    bool state = false;
-    for (const Occupant_Zone &agentZone : agentZones) {
-      if (agentZone.getId() == zone.getId()) {
-        state = agentZone.getDesiredWindowState();
-        break;
-      }
+  bool state = false;
+  for (const Occupant_Zone &agentZone: agentZones) {
+    if (agentZone.getId() == zone.getId()) {
+      state = agentZone.getDesiredWindowState();
+      break;
     }
-    return state;
+  }
+  return state;
 }
 
 double Occupant::getDesiredShadeState(const Building_Zone &zone) const {
-    double state = 1.0;
-    for (const Occupant_Zone &agentZone : agentZones) {
-      if (agentZone.getId() == zone.getId()) {
-        state = agentZone.getDesiredShadeState();
-        break;
-      }
+  double state = 1.0;
+  for (const Occupant_Zone &agentZone: agentZones) {
+    if (agentZone.getId() == zone.getId()) {
+      state = agentZone.getDesiredShadeState();
+      break;
     }
-    return state;
+  }
+  return state;
 }
 
 double Occupant::getDesiredAppliance(const Building_Zone &zone) const {
   double state = 1.0;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       state = agentZone.getDesiredAppliance();
       break;
@@ -268,7 +289,7 @@ double Occupant::getDesiredAppliance(const Building_Zone &zone) const {
 
 double Occupant::getPMV(const Building_Zone &zone) const {
   double state = 0.0;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       state = agentZone.getPMV();
       break;
@@ -279,7 +300,7 @@ double Occupant::getPMV(const Building_Zone &zone) const {
 
 double Occupant::getDesiredHeatState(const Building_Zone &zone) const {
   double state = 0.0;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       state = agentZone.getDesiredHeatingSetPoint();
       break;
@@ -289,15 +310,20 @@ double Occupant::getDesiredHeatState(const Building_Zone &zone) const {
 }
 
 bool Occupant::currentlyInZone(const Building_Zone &zone) const {
-    return zone.getId() == state.getZonePtr()->getId();
+  if (state.getZonePtr() == nullptr) {
+    std::cerr << "Erreur : zonePtr est null currentlyInZone" << std::endl;
+    return false;
+  }
+
+  return zone.getId() == state.getZonePtr()->getId();
 }
 
 bool Occupant::previouslyInZone(const Building_Zone &zone) const {
-    bool inZone = false;
-    if (Configuration::getStepCount() > 0) {
-        inZone = zone.getId() == zonePtrPrevious->getId();
-    }
-    return inZone;
+  bool inZone = false;
+  if (Configuration::getStepCount() > 0) {
+    inZone = zone.getId() == zonePtrPrevious->getId();
+  }
+  return inZone;
 }
 
 bool Occupant::InteractionOnZone(const Building_Zone &zone) const {
@@ -305,8 +331,8 @@ bool Occupant::InteractionOnZone(const Building_Zone &zone) const {
 }
 
 void Occupant::postprocess() {
-  for (Occupant_Zone &agentZone : agentZones) {
-      agentZone.postprocess();
+  for (Occupant_Zone &agentZone: agentZones) {
+    agentZone.postprocess();
   }
 }
 
@@ -316,7 +342,7 @@ void Occupant::setState(const State &state) {
 
 bool Occupant::isActionWindow(const Building_Zone &zone) const {
   bool act = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       act = agentZone.isActionWindow();
       break;
@@ -327,7 +353,7 @@ bool Occupant::isActionWindow(const Building_Zone &zone) const {
 
 bool Occupant::isActionLights(const Building_Zone &zone) const {
   bool act = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       act = agentZone.isActionLights();
       break;
@@ -335,9 +361,10 @@ bool Occupant::isActionLights(const Building_Zone &zone) const {
   }
   return act;
 }
+
 bool Occupant::isActionShades(const Building_Zone &zone) const {
   bool act = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       act = agentZone.isActionShades();
       break;
@@ -345,9 +372,10 @@ bool Occupant::isActionShades(const Building_Zone &zone) const {
   }
   return act;
 }
+
 bool Occupant::isActionHeatGains(const Building_Zone &zone) const {
   bool act = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       act = agentZone.isActionHeatGains();
       break;
@@ -355,9 +383,10 @@ bool Occupant::isActionHeatGains(const Building_Zone &zone) const {
   }
   return act;
 }
+
 bool Occupant::isActionLearning(const Building_Zone &zone) const {
   bool act = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       act = agentZone.isActionLearning();
       break;
@@ -368,7 +397,7 @@ bool Occupant::isActionLearning(const Building_Zone &zone) const {
 
 bool Occupant::isActionAppliance(const Building_Zone &zone) const {
   bool act = false;
-  for (const Occupant_Zone &agentZone : agentZones) {
+  for (const Occupant_Zone &agentZone: agentZones) {
     if (agentZone.getId() == zone.getId()) {
       act = agentZone.isActionAppliance();
       break;
@@ -378,7 +407,7 @@ bool Occupant::isActionAppliance(const Building_Zone &zone) const {
 }
 
 void Occupant::postTimeStep() {
-  for (Occupant_Zone &agentZone : agentZones) {
+  for (Occupant_Zone &agentZone: agentZones) {
     agentZone.postTimeStep();
   }
 }
@@ -387,6 +416,6 @@ int Occupant::getStateID() const {
   return state.getId();
 }
 
-void Occupant::setBuildingName(const std::string & buildingName) {
+void Occupant::setBuildingName(const std::string &buildingName) {
   this->buildingName = buildingName;
 }

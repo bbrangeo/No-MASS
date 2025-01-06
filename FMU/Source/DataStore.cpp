@@ -114,7 +114,7 @@ float DataStore::getValueForZone(const std::string &name,
 }
 
 float DataStore::getValueS(const std::string &name) {
-  std::cout << "getValueS: " << name << std::endl;
+  std::cout << "  ===> DataStore::getValueS : " << name << std::endl;
   if (variableMap.find(name) == variableMap.end()) {
     LOG << "Cannot find the variable: " << name;
     LOG << "\nThis could happen for a number of reasons:\n";

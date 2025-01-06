@@ -1,50 +1,87 @@
-<fmiModelDescription description="Model with interfaces for media with moist air that will be linked to the BCVTB which models the response of the room" fmiVersion="1.0" generationDateAndTime="2012-04-17T19:12:58Z" generationTool="Dymola Version 2012 FD01 (32-bit), 2011-11-22" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}" modelIdentifier="FMI" modelName="FMI" numberOfContinuousStates="0" numberOfEventIndicators="0" variableNamingConvention="structured" version="1.2">
-  <TypeDefinitions>
-    <Type name="Modelica.Blocks.Interfaces.RealInput">
-      <RealType />
-    </Type>
-    <Type name="Modelica.Blocks.Interfaces.RealOutput">
-      <RealType />
-    </Type>
-  </TypeDefinitions>
-  <DefaultExperiment startTime="0.0" stopTime="1.0" tolerance="1E-005" />
-  <ModelVariables>
-    <ScalarVariable causality="input" name="EnvironmentSiteExteriorHorizontalSkyIlluminance" valueReference="1">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="EnvironmentSiteRainStatus" valueReference="2">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="EnvironmentSiteOutdoorAirDrybulbTemperature" valueReference="3">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="EMSwarmUpComplete" valueReference="4">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="EMSepTimeStep" valueReference="5">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="Block1:MasterBedroomZoneMeanAirTemperature" valueReference="6">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="Block1:MasterBedroomZoneAirRelativeHumidity" valueReference="7">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-	    <ScalarVariable causality="input" name="Block1:MasterBedroomZoneMeanRadiantTemperature" valueReference="8">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="input" name="Block1:MasterBedroomDaylightingReferencePoint1Illuminance" valueReference="9">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="Block1:MasterBedroomZoneNumberOfOccupants" valueReference="10">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="Block1:MasterBedroomZoneWindowState" valueReference="11">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
-    <ScalarVariable causality="output" name="Block1:MasterBedroomAverageGains" valueReference="15">
-      <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0" />
-    </ScalarVariable>
+<fmiModelDescription
+        description="Model with interfaces for media with moist air that will be linked to the BCVTB which models the response of the room"
+        fmiVersion="1.0" generationDateAndTime="2012-04-17T19:12:58Z"
+        generationTool="Dymola Version 2012 FD01 (32-bit), 2011-11-22" guid="{fd719ef5-c46e-48c7-ae95-96089a69ee64}"
+        modelIdentifier="FMI" modelName="FMI" numberOfContinuousStates="0" numberOfEventIndicators="0"
+        variableNamingConvention="structured" version="1.2">
+    <TypeDefinitions>
+        <Type name="Modelica.Blocks.Interfaces.RealInput">
+            <RealType/>
+        </Type>
+        <Type name="Modelica.Blocks.Interfaces.RealOutput">
+            <RealType/>
+        </Type>
+    </TypeDefinitions>
+    <DefaultExperiment startTime="0.0" stopTime="1.0" tolerance="1E-005"/>
+    <ModelVariables>
+        <ScalarVariable causality="input" name="EnvironmentSiteExteriorHorizontalSkyIlluminance" valueReference="1">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="EnvironmentSiteRainStatus" valueReference="2">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="EnvironmentSiteOutdoorAirDrybulbTemperature" valueReference="3">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="EMSwarmUpComplete" valueReference="4">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="EMSepTimeStep" valueReference="5">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone1:MasterBedroomZoneMeanAirTemperature" valueReference="6">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone1:MasterBedroomZoneAirRelativeHumidity" valueReference="7">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone1:MasterBedroomZoneMeanRadiantTemperature" valueReference="8">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone1:MasterBedroomZoneAirSystemSensibleHeatingRate"
+                        valueReference="8">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone1:MasterBedroomDaylightingReferencePoint1Illuminance"
+                        valueReference="9">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="output" name="Zone1:MasterBedroomZoneNumberOfOccupants" valueReference="10">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="output" name="Zone1:MasterBedroomZoneWindowState" valueReference="11">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="output" name="Zone1:MasterBedroomAverageGains" valueReference="15">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone2:KitchenZoneMeanAirTemperature" valueReference="16">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone2:KitchenZoneAirRelativeHumidity" valueReference="17">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone2:KitchenZoneMeanRadiantTemperature" valueReference="18">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone2:KitchenZone1ZoneAirSystemSensibleHeatingRate"
+                        valueReference="8">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="input" name="Zone2:KitchenDaylightingReferencePoint1Illuminance"
+                        valueReference="9">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealInput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="output" name="Zone2:KitchenZoneNumberOfOccupants" valueReference="19">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="output" name="Zone2:KitchenZoneWindowState" valueReference="20">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0"/>
+        </ScalarVariable>
+        <ScalarVariable causality="output" name="Zone2:KitchenAverageGains" valueReference="21">
+            <Real declaredType="Modelica.Blocks.Interfaces.RealOutput" start="0.0"/>
+        </ScalarVariable>
 
-  </ModelVariables>
+
+    </ModelVariables>
 </fmiModelDescription>

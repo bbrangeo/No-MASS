@@ -67,9 +67,11 @@ void SimulationTime::preprocess() {
  * @brief processes before timestep
  */
 void SimulationTime::trackTime() {
+  std::cout << "trackTime Step Count: " << stepCount << "\n " << std::endl;
+
   Configuration::step();
   stepCount = Configuration::getStepCount();
-  std::cout << "Step Count: " << stepCount << "\n " << std::endl;
+  std::cout << "trackTime Step Count: " << stepCount << "\n " << std::endl;
 
   minute = (stepCount * Configuration::lengthOfTimestep()) / 60;
   hour = minute / 60;
@@ -82,6 +84,8 @@ void SimulationTime::trackTime() {
     }
     month = month + 1;
   }
+
+  std::cout << "Month: " << month << "\n " << std::endl;
 
   hourOfDay = hour % 24;
   minuteOfDay = minute % 1440;

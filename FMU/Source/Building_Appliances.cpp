@@ -11,6 +11,7 @@
 Building_Appliances::Building_Appliances() {}
 
 void Building_Appliances::setup(const ConfigStructBuilding & b) {
+  std::cout << "Building_Appliances setup" << std::endl;
   buildingID = b.id;
   buildingString = "Building" + std::to_string(buildingID) + "_Appliance";
 

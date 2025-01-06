@@ -84,20 +84,25 @@ void Simulation::preTimeStep() {
  */
 void Simulation::timeStep() {
   std::shuffle(buildings.begin(), buildings.end(), Utility::engine);
-  std::cout << "shuffle buildings: " << std::endl;
-
+  // std::cout << "shuffle buildings: " << std::endl;
   calculateGridCost();
 
-  std::cout << "calculateGridCost " << std::endl;
-
+  std::cout << "local negotiations " << std::endl;
   //local negotiations
   for (Building &b: buildings) {
+    std::cout << "step " << std::endl;
+
     b.step();
+    std::cout << "stepAppliancesUse " << std::endl;
+
     b.stepAppliancesUse();
+    std::cout << "addContactsTo " << std::endl;
+
     // add to contracts
     b.addContactsTo(&building_negotiation, true);
   }
 
+  std::cout << "battery negotiation " << std::endl;
   // battery negotiation
   for (Building &b: buildings) {
     b.stepAppliancesUseBatteries(&building_negotiation);

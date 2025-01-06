@@ -13,6 +13,7 @@
 #include <random>
 #include <asio.hpp> // Bibliothèque pour gérer les sockets (utilisez `apt install libasio-dev` ou ajoutez asio à votre projet)
 
+
 #include <nlohmann/json.hpp> // Inclure la bibliothèque JSON
 
 #include "rapidxml_utils.hpp"
@@ -103,106 +104,96 @@ void handle_client(tcp::socket socket) {
     float min = 18.0f;
     float max = 22.0f;
 
+    // try {
+    // Lire les données
+    asio::streambuf buffer;
+    asio::read_until(socket, buffer, "\n"); // Lire jusqu'à "\n"
+    // Convertir le buffer en chaîne
+    std::string input = asio::buffer_cast<const char *>(buffer.data());
+    std::cout << "Reçu du client : " << input << std::endl;
+
+    // Tenter de parser la chaîne en JSON
+    nlohmann::json json_data;
     try {
-        // Lire les données
-        asio::streambuf buffer;
-        asio::read_until(socket, buffer, "\n"); // Lire jusqu'à "\n"
-        // Convertir le buffer en chaîne
-        std::string input = asio::buffer_cast<const char *>(buffer.data());
-        std::cout << "Reçu du client : " << input << std::endl;
-
-        // Tenter de parser la chaîne en JSON
-        nlohmann::json json_data;
-        try {
-            json_data = nlohmann::json::parse(input);
-        } catch (const nlohmann::json::exception &e) {
-            std::cerr << "Erreur de parsing du JSON : " << e.what() << std::endl;
-            return;
-        }
-
-        // Vérifier si c'est un tableau JSON
-        if (!json_data.is_array()) {
-            std::cerr << "Erreur : Données reçues ne sont pas un tableau JSON !" << std::endl;
-            return;
-        }
-
-        // Parcourir le tableau JSON
-        for (const auto &json_entry: json_data) {
-            // Vérifier si l'entrée est un objet JSON
-            if (!json_entry.is_object()) {
-                std::cerr << "Erreur : Entrée du tableau n'est pas un objet JSON !" << std::endl;
-                continue;
-            }
-
-            // Accéder aux données en utilisant `value()` pour éviter les erreurs
-            std::string parameter = json_entry.value("parameter", "Inconnu");
-            double value = json_entry.value("value", 0.0);
-            std::string unit = json_entry.value("unit", "Inconnu");
-
-            DataStore::addValueS(parameter, randomFloat(min, max));
-            // std::cout << "Paramètre : " << parameter << std::endl;
-            // std::cout << "Valeur : " << value << "\n" << unit << std::endl;
-        }
-
-        // Affichage d'un float aléatoire borné
-        // std::cout << "Nombre aléatoire entre " << min << " et " << max << ": "
-        //         << randomFloat(min, max) << std::endl;
-
-
-        int days = Utility::calculateNumberOfDays(Configuration::info.startDay,
-                                                  Configuration::info.startMonth,
-                                                  Configuration::info.endDay,
-                                                  Configuration::info.endMonth);
-
-        std::cout << "NoMASS2.exe => days : " << days << std::endl;
-
-        int totoaltimesteps = days * 24 * Configuration::info.timeStepsPerHour;
-
-        if (totoaltimesteps <= 0) {
-            totoaltimesteps = 10;
-        }
-        std::cout << "NoMASS.exe => totoaltimesteps (days * 24 * Configuration::info.timeStepsPerHour) : " <<
-                totoaltimesteps << std::endl;
-
-        // DataStore::addValueS("Block1:MasterBedroomZoneAirRelativeHumidity", randomFloat(50.0f, 80.0f));
-        // DataStore::addValueS("EnvironmentSiteExteriorHorizontalSkyIlluminance", 200);
-        // DataStore::addValueS("EnvironmentSiteRainStatus", randomBool());
-        // DataStore::addValueS("EMSwarmUpComplete", randomFloat(min, max));
-        // DataStore::addValueS("EMSepTimeStep", randomFloat(min, max));
-        // DataStore::addValueS("Block1:MasterBedroomZoneMeanAirTemperature", randomFloat(18.0f, 22.0f));
-        // DataStore::addValueS("Block1:MasterBedroomZoneMeanRadiantTemperature", randomFloat(18.0f, 22.0f));
-        // DataStore::addValueS("MainDaylightingReferencePoint1Illuminance", randomFloat(18.0f, 22.0f));
-
-        sim.preTimeStep();
-        std::cout << "preTimeStep : " << std::endl;
-
-        sim.timeStep();
-        std::cout << "timeStep: " << std::endl;
-
-        sim.postTimeStep();
-        std::cout << "postTimeStep : " << std::endl;
-
-        int AverageGains = DataStore::getValueS("Block1:MasterBedroomAverageGains");
-
-        // Envoyer la réponse au client
-        std::string response = std::to_string(AverageGains) + "\n";
-        asio::write(socket, asio::buffer(response));
-
-        json result = DataStore::getJSONVariables();
-        std::cout << result.dump(4) << std::endl; // JSON pretty print with 4 spaces
-
-        std::string response2 = result.dump(4) + "\n";
-        asio::write(socket, asio::buffer(response2));
-
-        // for (const std::string& name : names) {
-        //     std::cout << name << std::endl;
-        //     std::string response2 = name + "\n";
-        //     asio::write(socket, asio::buffer(response2));
-        //
-        // }
-    } catch (std::exception &e) {
-        std::cerr << "Erreur lors du traitement du client : " << e.what() << std::endl;
+        json_data = nlohmann::json::parse(input);
+    } catch (const nlohmann::json::exception &e) {
+        std::cerr << "Erreur de parsing du JSON : " << e.what() << std::endl;
+        return;
     }
+
+    // Vérifier si c'est un tableau JSON
+    if (!json_data.is_array()) {
+        std::cerr << "Erreur : Données reçues ne sont pas un tableau JSON !" << std::endl;
+        return;
+    }
+
+    // Parcourir le tableau JSON
+    for (const auto &json_entry: json_data) {
+        // Vérifier si l'entrée est un objet JSON
+        if (!json_entry.is_object()) {
+            std::cerr << "Erreur : Entrée du tableau n'est pas un objet JSON !" << std::endl;
+            continue;
+        }
+
+        // Accéder aux données en utilisant `value()` pour éviter les erreurs
+        std::string parameter = json_entry.value("parameter", "Inconnu");
+        std::string unit = json_entry.value("unit", "Inconnu");
+
+        double value = json_entry.value("value", 0.0);
+        DataStore::addValueS(parameter, value);
+
+        // DataStore::addValueS(parameter, randomFloat(min, max));
+        // std::cout << "Paramètre : " << parameter << std::endl;
+        // std::cout << "Valeur : " << value << "\n" << unit << std::endl;
+    }
+
+    // Affichage d'un float aléatoire borné
+    // std::cout << "Nombre aléatoire entre " << min << " et " << max << ": "
+    //         << randomFloat(min, max) << std::endl;
+
+    // DataStore::addValueS("Zone1:MasterBedroomZoneAirRelativeHumidity", randomFloat(50.0f, 80.0f));
+    // DataStore::addValueS("EnvironmentSiteExteriorHorizontalSkyIlluminance", 200);
+    // DataStore::addValueS("EnvironmentSiteRainStatus", randomBool());
+    // DataStore::addValueS("EMSwarmUpComplete", randomFloat(min, max));
+    // DataStore::addValueS("EMSepTimeStep", randomFloat(min, max));
+    // DataStore::addValueS("Zone1:MasterBedroomZoneMeanAirTemperature", randomFloat(18.0f, 22.0f));
+    // DataStore::addValueS("Zone1:MasterBedroomZoneMeanRadiantTemperature", randomFloat(18.0f, 22.0f));
+    // DataStore::addValueS("MainDaylightingReferencePoint1Illuminance", randomFloat(18.0f, 22.0f));
+    // Configuration::info.windows = true;
+    // Configuration::info.windows = false;
+    // Configuration::info.shading = false;
+    // Configuration::info.lights = false;
+
+    sim.preTimeStep();
+    std::cout << "SIMU preTimeStep" << std::endl;
+
+    sim.timeStep();
+    std::cout << "SIMU timeStep" << std::endl;
+
+    sim.postTimeStep();
+    std::cout << "SIMU postTimeStep " << std::endl;
+
+    int AverageGains = DataStore::getValueS("Zone1:MasterBedroomAverageGains");
+
+    // Envoyer la réponse au client
+    std::string response = std::to_string(AverageGains) + "\n";
+    asio::write(socket, asio::buffer(response));
+
+    json result = DataStore::getJSONVariables();
+    std::cout << result.dump(4) << std::endl; // JSON pretty print with 4 spaces
+
+    std::string response2 = result.dump(4) + "\n";
+    asio::write(socket, asio::buffer(response2));
+
+    // for (const std::string& name : names) {
+    //     std::cout << name << std::endl;
+    //     std::string response2 = name + "\n";
+    //     asio::write(socket, asio::buffer(response2));
+    //
+    // }
+    // } catch (std::exception &e) {
+    //     std::cerr << "Erreur lors du traitement du client : " << e.what() << std::endl;
+    // }
 }
 
 int main(int argc, char *argv[]) {
@@ -216,7 +207,6 @@ int main(int argc, char *argv[]) {
 
         DataStore::clear();
         DataStore::clearValues();
-        Configuration::setStepCount(-1);
 
         /* DECLARATION */
 
@@ -306,9 +296,27 @@ int main(int argc, char *argv[]) {
         }
 
         /* PREPROCESS : Reads in the configuration file and sends to parser.*/
-
         sim.preprocess();
+        // sim.setupSimulationModel();
+        Configuration::setStepCount(0);
+
         std::cout << "PREPROCESS OK" << "\n" << std::endl;
+
+
+        int days = Utility::calculateNumberOfDays(Configuration::info.startDay,
+                                                  Configuration::info.startMonth,
+                                                  Configuration::info.endDay,
+                                                  Configuration::info.endMonth);
+
+        std::cout << "NoMASS2Server.exe => calculateNumberOfDays : " << days << std::endl;
+
+        int totoaltimesteps = days * 24 * Configuration::info.timeStepsPerHour;
+
+        if (totoaltimesteps <= 0) {
+            totoaltimesteps = 10;
+        }
+        std::cout << "NoMASS2Server.exe => totoaltimesteps (days * 24 * Configuration::info.timeStepsPerHour) : " <<
+                totoaltimesteps << std::endl;
 
         while (true) {
             tcp::socket socket(io_context);

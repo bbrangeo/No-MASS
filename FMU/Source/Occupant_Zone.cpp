@@ -175,6 +175,7 @@ void Occupant_Zone::shuffleActions() {
 void Occupant_Zone::step(const Building_Zone& zone,
                       const Building_Zone& zonePrevious,
                       const std::vector<double> &activities) {
+
     bool inZone = zone.getId() == id;
     bool previouslyInZone = zonePrevious.getId() == id;
     if (isInBuilding()) {

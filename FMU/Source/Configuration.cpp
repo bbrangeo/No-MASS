@@ -30,7 +30,8 @@ std::string Configuration::FileLargeAppliance;
 std::string Configuration::FolderSmallAppliance;
 std::string Configuration::RunLocation;
 
-Configuration::Configuration() {}
+Configuration::Configuration() {
+}
 
 void Configuration::reset() {
   buildings.clear();
@@ -46,120 +47,127 @@ void Configuration::reset() {
 }
 
 void Configuration::parseLVN(rapidxml::xml_node<> *node) {
-    buildings.clear();
-    rapidxml::xml_node<> *cnode = node->first_node();
-    ConfigStructLVNNode l;
-    l.id = -1;
-    parseLVNNode(cnode, &l);
+  buildings.clear();
+  rapidxml::xml_node<> *cnode = node->first_node();
+  ConfigStructLVNNode l;
+  l.id = -1;
+  parseLVNNode(cnode, &l);
 }
 
 void Configuration::parseLVNNode(rapidxml::xml_node<> *node,
-                                                        ConfigStructLVNNode * p) {
-    rapidxml::xml_node<> *cnode = node->first_node();
-    bool children = false;
-    ConfigStructLVNNode l;
-    l.parent = p->id;
+                                 ConfigStructLVNNode *p) {
+  rapidxml::xml_node<> *cnode = node->first_node();
+  bool children = false;
+  ConfigStructLVNNode l;
+  l.parent = p->id;
+  while (cnode) {
+    if (nodeNameIs(cnode, "children")) {
+      children = true;
+    } else if (nodeNameIs(cnode, "id")) {
+      l.id = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "impedance")) {
+      l.impedance = std::stod(cnode->value());
+    }
+    cnode = cnode->next_sibling();
+  }
+  if (children) {
+    cnode = node->first_node();
     while (cnode) {
-        if (nodeNameIs(cnode, "children")) {
-          children = true;
-        } else if (nodeNameIs(cnode, "id")) {
-          l.id = std::stoi(cnode->value());
-        } else if (nodeNameIs(cnode, "impedance")) {
-          l.impedance = std::stod(cnode->value());
-        }
-        cnode = cnode->next_sibling();
-    }
-    if (children) {
-      cnode = node->first_node();
-      while (cnode) {
-          if (nodeNameIs(cnode, "children")) {
-            parseLVNNode(cnode->first_node(), &l);
-          }
-          cnode = cnode->next_sibling();
+      if (nodeNameIs(cnode, "children")) {
+        parseLVNNode(cnode->first_node(), &l);
       }
+      cnode = cnode->next_sibling();
     }
-    p->children.push_back(l.id);
-    lvn.push_back(l);
+  }
+  p->children.push_back(l.id);
+  lvn.push_back(l);
 }
 
 void Configuration::parseBuildings(rapidxml::xml_node<> *node) {
-    buildings.clear();
-    rapidxml::xml_node<> *cnode = node->first_node();
-    int id = 0;
-    while (cnode) {
-        if (nodeNameIs(cnode, "building")) {
-              parseBuilding(cnode, id);
-              id++;
-        }
-        cnode = cnode->next_sibling();
+  std::cout << "parseBuildings OK" << std::endl;
+  buildings.clear();
+  rapidxml::xml_node<> *cnode = node->first_node();
+  int id = 0;
+  while (cnode) {
+    if (nodeNameIs(cnode, "building")) {
+      std::cout << "=> parseBuilding ID=" << id << std::endl;
+      parseBuilding(cnode, id);
+      id++;
     }
+    cnode = cnode->next_sibling();
+  }
 }
 
 void Configuration::parseBuilding(rapidxml::xml_node<> *node, const int id) {
-    ConfigStructBuilding b;
-    b.id = id;
-    int zonecount = 0;
-    std::pair<std::string, ConfigStructZone> zsOut;
-    zsOut.first = "out";
-    zsOut.second.name = "out";
-    zsOut.second.activities.push_back(9);
-    zsOut.second.id = zonecount;
-    zsOut.second.active = false;
-    b.zones.insert(zsOut);
-    rapidxml::xml_node<> *cnode = node->first_node();
-    while (cnode) {
-        if (nodeNameIs(cnode, "name")) {
-            b.name = cnode->value();
-        } else if (nodeNameIs(cnode, "agents")) {
-            parseOccupants(cnode, &b);
-        } else if (nodeNameIs(cnode, "id")) {
-            b.id = std::stoi(cnode->value());
-        } else if (nodeNameIs(cnode, "appliances")) {
-            parseAppliances(cnode, &b);
-        } else if (nodeNameIs(cnode, "zone")) {
-            zonecount++;
-            std::pair<std::string, ConfigStructZone> zone;
-            zone.second.id = zonecount;
-            zone.second.active = true;
-            rapidxml::xml_node<> *znode = cnode->first_node();
-            while (znode) {
-                if (nodeNameIs(znode, "name")) {
-                    zone.first = znode->value();
-                    zone.second.name = znode->value();
-                } else if (nodeNameIs(znode, "activities")
-                          || nodeNameIs(znode, "activity")) {
-                    std::vector<std::string> s;
-                    Utility::splitCSV(znode->value(), &s);
-                    zone.second.activities = activityNamesToIds(s);
-                } else if (nodeNameIs(znode, "groundfloor")) {
-                    zone.second.groundFloor = std::stoi(znode->value());
-                } else if (nodeNameIs(znode, "windowcount")) {
-                    zone.second.windowCount = std::stoi(znode->value());
-                } else if (nodeNameIs(znode, "lightpower")) {
-                    zone.second.lightPower = std::stod(znode->value());
-                }
-                znode = znode->next_sibling();
-            }
+  ConfigStructBuilding b;
+  b.id = id;
+  int zonecount = 0;
 
-            if (zone.second.activities.empty()) {
-                LOG << "Please define activities for zone: ";
-                LOG << zone.second.name << "\n";
-                LOG << "This can be done manually in the No-MASS simulation ";
-                LOG << "configuration file\nOr through DesignBuilders";
-                LOG << " detailed occupant interface\n";
-                LOG.error();
-            }
-            b.zones.insert(zone);
+  std::pair<std::string, ConfigStructZone> zsOut;
+  zsOut.first = "out";
+  zsOut.second.name = "out";
+  zsOut.second.activities.push_back(9);
+  zsOut.second.id = zonecount;
+  zsOut.second.active = false;
+  b.zones.insert(zsOut);
+
+  rapidxml::xml_node<> *cnode = node->first_node();
+  while (cnode) {
+    if (nodeNameIs(cnode, "name")) {
+      b.name = cnode->value();
+    } else if (nodeNameIs(cnode, "agents")) {
+      std::cout << "==> parseOccupants OK" << std::endl;
+      parseOccupants(cnode, &b);
+    } else if (nodeNameIs(cnode, "id")) {
+      b.id = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "appliances")) {
+      std::cout << "==> parseAppliances OK" << std::endl;
+      parseAppliances(cnode, &b);
+    } else if (nodeNameIs(cnode, "zone")) {
+      zonecount++;
+      std::cout << "==> parseZone ID=" << zonecount << std::endl;
+      std::pair<std::string, ConfigStructZone> zone;
+      zone.second.id = zonecount;
+      zone.second.active = true;
+      rapidxml::xml_node<> *znode = cnode->first_node();
+      while (znode) {
+        if (nodeNameIs(znode, "name")) {
+          zone.first = znode->value();
+          zone.second.name = znode->value();
+        } else if (nodeNameIs(znode, "activities")
+                   || nodeNameIs(znode, "activity")) {
+          std::vector<std::string> s;
+          Utility::splitCSV(znode->value(), &s);
+          zone.second.activities = activityNamesToIds(s);
+        } else if (nodeNameIs(znode, "groundfloor")) {
+          zone.second.groundFloor = std::stoi(znode->value());
+        } else if (nodeNameIs(znode, "windowcount")) {
+          zone.second.windowCount = std::stoi(znode->value());
+        } else if (nodeNameIs(znode, "lightpower")) {
+          zone.second.lightPower = std::stod(znode->value());
         }
-        cnode = cnode->next_sibling();
+        znode = znode->next_sibling();
+      }
+
+      if (zone.second.activities.empty()) {
+        LOG << "Please define activities for zone: ";
+        LOG << zone.second.name << "\n";
+        LOG << "This can be done manually in the No-MASS simulation ";
+        LOG << "configuration file\nOr through DesignBuilders";
+        LOG << " detailed occupant interface\n";
+        LOG.error();
+      }
+      b.zones.insert(zone);
     }
-    buildings.push_back(b);
+    cnode = cnode->next_sibling();
+  }
+  buildings.push_back(b);
 }
 
 std::vector<int> Configuration::activityNamesToIds(
-          const std::vector<std::string> & activities) {
+  const std::vector<std::string> &activities) {
   std::vector<int> act;
-  for (const std::string & activity : activities) {
+  for (const std::string &activity: activities) {
     if (activity == "Sleep") {
       act.push_back(0);
     } else if (activity == "Passive") {
@@ -184,7 +192,7 @@ std::vector<int> Configuration::activityNamesToIds(
 }
 
 std::vector<double> Configuration::prioritiesToVector(
-                            const std::string & priorities) {
+  const std::string &priorities) {
   std::vector<double> prior(Utility::csvToDouble(priorities));
   while (prior.size() < 24) {
     prior.push_back(prior.back());
@@ -193,14 +201,14 @@ std::vector<double> Configuration::prioritiesToVector(
 }
 
 void Configuration::parseAppliances(rapidxml::xml_node<> *node,
-                                                            ConfigStructBuilding *b) {
+                                    ConfigStructBuilding *b) {
   rapidxml::xml_node<> *cnode = node->first_node();
   while (cnode) {
     if (nodeNameIs(cnode, "large") ||
-                nodeNameIs(cnode, "largecsv") ||
-                nodeNameIs(cnode, "largelearning") ||
-                nodeNameIs(cnode, "largelearningcsv") ||
-                            nodeNameIs(cnode, "grid")) {
+        nodeNameIs(cnode, "largecsv") ||
+        nodeNameIs(cnode, "largelearning") ||
+        nodeNameIs(cnode, "largelearningcsv") ||
+        nodeNameIs(cnode, "grid")) {
       rapidxml::xml_node<> *anode = cnode->first_node();
       ConfigStructAppliance s;
       while (anode) {
@@ -252,7 +260,7 @@ void Configuration::parseAppliances(rapidxml::xml_node<> *node,
         anode = anode->next_sibling();
       }
       b->AppliancesSmall.push_back(s);
-    }  else if (nodeNameIs(cnode, "fmi")) {
+    } else if (nodeNameIs(cnode, "fmi")) {
       rapidxml::xml_node<> *anode = cnode->first_node();
       ConfigStructAppliance s;
       while (anode) {
@@ -266,7 +274,7 @@ void Configuration::parseAppliances(rapidxml::xml_node<> *node,
         anode = anode->next_sibling();
       }
       b->AppliancesFMI.push_back(s);
-    }  else if (nodeNameIs(cnode, "battery") || nodeNameIs(cnode, "batterygridcostreward")) {
+    } else if (nodeNameIs(cnode, "battery") || nodeNameIs(cnode, "batterygridcostreward")) {
       rapidxml::xml_node<> *anode = cnode->first_node();
       ConfigStructAppliance s;
       while (anode) {
@@ -291,33 +299,34 @@ void Configuration::parseAppliances(rapidxml::xml_node<> *node,
         b->AppliancesBatteryGrid.push_back(s);
       }
     } else if (nodeNameIs(cnode, "pv") || nodeNameIs(cnode, "csv")) {
-        rapidxml::xml_node<> *anode = cnode->first_node();
-        ConfigStructAppliance s;
-        while (anode) {
-          const std::string name = nameToLower(anode);
-          const std::string value = anode->value();
-          setValFromNodeIfName(&s.fileSupply, value, name, "filename");
-          setValFromNodeIfName(&s.fileSupply, value, name, "supply");
-          setValFromNodeIfName(&s.fileDemand, value, name, "demand");
-          setValFromNodeIfName(&s.id, value, name, "id");
-          if (nodeNameIs(anode, "priority")) {
-            s.priority = prioritiesToVector(anode->value());
-          } else if (nodeNameIs(anode, "cost")) {
-            s.costVector = Utility::csvToDouble(anode->value());
-          }
-          anode = anode->next_sibling();
+      rapidxml::xml_node<> *anode = cnode->first_node();
+      ConfigStructAppliance s;
+      while (anode) {
+        const std::string name = nameToLower(anode);
+        const std::string value = anode->value();
+        setValFromNodeIfName(&s.fileSupply, value, name, "filename");
+        setValFromNodeIfName(&s.fileSupply, value, name, "supply");
+        setValFromNodeIfName(&s.fileDemand, value, name, "demand");
+        setValFromNodeIfName(&s.id, value, name, "id");
+        if (nodeNameIs(anode, "priority")) {
+          s.priority = prioritiesToVector(anode->value());
+        } else if (nodeNameIs(anode, "cost")) {
+          s.costVector = Utility::csvToDouble(anode->value());
         }
-        b->AppliancesCSV.push_back(s);
+        anode = anode->next_sibling();
       }
+      b->AppliancesCSV.push_back(s);
+    }
     cnode = cnode->next_sibling();
   }
 }
 
 void Configuration::parseOccupants(rapidxml::xml_node<> *node,
-                                                            ConfigStructBuilding *b) {
+                                   ConfigStructBuilding *b) {
   info.presencePage = false;
   rapidxml::xml_node<> *cnode = node->first_node();
   while (cnode) {
+    std::cout << "===> agent OK" << std::endl;
     if (nodeNameIs(cnode, "agent")) {
       ConfigStructAgent agent;
       rapidxml::xml_node<> *anode = cnode->first_node();
@@ -330,7 +339,7 @@ void Configuration::parseOccupants(rapidxml::xml_node<> *node,
             std::string text = pnode->name();
             if (text == "file") {
               Configuration::FileActivity = Configuration::RunLocation
-                                                + pnode->value();
+                                            + pnode->value();
             } else {
               std::pair<int, std::string> a;
               if (text == "monday") {
@@ -338,15 +347,15 @@ void Configuration::parseOccupants(rapidxml::xml_node<> *node,
                 a.first = 0;
               } else if (text == "tuesday") {
                 a.first = 1;
-              } else  if (text == "wednesday") {
+              } else if (text == "wednesday") {
                 a.first = 2;
-              } else  if (text == "thursday") {
+              } else if (text == "thursday") {
                 a.first = 3;
-              } else  if (text == "friday") {
+              } else if (text == "friday") {
                 a.first = 4;
-              } else  if (text == "saturday") {
+              } else if (text == "saturday") {
                 a.first = 5;
-              } else  if (text == "sunday") {
+              } else if (text == "sunday") {
                 a.first = 6;
               } else {
                 text.erase(0, 1);
@@ -385,7 +394,7 @@ void Configuration::parseOccupants(rapidxml::xml_node<> *node,
       }
 
       if (Configuration::info.presencePage
-        && agent.profile.size() != 7) {
+          && agent.profile.size() != 7) {
         LOG << "Occupant presence has not been defined using the Page ";
         LOG << "method\nPlease add a presence profile for each day of ";
         LOG << "the week in the No-MASS simulation configuration file";
@@ -393,8 +402,8 @@ void Configuration::parseOccupants(rapidxml::xml_node<> *node,
         LOG << "profile\n";
         LOG.error();
       } else if (!Configuration::info.presencePage
-        && agent.profile.size() != 24
-        && Configuration::FileActivity == "") {
+                 && agent.profile.size() != 24
+                 && Configuration::FileActivity == "") {
         LOG << "The activity profile is not defined for each hour ";
         LOG << "using the Said method\nPlease add a activity profile ";
         LOG << "for hour in the No-MASS simulation configuration file";
@@ -409,112 +418,117 @@ void Configuration::parseOccupants(rapidxml::xml_node<> *node,
 }
 
 void Configuration::parseModels(rapidxml::xml_node<> *node) {
-    rapidxml::xml_node<> *cnode = node->first_node();
-    while (cnode) {
-        if (nodeNameIs(cnode, "agentheatgains")) {
-            Configuration::info.agentHeatGains = std::stoi(cnode->value());
-        } else if (nodeNameIs(cnode, "lights")) {
-            Configuration::info.lights = std::stoi(cnode->value());
-        } else if (nodeNameIs(cnode, "heating")) {
-            Configuration::info.heating = std::stoi(cnode->value());
-        } else if (nodeNameIs(cnode, "windows")) {
-            parseWindows(cnode);
-        } else if (nodeNameIs(cnode, "shades")) {
-            parseShades(cnode);
-        }
-        cnode = cnode->next_sibling();
+  std::cout << "parseModels OK" << std::endl;
+
+  rapidxml::xml_node<> *cnode = node->first_node();
+  while (cnode) {
+    if (nodeNameIs(cnode, "agentheatgains")) {
+      Configuration::info.agentHeatGains = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "lights")) {
+      Configuration::info.lights = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "heating")) {
+      Configuration::info.heating = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "windows")) {
+      parseWindows(cnode);
+    } else if (nodeNameIs(cnode, "shades")) {
+      parseShades(cnode);
     }
+    cnode = cnode->next_sibling();
+  }
 }
 
 void Configuration::parseWindows(rapidxml::xml_node<> *node) {
+  std::cout << "parseWindows OK" << std::endl;
+
   windows.clear();
   rapidxml::xml_node<> *cnode = node->first_node();
   while (cnode) {
-      if (nodeNameIs(cnode, "windowslearn")) {
-        Configuration::info.windowsLearn = std::stoi(cnode->value());
-      } else if (nodeNameIs(cnode, "enabled")) {
-        Configuration::info.windows = std::stoi(cnode->value());
-      } else if (nodeNameIs(cnode, "window")) {
-        rapidxml::xml_node<> *snode = cnode->first_node();
-        std::pair<int, ConfigStructWindow> ws;
-        while (snode) {
-          const std::string name = nameToLower(snode);
-          const std::string value = snode->value();
-          setValFromNodeIfName(&ws.first, value, name, "id");
-          setValFromNodeIfName(&ws.second.aop, value, name, "aop");
-          setValFromNodeIfName(&ws.second.bopout, value, name, "bopout");
-          setValFromNodeIfName(&ws.second.shapeop, value, name, "shapeop");
-          setValFromNodeIfName(&ws.second.a01arr, value, name, "a01arr");
-          setValFromNodeIfName(&ws.second.b01inarr, value, name, "b01inarr");
-          setValFromNodeIfName(&ws.second.b01outarr, value, name, "b01outarr");
-          setValFromNodeIfName(&ws.second.b01absprevarr, value, name, "b01absprevarr");
-          setValFromNodeIfName(&ws.second.b01rnarr, value, name, "b01rnarr");
-          setValFromNodeIfName(&ws.second.a01int, value, name, "a01int");
-          setValFromNodeIfName(&ws.second.b01inint, value, name, "b01inint");
-          setValFromNodeIfName(&ws.second.b01outint, value, name, "b01outint");
-          setValFromNodeIfName(&ws.second.b01presint, value, name, "b01presint");
-          setValFromNodeIfName(&ws.second.b01rnint, value, name, "b01rnint");
-          setValFromNodeIfName(&ws.second.a01dep, value, name, "a01dep");
-          setValFromNodeIfName(&ws.second.b01outdep, value, name, "b01outdep");
-          setValFromNodeIfName(&ws.second.b01absdep, value, name, "b01absdep");
-          setValFromNodeIfName(&ws.second.b01gddep, value, name, "b01gddep");
-          setValFromNodeIfName(&ws.second.a10dep, value, name, "a10dep");
-          setValFromNodeIfName(&ws.second.b10indep, value, name, "b10indep");
-          setValFromNodeIfName(&ws.second.b10outdep, value, name, "b10outdep");
-          setValFromNodeIfName(&ws.second.b10absdep, value, name, "b10absdep");
-          setValFromNodeIfName(&ws.second.b10gddep, value, name, "b10gddep");
-          snode = snode->next_sibling();
-        }
-
-        windows.insert(ws);
+    if (nodeNameIs(cnode, "windowslearn")) {
+      Configuration::info.windowsLearn = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "enabled")) {
+      Configuration::info.windows = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "window")) {
+      rapidxml::xml_node<> *snode = cnode->first_node();
+      std::pair<int, ConfigStructWindow> ws;
+      while (snode) {
+        const std::string name = nameToLower(snode);
+        const std::string value = snode->value();
+        setValFromNodeIfName(&ws.first, value, name, "id");
+        setValFromNodeIfName(&ws.second.aop, value, name, "aop");
+        setValFromNodeIfName(&ws.second.bopout, value, name, "bopout");
+        setValFromNodeIfName(&ws.second.shapeop, value, name, "shapeop");
+        setValFromNodeIfName(&ws.second.a01arr, value, name, "a01arr");
+        setValFromNodeIfName(&ws.second.b01inarr, value, name, "b01inarr");
+        setValFromNodeIfName(&ws.second.b01outarr, value, name, "b01outarr");
+        setValFromNodeIfName(&ws.second.b01absprevarr, value, name, "b01absprevarr");
+        setValFromNodeIfName(&ws.second.b01rnarr, value, name, "b01rnarr");
+        setValFromNodeIfName(&ws.second.a01int, value, name, "a01int");
+        setValFromNodeIfName(&ws.second.b01inint, value, name, "b01inint");
+        setValFromNodeIfName(&ws.second.b01outint, value, name, "b01outint");
+        setValFromNodeIfName(&ws.second.b01presint, value, name, "b01presint");
+        setValFromNodeIfName(&ws.second.b01rnint, value, name, "b01rnint");
+        setValFromNodeIfName(&ws.second.a01dep, value, name, "a01dep");
+        setValFromNodeIfName(&ws.second.b01outdep, value, name, "b01outdep");
+        setValFromNodeIfName(&ws.second.b01absdep, value, name, "b01absdep");
+        setValFromNodeIfName(&ws.second.b01gddep, value, name, "b01gddep");
+        setValFromNodeIfName(&ws.second.a10dep, value, name, "a10dep");
+        setValFromNodeIfName(&ws.second.b10indep, value, name, "b10indep");
+        setValFromNodeIfName(&ws.second.b10outdep, value, name, "b10outdep");
+        setValFromNodeIfName(&ws.second.b10absdep, value, name, "b10absdep");
+        setValFromNodeIfName(&ws.second.b10gddep, value, name, "b10gddep");
+        snode = snode->next_sibling();
       }
-      cnode = cnode->next_sibling();
+
+      windows.insert(ws);
+    }
+    cnode = cnode->next_sibling();
   }
 }
 
 
 void Configuration::parseShades(rapidxml::xml_node<> *node) {
+  std::cout << "parseShades OK" << std::endl;
+
   shades.clear();
   rapidxml::xml_node<> *cnode = node->first_node();
   while (cnode) {
-      if (nodeNameIs(cnode, "enabled")) {
-        Configuration::info.shading = std::stoi(cnode->value());
-      } else if (nodeNameIs(cnode, "shade")) {
-        rapidxml::xml_node<> *snode = cnode->first_node();
-        std::pair<int, ConfigStructShade> ws;
-        while (snode) {
-          const std::string name = nameToLower(snode);
-          const std::string value = snode->value();
-          setValFromNodeIfName(&ws.first, value, name, "id");
-          setValFromNodeIfName(&ws.second.a01arr, value, name, "a01arr");
-          setValFromNodeIfName(&ws.second.b01inarr, value, name, "b01inarr");
-          setValFromNodeIfName(&ws.second.b01sarr, value, name, "b01sarr");
-          setValFromNodeIfName(&ws.second.a10arr, value, name, "a10arr");
-          setValFromNodeIfName(&ws.second.b10inarr, value, name, "b10inarr");
-          setValFromNodeIfName(&ws.second.b10sarr, value, name, "b10sarr");
-          setValFromNodeIfName(&ws.second.a01int, value, name, "a01int");
-          setValFromNodeIfName(&ws.second.b01inint, value, name, "b01inint");
-          setValFromNodeIfName(&ws.second.b01sint, value, name, "b01sint");
-          setValFromNodeIfName(&ws.second.a10int, value, name, "a10int");
-          setValFromNodeIfName(&ws.second.b10inint, value, name, "b10inint");
-          setValFromNodeIfName(&ws.second.b10sint, value, name, "b10sint");
-          setValFromNodeIfName(&ws.second.afullraise, value, name, "afullraise");
-          setValFromNodeIfName(&ws.second.boutfullraise, value, name, "boutfullraise");
-          setValFromNodeIfName(&ws.second.bsfullraise, value, name, "bsfullraise");
-          setValFromNodeIfName(&ws.second.bsfulllower, value, name, "bsfulllower");
-          setValFromNodeIfName(&ws.second.boutfulllower, value, name, "boutfulllower");
-          setValFromNodeIfName(&ws.second.afulllower, value, name, "afulllower");
-          setValFromNodeIfName(&ws.second.aSFlower, value, name, "asflower");
-          setValFromNodeIfName(&ws.second.bSFlower, value, name, "bsflower");
-          setValFromNodeIfName(&ws.second.shapelower, value, name, "shapelower");
-          snode = snode->next_sibling();
-        }
-        shades.insert(ws);
+    if (nodeNameIs(cnode, "enabled")) {
+      Configuration::info.shading = std::stoi(cnode->value());
+    } else if (nodeNameIs(cnode, "shade")) {
+      rapidxml::xml_node<> *snode = cnode->first_node();
+      std::pair<int, ConfigStructShade> ws;
+      while (snode) {
+        const std::string name = nameToLower(snode);
+        const std::string value = snode->value();
+        setValFromNodeIfName(&ws.first, value, name, "id");
+        setValFromNodeIfName(&ws.second.a01arr, value, name, "a01arr");
+        setValFromNodeIfName(&ws.second.b01inarr, value, name, "b01inarr");
+        setValFromNodeIfName(&ws.second.b01sarr, value, name, "b01sarr");
+        setValFromNodeIfName(&ws.second.a10arr, value, name, "a10arr");
+        setValFromNodeIfName(&ws.second.b10inarr, value, name, "b10inarr");
+        setValFromNodeIfName(&ws.second.b10sarr, value, name, "b10sarr");
+        setValFromNodeIfName(&ws.second.a01int, value, name, "a01int");
+        setValFromNodeIfName(&ws.second.b01inint, value, name, "b01inint");
+        setValFromNodeIfName(&ws.second.b01sint, value, name, "b01sint");
+        setValFromNodeIfName(&ws.second.a10int, value, name, "a10int");
+        setValFromNodeIfName(&ws.second.b10inint, value, name, "b10inint");
+        setValFromNodeIfName(&ws.second.b10sint, value, name, "b10sint");
+        setValFromNodeIfName(&ws.second.afullraise, value, name, "afullraise");
+        setValFromNodeIfName(&ws.second.boutfullraise, value, name, "boutfullraise");
+        setValFromNodeIfName(&ws.second.bsfullraise, value, name, "bsfullraise");
+        setValFromNodeIfName(&ws.second.bsfulllower, value, name, "bsfulllower");
+        setValFromNodeIfName(&ws.second.boutfulllower, value, name, "boutfulllower");
+        setValFromNodeIfName(&ws.second.afulllower, value, name, "afulllower");
+        setValFromNodeIfName(&ws.second.aSFlower, value, name, "asflower");
+        setValFromNodeIfName(&ws.second.bSFlower, value, name, "bsflower");
+        setValFromNodeIfName(&ws.second.shapelower, value, name, "shapelower");
+        snode = snode->next_sibling();
       }
-      cnode = cnode->next_sibling();
+      shades.insert(ws);
+    }
+    cnode = cnode->next_sibling();
   }
 }
-
 
 
 /**
@@ -524,11 +538,13 @@ void Configuration::parseShades(rapidxml::xml_node<> *node) {
  * @param filename location of the simulation file to parse.
  */
 
-void Configuration::parseConfiguration(const std::string & filename) {
+void Configuration::parseConfiguration(const std::string &filename) {
+  std::cout << "parseConfiguration OK" << std::endl;
+
   namespace rx = rapidxml;
-  rx::file<> xmlFile(filename.c_str());  // Default template is char
+  rx::file<> xmlFile(filename.c_str()); // Default template is char
   rx::xml_document<> doc;
-  doc.parse<0>(xmlFile.data());    // 0 means default parse flags
+  doc.parse<0>(xmlFile.data()); // 0 means default parse flags
   rx::xml_node<> *root_node = doc.first_node("simulation");
   rx::xml_node<> *node = root_node->first_node();
   while (node) {
@@ -549,25 +565,25 @@ void Configuration::parseConfiguration(const std::string & filename) {
     setValFromNodeIfName(&info.ShadeClosedDuringNight, value, name, "shadeclosedduringnight");
 
     if (nodeNameIs(name, "seed")) {
-        Utility::setSeed(std::stoi(node->value()));
+      Utility::setSeed(std::stoi(node->value()));
     } else if (nodeNameIs(name, "precision")) {
-        Configuration::info.precision = std::stoi(node->value());
+      Configuration::info.precision = std::stoi(node->value());
     } else if (nodeNameIs(name, "gridcost")) {
-        Configuration::info.GridCost = Utility::csvToDouble(node->value());
+      Configuration::info.GridCost = Utility::csvToDouble(node->value());
     } else if (nodeNameIs(name, "output")) {
       rapidxml::xml_node<> *cnode = node->first_node();
       while (cnode) {
-          if (nodeNameIs(cnode, "regex")) {
-            outputRegexs.push_back(cnode->value());
-          }
-          cnode = cnode->next_sibling();
+        if (nodeNameIs(cnode, "regex")) {
+          outputRegexs.push_back(cnode->value());
+        }
+        cnode = cnode->next_sibling();
       }
     } else if (nodeNameIs(name, "models")) {
-       parseModels(node);
+      parseModels(node);
     } else if (nodeNameIs(name, "buildings")) {
-        parseBuildings(node);
+      parseBuildings(node);
     } else if (nodeNameIs(name, "lvn")) {
-        parseLVN(node);
+      parseLVN(node);
     }
 
     node = node->next_sibling();
@@ -582,23 +598,23 @@ void Configuration::parseConfiguration(const std::string & filename) {
   }
 }
 
-ConfigStructZone Configuration::getZone(std::string* zoneName) {
+ConfigStructZone Configuration::getZone(std::string *zoneName) {
   ConfigStructZone zone;
-  for (ConfigStructBuilding b : buildings) {
+  for (ConfigStructBuilding b: buildings) {
     if (b.zones.find(*zoneName) != b.zones.end()) {
-        zone = b.zones.at(*zoneName);
-        break;
+      zone = b.zones.at(*zoneName);
+      break;
     }
   }
   return zone;
 }
 
-bool Configuration::isZoneGroundFloor(std::string* zoneName) {
+bool Configuration::isZoneGroundFloor(std::string *zoneName) {
   bool floor = false;
-  for (ConfigStructBuilding b : buildings) {
+  for (ConfigStructBuilding b: buildings) {
     if (b.zones.find(*zoneName) != b.zones.end()) {
-        floor = b.zones.at(*zoneName).groundFloor;
-        break;
+      floor = b.zones.at(*zoneName).groundFloor;
+      break;
     }
   }
   return floor;
@@ -606,15 +622,15 @@ bool Configuration::isZoneGroundFloor(std::string* zoneName) {
 
 
 double Configuration::lengthOfTimestep() {
-    return 3600 / Configuration::info.timeStepsPerHour;
+  return 3600 / Configuration::info.timeStepsPerHour;
 }
 
 void Configuration::step() {
-    stepCount++;
+  stepCount++;
 }
 
 int Configuration::getStepCount() {
-    return stepCount;
+  return stepCount;
 }
 
 void Configuration::setStepCount(const int stepcount) {
@@ -622,81 +638,81 @@ void Configuration::setStepCount(const int stepcount) {
 }
 
 void Configuration::timeSteps() {
-    int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    int days = daysInMonth[info.startMonth - 1] - (info.startDay - 1);
-    for (int i = info.startMonth; i < info.endMonth -1; i++) {
-            days += daysInMonth[i];
-    }
-    if (info.startMonth != info.endMonth) {
-            days += info.endDay;
-    }
-    int hours = days * 24;
-    Configuration::info.timeSteps = hours * info.timeStepsPerHour;
+  int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  int days = daysInMonth[info.startMonth - 1] - (info.startDay - 1);
+  for (int i = info.startMonth; i < info.endMonth - 1; i++) {
+    days += daysInMonth[i];
+  }
+  if (info.startMonth != info.endMonth) {
+    days += info.endDay;
+  }
+  int hours = days * 24;
+  Configuration::info.timeSteps = hours * info.timeStepsPerHour;
 }
 
 const std::string Configuration::nameToLower(
-                                            const rapidxml::xml_node<> *node) {
-    std::string name(node->name());
+  const rapidxml::xml_node<> *node) {
+  std::string name(node->name());
   for (unsigned int i = 0; i < name.size(); i++) {
     name[i] = std::tolower(name[i]);
   }
   return name;
 }
 
-bool Configuration::nodeNameIs(const std::string & name, const char * str2) {
+bool Configuration::nodeNameIs(const std::string &name, const char *str2) {
   return strComp(name.c_str(), str2);
 }
 
 bool Configuration::nodeNameIs(const rapidxml::xml_node<> *node,
-                                                        const char * str2) {
+                               const char *str2) {
   return strComp(nameToLower(node).c_str(), str2);
 }
 
-bool Configuration::strComp(const char * str1, const char * str2) {
+bool Configuration::strComp(const char *str1, const char *str2) {
   return std::strcmp(str1, str2) == 0;
 }
 
-void Configuration::setValFromNodeIfName(int * val,
-                              const std::string & value,
-                              const std::string & name,
-                              const char * expected) {
-    if (nodeNameIs(name, expected)) {
-        *val = std::stoi(value);
-    }
+void Configuration::setValFromNodeIfName(int *val,
+                                         const std::string &value,
+                                         const std::string &name,
+                                         const char *expected) {
+  if (nodeNameIs(name, expected)) {
+    *val = std::stoi(value);
+  }
 }
 
-void Configuration::setValFromNodeIfName(bool * val,
-                              const std::string & value,
-                              const std::string & name,
-                              const char * expected) {
-    if (nodeNameIs(name, expected)) {
-        *val = std::stoi(value);
-    }
+void Configuration::setValFromNodeIfName(bool *val,
+                                         const std::string &value,
+                                         const std::string &name,
+                                         const char *expected) {
+  if (nodeNameIs(name, expected)) {
+    *val = std::stoi(value);
+  }
 }
 
-void Configuration::setValFromNodeIfName(double * val,
-                              const std::string & value,
-                              const std::string & name,
-                              const char * expected) {
-    if (nodeNameIs(name, expected)) {
-        *val = std::stod(value);
-    }
+void Configuration::setValFromNodeIfName(double *val,
+                                         const std::string &value,
+                                         const std::string &name,
+                                         const char *expected) {
+  if (nodeNameIs(name, expected)) {
+    *val = std::stod(value);
+  }
 }
 
-void Configuration::setValFromNodeIfName(float * val,
-                              const std::string & value,
-                              const std::string & name,
-                              const char * expected) {
-    if (nodeNameIs(name, expected)) {
-        *val = std::stof(value);
-    }
+void Configuration::setValFromNodeIfName(float *val,
+                                         const std::string &value,
+                                         const std::string &name,
+                                         const char *expected) {
+  if (nodeNameIs(name, expected)) {
+    *val = std::stof(value);
+  }
 }
 
-void Configuration::setValFromNodeIfName(std::string * val,
-                              const std::string & value,
-                              const std::string & name,
-                              const char * expected) {
-    if (nodeNameIs(name, expected)) {
-        *val = value;
-    }
+void Configuration::setValFromNodeIfName(std::string *val,
+                                         const std::string &value,
+                                         const std::string &name,
+                                         const char *expected) {
+  if (nodeNameIs(name, expected)) {
+    *val = value;
+  }
 }

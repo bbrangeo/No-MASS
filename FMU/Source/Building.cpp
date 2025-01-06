@@ -21,6 +21,7 @@ Building::Building() {}
   * @param buildingInput The configuration struct which values have been populated form configuration file
   */
 void Building::setup(const ConfigStructBuilding &buildingInput) {
+    std::cout << "Building setup" << std::endl;
     name = buildingInput.name;
     id = buildingInput.id;
     std::string buildingID = "Building" + std::to_string(id) + "_";

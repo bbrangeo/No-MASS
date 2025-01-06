@@ -27,6 +27,8 @@ void Building_Zone::setup(const ConfigStructZone &zoneStruct) {
     lightState = 0;
     windowState = 0;
 
+    std::cout << "Building_Zone setup active : " <<  active << std::endl;
+
     if (active) {
         int windowCount = zoneStruct.windowCount;
         setGroundFloor(Configuration::isZoneGroundFloor(&name));
