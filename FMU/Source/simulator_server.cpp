@@ -173,11 +173,11 @@ void handle_client(tcp::socket socket) {
     sim.postTimeStep();
     std::cout << "SIMU postTimeStep " << std::endl;
 
-    int AverageGains = DataStore::getValueS("Zone1:MasterBedroomAverageGains");
+    // int AverageGains = DataStore::getValueS("Zone1:MasterBedroomAverageGains");
 
     // Envoyer la réponse au client
-    std::string response = std::to_string(AverageGains) + "\n";
-    asio::write(socket, asio::buffer(response));
+    // std::string response = std::to_string(AverageGains) + "\n";
+    // asio::write(socket, asio::buffer(response));
 
     json result = DataStore::getJSONVariables();
     std::cout << result.dump(4) << std::endl; // JSON pretty print with 4 spaces
@@ -276,14 +276,13 @@ int main(int argc, char *argv[]) {
             sim.setConfigurationFile(filenameSimulationConfig);
         }
 
-        DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");
+        // DataStore::addVariable("EnvironmentSiteOutdoorAirDrybulbTemperature");
 
-        if (!filenameModelDescription.empty()) {
-            DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", temperature);
-        } else {
-            DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", 21);
-        }
-
+        // if (!filenameModelDescription.empty()) {
+        //     DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", temperature);
+        // } else {
+        //     DataStore::addValueS("EnvironmentSiteOutdoorAirDrybulbTemperature", 21);
+        // }
 
         /* AFFICHAGE FILES XML */
 
@@ -298,7 +297,7 @@ int main(int argc, char *argv[]) {
         /* PREPROCESS : Reads in the configuration file and sends to parser.*/
         sim.preprocess();
         // sim.setupSimulationModel();
-        Configuration::setStepCount(0);
+        Configuration::setStepCount(-1);
 
         std::cout << "PREPROCESS OK" << "\n" << std::endl;
 
@@ -310,13 +309,13 @@ int main(int argc, char *argv[]) {
 
         std::cout << "NoMASS2Server.exe => calculateNumberOfDays : " << days << std::endl;
 
-        int totoaltimesteps = days * 24 * Configuration::info.timeStepsPerHour;
+        int totaltimesteps = days * 24 * Configuration::info.timeStepsPerHour;
 
-        if (totoaltimesteps <= 0) {
-            totoaltimesteps = 10;
+        if (totaltimesteps <= 0) {
+            totaltimesteps = 10;
         }
-        std::cout << "NoMASS2Server.exe => totoaltimesteps (days * 24 * Configuration::info.timeStepsPerHour) : " <<
-                totoaltimesteps << std::endl;
+        std::cout << "NoMASS2Server.exe => totaltimesteps (days * 24 * Configuration::info.timeStepsPerHour) : " <<
+                totaltimesteps << std::endl;
 
         while (true) {
             tcp::socket socket(io_context);

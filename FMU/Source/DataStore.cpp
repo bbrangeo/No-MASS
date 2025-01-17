@@ -34,9 +34,9 @@ int DataStore::addVariable(const std::string &name) {
       std::smatch match;
       if (std::regex_match(name, match, rgx)) {
         if (variableMap.find(name) == variableMap.end()) {
-          // std::cout << "addVariable: " << ret << ": " << name << std::endl;
+          std::cout << "addVariable: " << ret << ": " << name << std::endl;
           ret = DataStore::variableCount;
-          // std::cout << "addVariable: " << ret << ": " << name << std::endl;
+          std::cout << "addVariable: " << ret << ": " << name << std::endl;
           variableMap.insert(std::make_pair(name, ret));
           intMap.push_back(std::vector<float>());
           DataStore::variableCount++;

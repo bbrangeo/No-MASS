@@ -11,18 +11,23 @@ Occupant_Action_Window::Occupant_Action_Window() {
 }
 
 void Occupant_Action_Window::setDailyMeanTemperature(
-                                      double dailyMeanTemperature) {
-  this->dailyMeanTemperature = dailyMeanTemperature;
+    double dailyMeanTemperature) {
+    this->dailyMeanTemperature = dailyMeanTemperature;
 }
 
 void Occupant_Action_Window::setup(int windowID, int id) {
-  variableNameWindowDesire = DataStore::addVariable("Occupant_Window_Desire_"
-                           + std::to_string(id) + "_"
-                           + std::to_string(windowID));
+    variableNameWindowDesire = DataStore::addVariable("Occupant_Window_Desire_"
+                                                      + std::to_string(id) + "_"
+                                                      + std::to_string(windowID));
+
+    std::cerr << "Occupant_Action_Window::setup variableNameWindowDesire " << "Occupant_Window_Desire_"
+            + std::to_string(id) + "_"
+            + std::to_string(windowID) << std::endl;
 }
 
-void Occupant_Action_Window::saveResult() {
-  DataStore::addValue(variableNameWindowDesire, result);
+void Occupant_Action_Window::saveResult() const {
+    std::cerr << "Occupant_Action_Window::saveResult  " << variableNameWindowDesire << " " << result << std::endl;
+    // DataStore::addValue(variableNameWindowDesire, result);
 }
 
 int Occupant_Action_Window::durationOpen() const {

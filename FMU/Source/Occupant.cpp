@@ -50,20 +50,28 @@ void Occupant::setup(int id, const ConfigStructAgent &agent,
     if (Configuration::info.presencePage &&
         buldingZone->hasActivity(3) &&
         !buldingZone->isNamed(office)) {
+      std::cout << "Occupant::setup configuration 1 : " << std::endl;
+
       continue;
     }
     if (!Configuration::info.presencePage &&
         buldingZone->hasActivity(0) &&
         !buldingZone->isNamed(bedroom) &&
         buldingZone->getNumberOfActivities() == 1) {
+      std::cout << "Occupant::setup configuration 2 : " << std::endl;
+
       continue;
     }
+    std::cout << "Occupant::setup Occupant_Zone" << std::endl;
+
     agentZones.push_back(Occupant_Zone());
     agentZones.back().setup(buildingID, *buldingZone, id, agent);
   }
   if (Configuration::info.presencePage) {
+    std::cout << "Occupant::setup model_presenceFromPage" << std::endl;
     model_presenceFromPage(agent);
   } else {
+    std::cout << "Occupant::setup model_activity" << std::endl;
     model_activity(agent);
   }
   initialiseStates(zones);
@@ -146,9 +154,8 @@ void Occupant::matchStateToZone(State *s,
 
     if (zones[i]->hasActivity(s->getId())) {
       std::cout << "\n\n Occupant::matchStateToZone 3" << std::endl;
-      std::cout << "Occupant::matchStateToZone s->getId() " << s->getId() <<std::endl;
-      std::cout << "Occupant::matchStateToZone zones[i]->hasActivity(s->getId()) " << zones[i]->hasActivity(s->getId())<<std::endl;
-
+      // std::cout << "Occupant::matchStateToZone s->getId() " << s->getId() <<std::endl;
+      // std::cout << "Occupant::matchStateToZone zones[i]->hasActivity(s->getId()) " << zones[i]->hasActivity(s->getId())<<std::endl;
       s->setZonePtr(zones[i]);
       break;
     }
@@ -171,22 +178,28 @@ void Occupant::step() {
   metabolicRate = state.getMetabolicRate();
   clo = state.getClo();
   for (Occupant_Zone &agentZone: agentZones) {
+
     // BORIS
     if (zonePtr == nullptr || zonePtrPrevious == nullptr) {
       continue;
     }
+
     agentZone.setClo(clo);
     agentZone.setMetabolicRate(metabolicRate);
+
     agentZone.step(*zonePtr, *zonePtrPrevious, activities);
     agentZone.stepPre(*zonePtr, *zonePtrPrevious, activities);
+
   }
+  DataStore::addValue(datastoreIdActivity, newStateID);
+
   // BORIS
-  if (zonePtr == nullptr || zonePtrPrevious == nullptr) {
+  if (zonePtr == nullptr) {
     std::cerr << "Erreur Occupant : zonePtr est null après transition à l'état " << newStateID << std::endl;
     return;
   }
   DataStore::addValue(datastoreIdHeatGains, getCurrentRadientGains(*zonePtr));
-  DataStore::addValue(datastoreIdActivity, newStateID);
+
 }
 
 /**

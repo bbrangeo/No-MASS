@@ -2,7 +2,7 @@
 FROM ubuntu:latest AS base
 
 # Définit la plateforme si nécessaire (AMD64)
-ARG TARGETPLATFORM=linux/amd64
+#ARG TARGETPLATFORM=linux/amd64
 
 # Copier uniquement le répertoire /energyplus/build/Products de l'image source
 FROM energyplus:latest AS energyplus_image
@@ -10,7 +10,7 @@ FROM energyplus:latest AS energyplus_image
 # Préparer la nouvelle image
 FROM ubuntu:latest
 
-# Étape 2 : Installer les outils système et Python 3.10
+# Étape 2 : Installer les outils système et Python 3.12
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     python3.12 \
@@ -19,9 +19,14 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libssl-dev \
     libffi-dev \
+    git \
     python3-dev \
     cmake\
     build-essential \
+    libasio-dev \
+    nlohmann-json3-dev \
+    libabsl-dev \
+    protobuf-compiler \
     && apt-get clean
 
 # Étape 3 : Créer un environnement virtuel
@@ -38,10 +43,10 @@ COPY ./rapidxml /app/rapidxml
 RUN mkdir /app/build
 
 ENV CXX=g++
-ENV CXXFLAGS="-std=c++11"
+ENV CXXFLAGS="-std=c++17 -fPIC"
 
 # Étape 7 : Compiler les fichiers FMU
-RUN cd /app/build; cmake  ../FMU -DTests=on -DCMAKE_CXX_STANDARD=11 -DCMAKE_BUILD_TYPE=DEBUG; make -j$(nproc)
+RUN cd /app/build; cmake  ../FMU -DTests=on -DCMAKE_CXX_STANDARD=17 -DCMAKE_BUILD_TYPE=DEBUG; make -j$(nproc)
 
 # Étape 9 : Ajouter l'environnement virtuel au PATH
 ENV PATH="/app/venv/bin:${PATH}"

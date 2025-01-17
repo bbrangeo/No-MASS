@@ -71,6 +71,12 @@ No-MASS can be built on windows using mingw-w64 or alternatively visual studio. 
 - Use the CMake GUI to create the visual studio project or mingw-w64 make files from the FMU directory in the checked out source folder.
 - Open in visual studio to compile or use make command as in linux.
 
+## Install WINDOWS
+
+Install [msys2](https://github.com/msys2/msys2-installer/releases/download/2024-12-08/msys2-x86_64-20241208.exe)
+``
+pacman -S mingw-w64-nlohmann-json mingw-w64-asio mingw-w64-cmake mingw-w64-gcc
+``
 
 ## Running
 

@@ -494,7 +494,8 @@ void Configuration::parseShades(rapidxml::xml_node<> *node) {
   while (cnode) {
     if (nodeNameIs(cnode, "enabled")) {
       Configuration::info.shading = std::stoi(cnode->value());
-    } else if (nodeNameIs(cnode, "shade")) {
+    }
+    else if (nodeNameIs(cnode, "shade")) {
       rapidxml::xml_node<> *snode = cnode->first_node();
       std::pair<int, ConfigStructShade> ws;
       while (snode) {

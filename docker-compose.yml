@@ -1,18 +1,35 @@
 services:
+#  energyplus:
+##    platform: linux/amd64
+#    platform: linux/arm64
+#    build:
+#      context: .
+#      dockerfile: energyplus/Dockerfile
+#    image: energyplus:latest
+#    container_name: energyplus
+#    networks:
+#      - my-network  # On rattache également ce service au même réseau
+
   nomass_fmu:
-    platform: linux/amd64
+#    platform: linux/amd64
+    platform: linux/arm64
     build:
       context: .
       dockerfile: Dockerfile
     image: nomass:latest
+#    depends_on:
+#      - energyplus
     container_name: nomass_fmu
     working_dir: /app/build
     entrypoint: ["tests/runUnitTests"]
+    networks:
+      - my-network  # On rattache également ce service au même réseau
 
   jupyterlab:
     image: nomass:latest
     container_name: nomass_jupyter
     depends_on:
+#      - energyplus
       - nomass_fmu
     ports:
       - "8888:8888"
@@ -22,3 +39,9 @@ services:
       - ./Scripts:/app/build/Scripts
     working_dir: /app/build
     command: ["jupyter-lab", "--ip=0.0.0.0", "--no-browser", "--allow-root"]
+    networks:
+      - my-network  # On rattache également ce service au même réseau
+
+networks:
+  my-network:
+    driver: bridge

@@ -17,7 +17,7 @@ class Occupant_Action_Window : public Occupant_Action {
   Occupant_Action_Window();
   void setup(int windowID, int id);
   void setDailyMeanTemperature(double dailyMeanTemperature);
-  void saveResult();
+  void saveResult() const;
   int durationOpen() const;
 
  protected:

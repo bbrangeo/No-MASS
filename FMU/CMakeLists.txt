@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.11)
 
 if (APPLE)
     cmake_policy(SET CMP0042 NEW)
@@ -37,12 +37,27 @@ if (CrossCompile32 OR CrossCompile64)
 
 endif ()
 
+find_program(C_COMPILER NAMES gcc)
+SET(C_COMPILER gcc)
+find_program(CXX_COMPILER NAMES g++)
+SET(CXX_COMPILER g++)
 
-set(ASIO_LIBRARY_DIR "/opt/homebrew/Cellar/asio/1.30.2/lib")
-set(ASIO_INCLUDE_DIR "/opt/homebrew/Cellar/asio/1.30.2/include")
+find_package(ASIO 1.3.0 EXACT MODULE)
 
-# Rechercher Asio
-find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
+if (APPLE)
+    set(ASIO_INCLUDE_DIR "/opt/homebrew/Cellar/asio/1.30.2/include")
+    # Rechercher Asio
+    find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
+else ()
+    find_path(
+        ASIO_INCLUDE_DIR
+        "asio.hpp"
+        HINTS
+          /usr/include
+          /usr/local/include
+        REQUIRED
+    )
+endif ()
 
 # Si Asio est trouvé, ajouter son répertoire d'en-tête
 if (ASIO_INCLUDE_DIR)
@@ -52,41 +67,41 @@ else ()
     message(FATAL_ERROR "Asio not found. Install via 'brew install asio'")
 endif ()
 
+find_package(nlohmann_json 3.11.3 REQUIRED)
 
-set(JSON_INCLUDE_DIR "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
-# Rechercher Json
-find_path(JSON_INCLUDE_DIR NAMES json.hpp PATH_SUFFIXES json)
+include(FetchContent)
+
+FetchContent_Declare(
+        json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.11.3 # Version à vérifier
+)
+
+FetchContent_MakeAvailable(json)
+
+if (APPLE)
+    set(JSON_INCLUDE_DIR "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
+    # Rechercher Json
+    find_path(JSON_INCLUDE_DIR NAMES json.hpp PATH_SUFFIXES json)
+else ()
+#    find_path(
+#        JSON_INCLUDE_DIR
+#        "json.hpp"
+#        HINTS
+#          /usr/include
+#          /usr/local/include
+#        REQUIRED
+#    )
+endif ()
 
 # Si Json est trouvé, ajouter son répertoire d'en-tête
-if (JSON_INCLUDE_DIR)
-    message(STATUS "Found nlohmann: ${JSON_INCLUDE_DIR}")
-    include_directories(${message})
-else ()
-    message(FATAL_ERROR "Json not found. Install via 'brew install nlohmann-json'")
-endif ()
+#if (JSON_INCLUDE_DIR)
+#    message(STATUS "Found nlohmann: ${JSON_INCLUDE_DIR}")
+#    include_directories(${message})
+#else ()
+#    message(FATAL_ERROR "Json not found. Install via 'brew install nlohmann-json'")
+#endif ()
 
-
-
-set(ABSEIL_INCLUDE_DIR "/opt/homebrew/Cellar/abseil/20240722.0/include/")
-
-# Si Json est trouvé, ajouter son répertoire d'en-tête
-if (ABSEIL_INCLUDE_DIR)
-    message(STATUS "Found abseil: ${ABSEIL_INCLUDE_DIR}")
-    include_directories(${message})
-else ()
-    message(FATAL_ERROR "abseil not found. Install via 'brew install abseil'")
-endif ()
-
-# Rechercher Asio
-find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
-
-# Si Asio est trouvé, ajouter son répertoire d'en-tête
-if (ASIO_INCLUDE_DIR)
-    message(STATUS "Found Asio: ${ASIO_INCLUDE_DIR}")
-    include_directories(${ASIO_INCLUDE_DIR})
-else ()
-    message(FATAL_ERROR "Asio not found. Install via 'brew install asio'")
-endif ()
 
 if (CrossCompileLinux64)
     SET(CMAKE_SYSTEM_NAME Linux)
@@ -198,42 +213,57 @@ target_link_libraries(FMI NoMASSstatic)
 add_executable(NoMASS Source/main.cpp)
 target_link_libraries(NoMASS NoMASSstatic)
 
-include(FetchContent)
-
-FetchContent_Declare(
-        json
-        GIT_REPOSITORY https://github.com/nlohmann/json.git
-        GIT_TAG v3.11.3 # Version à vérifier
-)
-
-FetchContent_MakeAvailable(json)
-
-find_package(nlohmann_json REQUIRED)
 
 # Trouver Protobuf
-find_package(Protobuf REQUIRED)
+#find_package(Protobuf REQUIRED)
+#find_package(absl CONFIG REQUIRED)
 
-find_package(absl CONFIG REQUIRED)
 
 # Ajouter les fichiers proto
-set(PROTO_FILES message.proto)
+#set(PROTO_FILES message.proto)
 
 # Générer les fichiers C++ depuis le .proto
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
+#protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
 
 
 # Ajouter les fichiers sources et d'en-tête
-set(SOURCE
+#set(SOURCE
 #        message.pb.cc
-        ${PROTO_SRCS}  # Fichiers générés par Protobuf
-)
+#        ${PROTO_SRCS}  # Fichiers générés par Protobuf
+#)
 
-set(HEADERS
+#set(HEADERS
 #        message.pb.h
-        ${PROTO_HDRS}  # Fichiers d'en-tête générés par Protobuf
-)
+#        ${PROTO_HDRS}  # Fichiers d'en-tête générés par Protobuf
+#)
 
-message(STATUS "Found PROTO_SRCS: ${PROTO_SRCS}")
+
+#  find_package(ABSEIL EXACT MODULE)
+
+# if (APPLE)
+#     set(ABSEIL_INCLUDE_DIR "/opt/homebrew/Cellar/abseil/20240722.0/include/")
+#     # Rechercher abseil
+ #    find_path(ABSEIL_INCLUDE_DIR NAMES "absl/algorithm/algorithm.h" PATH_SUFFIXES abseil)
+# else ()
+#     find_path(
+#         ABSEIL_INCLUDE_DIR
+#         "absl/algorithm/algorithm.h"
+#         HINTS
+#          /usr/include
+#           /usr/local/include
+#        REQUIRED
+#     )
+# endif ()
+
+# if (ABSEIL_INCLUDE_DIR)
+#     message(STATUS "Found abseil: ${ABSEIL_INCLUDE_DIR}")
+#     include_directories(${message})
+# else ()
+ #    message(FATAL_ERROR "abseil not found. Install via 'brew install abseil'")
+#     message(FATAL_ERROR "abseil not found. Install via 'apt-target install abseil'")
+# endif ()
+
+#message(STATUS "Found PROTO_SRCS: ${PROTO_SRCS}")
 
 # Ajouter l'exécutable
 #add_executable(NoMASS2Server_protobuf Source/simulator_server_protobuf.cpp ${SOURCES} ${HEADERS})

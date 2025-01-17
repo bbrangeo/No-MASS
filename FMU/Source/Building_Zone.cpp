@@ -18,6 +18,8 @@ Building_Zone::Building_Zone() {
  * @param zoneStruct The configuration struct which values have been populated form configuration file
  */
 void Building_Zone::setup(const ConfigStructZone &zoneStruct) {
+    std::cout << "Building_Zone setup Name: " <<  name << std::endl;
+
     id = zoneStruct.id;
     activities = zoneStruct.activities;
     lightPower = zoneStruct.lightPower;
@@ -69,8 +71,11 @@ void Building_Zone::setup(const ConfigStructZone &zoneStruct) {
  */
 void Building_Zone::step() {
     if (active) {
+        std::cout << "DataStore::addValue(variableNameNumberOfOccupants, occupantFraction) : " <<  variableNameNumberOfOccupants << " " << occupantFraction << std::endl;
         DataStore::addValue(variableNameNumberOfOccupants, occupantFraction);
         DataStore::addValue(variableNameAverageGains, currentOccupantGains);
+        std::cout << "DataStore::addValue(variableNameAverageGains, currentOccupantGains) : " <<  variableNameAverageGains << " " << currentOccupantGains << std::endl;
+
         for (int wname: variableNameWindow) {
             DataStore::addValue(wname, windowState);
         }
