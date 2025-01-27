@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-find_program(C_COMPILER NAMES gcc)
-SET(C_COMPILER gcc)
-find_program(CXX_COMPILER NAMES g++)
-SET(CXX_COMPILER g++)
+
 
 execute_process(COMMAND uname OUTPUT_VARIABLE uname)
 if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
@@ -21,6 +18,11 @@ else()
     message("This is not MSYS")
 endif()
 
+find_program(C_COMPILER NAMES gcc)
+SET(C_COMPILER gcc)
+find_program(CXX_COMPILER NAMES g++)
+SET(CXX_COMPILER g++)
+message("CMAKE_C_COMPILER" ${CMAKE_C_COMPILER})
 
 ################################
 # Options
