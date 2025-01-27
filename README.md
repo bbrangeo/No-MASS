@@ -84,7 +84,9 @@ cat /home/Administrateur/.ssh/id_rsa.pub
 git submodule update --init --recursive
 mkdir build
 cd build
-```   
+cmake ..
+./NoMASS2Server.exe -c ../../Configuration/HouseWindows-MD/SimulationConfig.xml -d ../../Configuration/HouseWindows-MD/modelDescription.xml
+```
 
 ## Running
 
