@@ -6,8 +6,8 @@ if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     # Configurer les chemins pour MSYS2
     set(MSYS2_ROOT "C:/msys64/mingw64")  # Chemin d'installation de MSYS2
     set(CMAKE_PREFIX_PATH ${MSYS2_ROOT})
-    SET(CMAKE_C_COMPILER gcc)
-    SET(CMAKE_CXX_COMPILER g++)
+    SET(CMAKE_C_COMPILER "/mingw64/bin/gcc.exe")
+    SET(CMAKE_CXX_COMPILER "/mingw64/bin/g++.exe")
 
 else()
     message("This is not MSYS")
