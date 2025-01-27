@@ -1,17 +1,20 @@
 cmake_minimum_required(VERSION 3.11)
 
 # Vérifier le système d'exploitation
-if(WIN32)
+if(WIN32 AND NOT UNIX)
     message(STATUS "Vous êtes sur Windows.")
+elseif(UNIX AND NOT APPLE)
+    # Vérification si c'est MSYS2
+    if(CMAKE_SYSTEM_NAME MATCHES "MSYS" OR CMAKE_SYSTEM_NAME MATCHES "MINGW")
+        message(STATUS "Vous êtes sur Windows via MSYS2.")
+    else()
+        message(STATUS "Vous êtes sur un système UNIX (Linux ou similaire).")
+    endif()
 elseif(APPLE)
     message(STATUS "Vous êtes sur macOS.")
 else()
-    message(STATUS "Vous êtes sur un autre système d'exploitation.")
+    message(STATUS "Impossible de déterminer votre système d'exploitation.")
 endif()
-
-if (APPLE)
-    cmake_policy(SET CMP0042 NEW)
-endif ()
 
 
 ################################
