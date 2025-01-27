@@ -3,26 +3,11 @@ cmake_minimum_required(VERSION 3.11)
 execute_process(COMMAND uname OUTPUT_VARIABLE uname)
 if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     message("This is MSYS")
+    # Configurer les chemins pour MSYS2
+    set(MSYS2_ROOT "C:/msys64/mingw64")  # Chemin d'installation de MSYS2
+    set(CMAKE_PREFIX_PATH ${MSYS2_ROOT})
 else()
     message("This is not MSYS")
-endif()
-
-# Vérifier le système d'exploitation
-if(WIN32 AND NOT UNIX)
-    message(STATUS "Vous êtes sur Windows.")
-elseif(UNIX AND NOT APPLE)
-    # Vérification si c'est MSYS2
-    message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
-
-    if(CMAKE_SYSTEM_NAME MATCHES "MSYS" OR CMAKE_SYSTEM_NAME MATCHES "MINGW")
-        message(STATUS "Vous êtes sur Windows via MSYS2.")
-    else()
-        message(STATUS "Vous êtes sur un système UNIX (Linux ou similaire).")
-    endif()
-elseif(APPLE)
-    message(STATUS "Vous êtes sur macOS.")
-else()
-    message(STATUS "Impossible de déterminer votre système d'exploitation.")
 endif()
 
 
@@ -131,7 +116,7 @@ else ()
     message(FATAL_ERROR "Asio not found. Install via 'brew install asio'")
 endif ()
 
-# find_package(nlohmann_json 3.11.3 REQUIRED)
+find_package(nlohmann_json 3.11.3 REQUIRED)
 
 #include(FetchContent)
 
