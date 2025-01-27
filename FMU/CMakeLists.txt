@@ -80,6 +80,8 @@ if (APPLE)
     # Rechercher Asio
     find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
 elseif (WIN32)
+    message(STATUS "je suis ici")
+
     set(ASIO_INCLUDE_DIR "/mingw64/include")
 
     find_path(
