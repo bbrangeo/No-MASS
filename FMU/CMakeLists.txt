@@ -28,65 +28,6 @@ message("CMAKE_C_COMPILER => " ${CMAKE_C_COMPILER})
 ################################
 
 option(Tests "Tests" OFF)
-option(CrossCompile32 "CrossCompile32" OFF)
-option(CrossCompile64 "CrossCompile64" OFF)
-option(CrossCompileLinux64 "CrossCompileLinux64" OFF)
-
-################################
-# Cross Compiling
-################################
-
-if (CrossCompile32 OR CrossCompile64)
-    SET(CMAKE_SYSTEM_NAME Windows)
-    set(COMPILER_PREFIX "i686-w64-mingw32")
-    if (CrossCompile64)
-        set(COMPILER_PREFIX "x86_64-w64-mingw32")
-    endif ()
-    find_program(CMAKE_RC_COMPILER NAMES ${COMPILER_PREFIX}-windres)
-    SET(CMAKE_RC_COMPILER ${COMPILER_PREFIX}-windres)
-    find_program(CMAKE_C_COMPILER NAMES ${COMPILER_PREFIX}-gcc)
-    SET(CMAKE_C_COMPILER ${COMPILER_PREFIX}-gcc)
-    find_program(CMAKE_CXX_COMPILER NAMES ${COMPILER_PREFIX}-g++)
-    SET(CMAKE_CXX_COMPILER ${COMPILER_PREFIX}-g++)
-
-    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-
-endif ()
-
-if (CrossCompileLinux64)
-    SET(CMAKE_SYSTEM_NAME Linux)
-    #  set(COMPILER_PREFIX "x86_64-elf")
-    #  set(CMAKE_FIND_ROOT_PATH /opt/homebrew/opt/x86_64-elf)
-    #  set(CMAKE_ENABLE_EXPORTS OFF)
-    #  set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
-    #  set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
-
-    #  find_program(CMAKE_RC_COMPILER NAMES ${COMPILER_PREFIX}-windres)
-    #  SET(CMAKE_RC_COMPILER ${COMPILER_PREFIX}-windres)
-
-    #  find_program(CMAKE_C_COMPILER NAMES ${COMPILER_PREFIX}-gcc)
-    #  SET(CMAKE_C_COMPILER ${COMPILER_PREFIX}-gcc)
-
-    #  find_program(CMAKE_CXX_COMPILER NAMES ${COMPILER_PREFIX}-c++)
-    #  SET(CMAKE_CXX_COMPILER ${COMPILER_PREFIX}-g++)
-
-    # Spécifie le compilateur
-    set(CMAKE_C_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
-    set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang++")
-
-    # Options pour cibler Linux
-    set(CMAKE_CXX_FLAGS "-target x86_64-linux-gnu")
-    set(CMAKE_EXE_LINKER_FLAGS "-L/opt/homebrew/lib/x86_64-linux-gnu -L/opt/homebrew/opt/glib/lib -Wl,--rpath,/opt/homebrew/opt/glib/lib")
-
-    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-
-endif ()
-
-
 
 #find_package(ASIO REQUIRED)
 
@@ -241,7 +182,6 @@ target_link_libraries(FMI NoMASSstatic)
 add_executable(NoMASS Source/main.cpp)
 target_link_libraries(NoMASS NoMASSstatic)
 
-
 # Trouver Protobuf
 #find_package(Protobuf REQUIRED)
 #find_package(absl CONFIG REQUIRED)
@@ -304,10 +244,22 @@ add_executable(NoMASS2 Source/main_boris.cpp)
 target_link_libraries(NoMASS2 NoMASSstatic nlohmann_json::nlohmann_json)
 
 add_executable(NoMASS2Server Source/simulator_server.cpp)
-target_link_libraries(NoMASS2Server PRIVATE NoMASSstatic  nlohmann_json::nlohmann_json)
+# Ajouter les bibliothèques nécessaires (ws2_32 pour les fonctions réseau sur Windows)
+if(uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
+    target_link_libraries(NoMASS2Server PRIVATE NoMASSstatic  nlohmann_json::nlohmann_json ws2_32)
+else ()
+    target_link_libraries(NoMASS2Server PRIVATE NoMASSstatic  nlohmann_json::nlohmann_json)
+endif()
 
 add_executable(NoMASS2Client Source/simulator_client.cpp)
-target_link_libraries(NoMASS2Client PRIVATE nlohmann_json::nlohmann_json)
+
+# Ajouter les bibliothèques nécessaires (ws2_32 pour les fonctions réseau sur Windows)
+if(uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
+    target_link_libraries(NoMASS2Client PRIVATE nlohmann_json::nlohmann_json ws2_32)
+else ()
+    target_link_libraries(NoMASS2Client PRIVATE nlohmann_json::nlohmann_json)
+endif()
+
 
 ## Spécifiez les standards de C++
 set_target_properties(NoMASS2Server PROPERTIES CXX_STANDARD 17)
