@@ -73,7 +73,7 @@ SET(C_COMPILER gcc)
 find_program(CXX_COMPILER NAMES g++)
 SET(CXX_COMPILER g++)
 
-find_package(ASIO 1.30.2 EXACT MODULE)
+# find_package(ASIO 1.30.2 EXACT MODULE)
 
 if (APPLE)
     set(ASIO_INCLUDE_DIR "/opt/homebrew/Cellar/asio/1.30.2/include")
@@ -98,7 +98,7 @@ else ()
     message(FATAL_ERROR "Asio not found. Install via 'brew install asio'")
 endif ()
 
-find_package(nlohmann_json 3.11.3 REQUIRED)
+# find_package(nlohmann_json 3.11.3 REQUIRED)
 
 include(FetchContent)
 
