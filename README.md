@@ -96,6 +96,7 @@ git submodule update --init --recursive
 mkdir build
 cd build
 cmake ..
+ninja.exe
 ./NoMASS2Server.exe -c ../../Configuration/HouseWindows-MD/SimulationConfig.xml -d ../../Configuration/HouseWindows-MD/modelDescription.xml
 ```
 
