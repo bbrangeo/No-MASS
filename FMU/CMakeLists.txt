@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.11)
 
+execute_process(COMMAND uname OUTPUT_VARIABLE uname)
+if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
+    message("This is MSYS")
+else()
+    message("This is not MSYS")
+endif()
+
 # Vérifier le système d'exploitation
 if(WIN32 AND NOT UNIX)
     message(STATUS "Vous êtes sur Windows.")
