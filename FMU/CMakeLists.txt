@@ -5,7 +5,7 @@ if(WIN32 AND NOT UNIX)
     message(STATUS "Vous êtes sur Windows.")
 elseif(UNIX AND NOT APPLE)
     # Vérification si c'est MSYS2
-    message(STATUS CMAKE_SYSTEM_NAME)
+    message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
 
     if(CMAKE_SYSTEM_NAME MATCHES "MSYS" OR CMAKE_SYSTEM_NAME MATCHES "MINGW")
         message(STATUS "Vous êtes sur Windows via MSYS2.")
