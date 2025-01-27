@@ -37,7 +37,7 @@ if (CrossCompile32 OR CrossCompile64)
 
 endif ()
 
-f (CrossCompileLinux64)
+if (CrossCompileLinux64)
     SET(CMAKE_SYSTEM_NAME Linux)
     #  set(COMPILER_PREFIX "x86_64-elf")
     #  set(CMAKE_FIND_ROOT_PATH /opt/homebrew/opt/x86_64-elf)

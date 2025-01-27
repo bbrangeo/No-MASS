@@ -1,18 +1,18 @@
 import glob
+import logging
 import multiprocessing
 import os
+import platform
 import random
 import stat
 import subprocess
 import time
 import xml.etree.ElementTree as ET
-import platform
+from multiprocessing import Lock
 from shutil import copyfile, copytree, rmtree
 
-import pandas as pd
-import logging
 import colorlog
-from multiprocessing import Lock
+import pandas as pd
 
 lock = Lock()
 
@@ -53,6 +53,28 @@ class NoMASS(object):
     # Configuration du logger
     @staticmethod
     def setup_logging(level: int = logging.DEBUG):
+        """
+        Configures the logging system to display messages with specific formats and
+        colors defined for different logging levels. This method sets up a colored
+        console handler using `colorlog` with a format that includes the timestamp,
+        log level, and the message. Optionally, a file handler can be uncommented
+        to log messages to a file.
+
+        Attributes:
+            level (int): Optional logging level; defaults to `logging.DEBUG`.
+
+        Args:
+            level (int): The logging level to set. Common values include:
+                - `logging.DEBUG` for detailed debugging information.
+                - `logging.INFO` for general informational messages.
+                - `logging.WARNING` for warnings.
+                - `logging.ERROR` for error messages.
+                - `logging.CRITICAL` for critical issues.
+
+        Raises:
+            None
+        """
+
         if len(logging.getLogger().handlers) == 0:  # Évite les duplications de handlers
             handler = colorlog.StreamHandler()
             handler.setFormatter(
@@ -185,7 +207,14 @@ class NoMASS(object):
         logging.info(f"All simulations completed. Total time: {elapsed:.2f} seconds.")
 
     def learning(self):
-        """ """
+        """
+        This method retrieves the value of the 'learn' attribute associated with the
+        object. The purpose is to provide external access to the learning data stored
+        within the class instance.
+
+        Returns:
+            Any: The current value of the 'learn' attribute.
+        """
         return self.learn
 
     def configuration(self, x):
@@ -422,7 +451,26 @@ class NoMASS(object):
         return ad
 
     def simulationConfigInfoDF(self):
-        """ """
+        """
+        Generates a DataFrame containing configuration information for a simulation.
+
+        The function builds a DataFrame that summarizes the appliance configurations
+        for each building in the XML structure provided in `self.root`. This includes
+        various types of appliances such as large appliances, small appliances, shiftable
+        appliances, photovoltaic (PV) systems, battery systems, and CSV-based appliances.
+        The resulting DataFrame `self.simulationConfigInfo` has detailed information regarding
+        each building's appliance setup.
+
+        Parameters:
+            None
+
+        Returns:
+            pandas.DataFrame: A DataFrame containing columns for each type of appliance
+            configuration, where each row corresponds to a building.
+
+        Raises:
+            None
+        """
 
         def getIDList(ApplianceElement, keyword):
             theList = []
