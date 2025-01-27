@@ -4,12 +4,13 @@ execute_process(COMMAND uname OUTPUT_VARIABLE uname)
 if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     message("This is MSYS")
     # Configurer les chemins pour MSYS2
-    set(MSYS2_ROOT "C:/msys64/mingw64")  # Chemin d'installation de MSYS2
+    set(MSYS2_ROOT "/mingw64")  # Chemin d'installation de MSYS2
     set(CMAKE_PREFIX_PATH ${MSYS2_ROOT})
+
     SET(CMAKE_C_COMPILER "/mingw64/bin/gcc")
     SET(CMAKE_CXX_COMPILER "/mingw64/bin/g++")
-    find_program(CMAKE_C_COMPILER NAMES gcc)
-    SET(CMAKE_C_COMPILER gcc)
+    #find_program(CMAKE_C_COMPILER NAMES gcc)
+    #SET(CMAKE_C_COMPILER gcc)
     message("CMAKE_C_COMPILER" ${CMAKE_C_COMPILER})
 
 else()
