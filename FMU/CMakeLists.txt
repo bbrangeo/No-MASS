@@ -133,38 +133,39 @@ endif ()
 
 # find_package(nlohmann_json 3.11.3 REQUIRED)
 
-include(FetchContent)
+#include(FetchContent)
 
-FetchContent_Declare(
-        json
-        GIT_REPOSITORY https://github.com/nlohmann/json.git
-        GIT_TAG v3.11.3 # Version à vérifier
-)
+#FetchContent_Declare(
+#        json
+#        GIT_REPOSITORY https://github.com/nlohmann/json.git
+##        GIT_TAG v3.11.3 # Version à vérifier
+#)
 
-FetchContent_MakeAvailable(json)
+#FetchContent_MakeAvailable(json)
 
 if (APPLE)
     set(JSON_INCLUDE_DIR "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include")
     # Rechercher Json
     find_path(JSON_INCLUDE_DIR NAMES json.hpp PATH_SUFFIXES json)
-else ()
-#    find_path(
-#        JSON_INCLUDE_DIR
-#        "json.hpp"
-#        HINTS
-#          /usr/include
-#          /usr/local/include
-#        REQUIRED
-#    )
+elseif (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
+    set(JSON_INCLUDE_DIR "/mingw64/include/nlohmann")
+    find_path(
+        JSON_INCLUDE_DIR
+        "json.hpp"
+        HINTS
+          /usr/include
+          /usr/local/include
+        REQUIRED
+    )
 endif ()
 
 # Si Json est trouvé, ajouter son répertoire d'en-tête
-#if (JSON_INCLUDE_DIR)
-#    message(STATUS "Found nlohmann: ${JSON_INCLUDE_DIR}")
-#    include_directories(${message})
-#else ()
-#    message(FATAL_ERROR "Json not found. Install via 'brew install nlohmann-json'")
-#endif ()
+if (JSON_INCLUDE_DIR)
+    message(STATUS "Found nlohmann: ${JSON_INCLUDE_DIR}")
+    include_directories(${message})
+else ()
+    message(FATAL_ERROR "Json not found. Install via 'brew install nlohmann-json'")
+endif ()
 
 
 ################################
