@@ -79,7 +79,7 @@ if (APPLE)
     set(ASIO_INCLUDE_DIR "/opt/homebrew/Cellar/asio/1.30.2/include")
     # Rechercher Asio
     find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
-elseif (WIN)
+elseif (MINGW)
     message(STATUS "je suis ici")
 
     set(ASIO_INCLUDE_DIR "/mingw64/include")
