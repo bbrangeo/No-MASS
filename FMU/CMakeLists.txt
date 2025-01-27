@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.11)
 
+# Vérifier le système d'exploitation
+if(WIN32)
+    message(STATUS "Vous êtes sur Windows.")
+elseif(APPLE)
+    message(STATUS "Vous êtes sur macOS.")
+else()
+    message(STATUS "Vous êtes sur un autre système d'exploitation.")
+endif()
+
 if (APPLE)
     cmake_policy(SET CMP0042 NEW)
 endif ()
