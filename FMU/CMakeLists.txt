@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.11)
 
+
+find_program(C_COMPILER NAMES gcc)
+SET(C_COMPILER gcc)
+find_program(CXX_COMPILER NAMES g++)
+SET(CXX_COMPILER g++)
+
 execute_process(COMMAND uname OUTPUT_VARIABLE uname)
 if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     message("This is MSYS")
@@ -81,10 +87,7 @@ if (CrossCompileLinux64)
 
 endif ()
 
-find_program(C_COMPILER NAMES gcc)
-SET(C_COMPILER gcc)
-find_program(CXX_COMPILER NAMES g++)
-SET(CXX_COMPILER g++)
+
 
 #find_package(ASIO REQUIRED)
 
