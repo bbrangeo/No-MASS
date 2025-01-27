@@ -75,12 +75,23 @@ No-MASS can be built on windows using mingw-w64 or alternatively visual studio. 
 
 SITE [msys2](https://www.msys2.org/docs/terminals/#windows-terminal)
 EXE [install](https://github.com/msys2/msys2-installer/releases/download/2024-12-08/msys2-x86_64-20241208.exe)
+
+Il faut ouvrir le terminal C:/msys64/mingw64.exe
+
 ```cmd
 pacman -S git mingw-w64-x86_64-nlohmann-json mingw-w64-x86_64-asio mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc
 git clone https://github.com/bbrangeo/No-MASS.git
 pacman -S mingw-w64-x86_64-toolchain
+```
+
+Si tu n'a pas de clé ssh publique dans ton github :
+```cmd
 ssh-keygen -t rsa -b 4096
 cat /home/Administrateur/.ssh/id_rsa.pub
+```
+
+revenir dans le terminal
+```cmd
 git submodule update --init --recursive
 mkdir build
 cd build
