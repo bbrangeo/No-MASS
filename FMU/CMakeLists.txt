@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.11)
 
-
-
 execute_process(COMMAND uname OUTPUT_VARIABLE uname)
 if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     message("This is MSYS")
@@ -37,9 +35,7 @@ if (APPLE)
     find_path(ASIO_INCLUDE_DIR NAMES asio.hpp PATH_SUFFIXES asio)
 elseif (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     message(STATUS "je suis ici")
-
     set(ASIO_INCLUDE_DIR "/mingw64/include")
-
     find_path(
             ASIO_INCLUDE_DIR
             "asio.hpp"
