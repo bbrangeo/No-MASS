@@ -9,7 +9,7 @@ if (uname MATCHES "^MSYS" OR uname MATCHES "^MINGW")
     SET(CMAKE_C_COMPILER "/mingw64/bin/gcc")
     SET(CMAKE_CXX_COMPILER "/mingw64/bin/g++")
     find_program(CMAKE_C_COMPILER NAMES gcc)
-    SET(CMAKE_C_COMPILER ${COMPILER_PREFIX}-gcc)
+    SET(CMAKE_C_COMPILER gcc)
     message("CMAKE_C_COMPILER" ${CMAKE_C_COMPILER})
 
 else()
