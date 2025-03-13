@@ -326,7 +326,6 @@ int main(int argc, char *argv[]) {
         std::cerr << "Erreur du serveur : " << e.what() << std::endl;
     }
 
-    // WRITE RESULTATS
-    sim.postprocess();
+
     return 0;
 }
